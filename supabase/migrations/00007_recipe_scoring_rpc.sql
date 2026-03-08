@@ -53,9 +53,7 @@ as $$
       s.last_week_key,
       case when s.last_week_key is not null and current_week_key != '' then
         round(
-          extract(epoch from (
-            week_key_to_monday(current_week_key) - week_key_to_monday(s.last_week_key)
-          )) / 604800.0
+          (week_key_to_monday(current_week_key) - week_key_to_monday(s.last_week_key))::numeric / 7.0
         )::int
       else null end as weeks_since_last
     from public.recipes r
@@ -67,7 +65,7 @@ as $$
     ar.last_week_key,
     ar.weeks_since_last,
     round(
-      ln(ar.total_count + 1) * 5
+      (ln(ar.total_count + 1) * 5)::numeric
       + least(coalesce(ar.weeks_since_last, 8), 8)
     , 1) as score
   from all_recipes ar

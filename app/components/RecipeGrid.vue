@@ -9,10 +9,8 @@
       <RecipeCard
         :recipe="recipe"
         :servings="basket[recipe.id] || 0"
-        :deletable="deletableIds ? deletableIds.has(recipe.id) : false"
         @add="$emit('add', $event)"
         @remove="$emit('remove', $event)"
-        @delete="$emit('delete', $event)"
         @view="$emit('view', $event)"
       />
     </div>
@@ -34,13 +32,11 @@ defineProps<{
     stats?: RecipeStats
   }>
   basket: Record<string, number>
-  deletableIds?: Set<string>
 }>()
 
 defineEmits<{
   add: [id: string]
   remove: [id: string]
-  delete: [id: string]
   view: [id: string]
 }>()
 </script>

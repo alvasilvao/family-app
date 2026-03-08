@@ -22,6 +22,11 @@ export function getWeekDates(week: number, year: number) {
   return { monday, sunday, label: `${fmt(monday)} – ${fmt(sunday)}` }
 }
 
+export function currentWeekKey(): string {
+  const { week, year } = getISOWeek(new Date())
+  return `${year}-W${String(week).padStart(2, '0')}`
+}
+
 export function nextWeekKey(): string {
   const now = new Date()
   const next = new Date(now)

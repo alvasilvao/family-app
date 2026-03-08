@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const body = await readBody(event)
 
-  const { name, cookTime, description, tags, emoji, color, ingredients } = validateRecipeBody(body)
+  const { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients } = validateRecipeBody(body)
 
   // Insert recipe
   const { data: recipe, error: recipeErr } = await client
@@ -15,6 +15,8 @@ export default defineEventHandler(async (event) => {
       tags: tags || [],
       emoji: emoji || '🥘',
       color: color || '#7ba7a7',
+      source_url: sourceUrl || '',
+      instructions: instructions || '',
       user_id: userId,
     })
     .select()

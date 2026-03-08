@@ -243,6 +243,8 @@ const aiPromptText = `Convert the following recipe into this exact JSON format. 
   "name": "Recipe Name",
   "cookTime": "30 min",
   "description": "Short description of the dish.",
+  "sourceUrl": "https://example.com/recipe",
+  "instructions": "Step 1: Do this.\\nStep 2: Do that.\\nStep 3: Serve.",
   "tags": ["Vegetarian", "Quick"],
   "emoji": "🥘",
   "color": "#7ba7a7",
@@ -259,6 +261,8 @@ Rules:
 - Pick a hex color that matches the dish theme
 - All quantities MUST use metric units (g, ml, etc.) — convert from imperial if needed
 - Do NOT include: salt, pepper, olive oil
+- "sourceUrl": the original URL of the recipe (if available, otherwise empty string)
+- "instructions": step-by-step preparation instructions, each step separated by \\n
 
 Here is the recipe:`
 
@@ -302,6 +306,8 @@ function parseRecipe() {
       name: parsed.name,
       cookTime: parsed.cookTime || '',
       description: parsed.description || '',
+      sourceUrl: parsed.sourceUrl || '',
+      instructions: parsed.instructions || '',
       tags,
       emoji: parsed.emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
       color: parsed.color || IMPORT_COLORS[Math.floor(Math.random() * IMPORT_COLORS.length)],

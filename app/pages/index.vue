@@ -19,6 +19,7 @@
       :active-tab="activeTab"
       @prev-week="goWeek(-1)"
       @next-week="goWeek(+1)"
+      @go-today="goToday()"
       @add-recipe="showAddRecipe = true"
       @change-tab="activeTab = $event"
     />
@@ -273,8 +274,13 @@
 definePageMeta({ layout: false })
 
 import type { RecipeData } from '~/composables/useRecipes'
+import { currentWeekKey } from '~/utils/week'
 
 const { currentWeek, goWeek } = useWeek()
+
+function goToday() {
+  currentWeek.value = currentWeekKey()
+}
 const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 const { basket, groceryChecked, totalServings, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket, toggleGroceryItem, clearGroceryChecked } = usePlan()
 const { sections: grocerySections, fetchGrocery } = useGrocery()

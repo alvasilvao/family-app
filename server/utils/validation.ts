@@ -19,7 +19,7 @@ export function validateString(value: unknown, field: string, maxLen = 2000): st
 }
 
 export function validateRecipeBody(body: any) {
-  const { name, cookTime, description, tags, emoji, color, ingredients } = body
+  const { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients } = body
 
   if (!name || typeof name !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'Recipe name is required' })
@@ -30,6 +30,8 @@ export function validateRecipeBody(body: any) {
   validateString(description, 'description', 2000)
   validateString(emoji, 'emoji', 20)
   validateString(color, 'color', 20)
+  validateString(sourceUrl, 'sourceUrl', 2000)
+  validateString(instructions, 'instructions', 10000)
 
   if (tags != null) {
     if (!Array.isArray(tags) || tags.length > 50) {
@@ -59,5 +61,5 @@ export function validateRecipeBody(body: any) {
     }
   }
 
-  return { name, cookTime, description, tags, emoji, color, ingredients }
+  return { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients }
 }

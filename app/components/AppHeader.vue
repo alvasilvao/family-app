@@ -2,32 +2,7 @@
   <div class="safe-top" style="background: #2d6a4f; flex-shrink: 0">
     <!-- Top row: week nav + add recipe -->
     <div style="padding: 18px 24px 12px; display: flex; align-items: center; justify-content: center; position: relative; gap: 10px">
-      <WeekNavigator :week-key="weekKey" @prev="$emit('prevWeek')" @next="$emit('nextWeek')" />
-
-      <button
-        :style="{
-          position: 'absolute',
-          right: '24px',
-          width: '36px',
-          height: '36px',
-          borderRadius: '50%',
-          background: 'rgba(255,255,255,.15)',
-          border: '1.5px solid rgba(255,255,255,.3)',
-          color: '#fff',
-          fontSize: '20px',
-          fontWeight: 300,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background .2s',
-        }"
-        @click="$emit('addRecipe')"
-        @mouseenter="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.25)'"
-        @mouseleave="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.15)'"
-      >
-        +
-      </button>
+      <WeekNavigator :week-key="weekKey" @prev="$emit('prevWeek')" @next="$emit('nextWeek')" @go-today="$emit('goToday')" />
     </div>
 
     <!-- Tab bar -->
@@ -56,6 +31,25 @@
       >
         <span>{{ tab.label }}</span>
         <span
+          v-if="tab.id === 'recipes' && activeTab === 'recipes'"
+          style="
+            background: rgba(255,255,255,.25);
+            color: #fff;
+            border-radius: 999px;
+            font-size: 13px;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
+            line-height: 1;
+          "
+          @click.stop="$emit('addRecipe')"
+        >
+          +
+        </span>
+        <span
           v-if="tab.id === 'plan' && totalServings > 0"
           style="
             background: #fff;
@@ -83,6 +77,7 @@ defineProps<{
 defineEmits<{
   prevWeek: []
   nextWeek: []
+  goToday: []
   addRecipe: []
   changeTab: [tab: string]
 }>()

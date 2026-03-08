@@ -20,7 +20,7 @@
     >
       &lsaquo;
     </button>
-    <div style="text-align: center; min-width: 190px">
+    <div style="text-align: center; min-width: 190px; cursor: pointer" @click="$emit('goToday')">
       <p
         style="
           font-size: 12px;
@@ -29,10 +29,10 @@
           letter-spacing: 0.5px;
         "
       >
-        {{ label }}{{ isNextWeek ? ' · Next week' : '' }}
+        Week {{ weekInfo.week }}{{ isNextWeek ? ' · Next week' : '' }}
       </p>
       <p style="font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: #fff; line-height: 1.1">
-        Week {{ weekInfo.week }}
+        {{ label }}
       </p>
     </div>
     <button
@@ -62,7 +62,7 @@
 import { parseWeekKey, weekKeyLabel, nextWeekKey } from '~/utils/week'
 
 const props = defineProps<{ weekKey: string }>()
-defineEmits<{ prev: []; next: [] }>()
+defineEmits<{ prev: []; next: []; goToday: [] }>()
 
 const weekInfo = computed(() => parseWeekKey(props.weekKey))
 const label = computed(() => weekKeyLabel(props.weekKey))
