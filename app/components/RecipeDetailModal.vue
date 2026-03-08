@@ -19,7 +19,7 @@
         border-radius: 20px;
         width: 100%;
         max-width: 480px;
-        max-height: 85vh;
+        max-height: 90dvh;
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
         overflow: hidden;
         display: flex;
@@ -42,10 +42,10 @@
               background: #f5f0eb;
               border: none;
               border-radius: 50%;
-              width: 32px;
-              height: 32px;
+              width: 36px;
+              height: 36px;
               cursor: pointer;
-              font-size: 16px;
+              font-size: 18px;
               color: #6b6560;
               display: flex;
               align-items: center;

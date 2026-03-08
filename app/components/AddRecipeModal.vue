@@ -19,8 +19,10 @@
         border-radius: 20px;
         width: 100%;
         max-width: 500px;
+        max-height: 90dvh;
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
         overflow: hidden;
+        overflow-y: auto;
       "
       @click.stop
     >
@@ -36,10 +38,10 @@
             background: #f5f0eb;
             border: none;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             color: #6b6560;
             display: flex;
             align-items: center;
@@ -72,7 +74,7 @@
             "
             @click="showPrompt = !showPrompt"
           >
-            <span>Use this prompt with ChatGPT / Claude to format your recipe</span>
+            <span>Use this prompt with an AI to format your recipe</span>
             <span style="font-size: 11px; transition: transform .2s" :style="{ transform: showPrompt ? 'rotate(180deg)' : '' }">&#x25BC;</span>
           </button>
           <div v-if="showPrompt" class="fade-in" style="padding: 0 14px 12px">
@@ -120,7 +122,7 @@
             border: '1.5px solid #e8e2db',
             borderRadius: '10px',
             padding: '11px 14px',
-            fontSize: '12.5px',
+            fontSize: '16px',
             color: '#1a1a1a',
             resize: 'vertical',
             lineHeight: '1.65',
@@ -255,6 +257,7 @@ Rules:
 - Tags can include: Vegetarian, Vegan, Healthy, Spicy, Quick, High Protein, Comfort Food, Classic
 - Pick an emoji that matches the dish
 - Pick a hex color that matches the dish theme
+- All quantities MUST use metric units (g, ml, etc.) — convert from imperial if needed
 - Do NOT include: salt, pepper, olive oil
 
 Here is the recipe:`

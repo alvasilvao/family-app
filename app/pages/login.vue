@@ -1,7 +1,7 @@
 <template>
   <div
     style="
-      min-height: 100vh;
+      min-height: 100dvh;
       background: #f7f3ee;
       display: flex;
       align-items: center;
@@ -85,7 +85,7 @@ const inputStyle = {
   border: '1.5px solid #e8e2db',
   borderRadius: '10px',
   padding: '12px 16px',
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#1a1a1a',
   background: '#faf8f5',
   transition: 'border-color .2s',

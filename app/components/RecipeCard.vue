@@ -20,10 +20,10 @@
       class="del-btn"
       :style="{
         position: 'absolute',
-        top: '7px',
-        right: '7px',
-        width: '24px',
-        height: '24px',
+        top: '6px',
+        right: '6px',
+        width: '32px',
+        height: '32px',
         borderRadius: '50%',
         background: 'rgba(0,0,0,.45)',
         border: 'none',
@@ -71,8 +71,8 @@
             v-if="servings > 0"
             class="counter-btn"
             :style="{
-              width: '28px',
-              height: '28px',
+              width: '34px',
+              height: '34px',
               borderRadius: '50%',
               border: '1.5px solid #2d6a4f',
               background: '#fff',
@@ -97,8 +97,8 @@
           <button
             class="counter-btn"
             :style="{
-              width: '28px',
-              height: '28px',
+              width: '34px',
+              height: '34px',
               borderRadius: '50%',
               border: '1.5px solid #2d6a4f',
               background: servings > 0 ? '#fff' : '#2d6a4f',

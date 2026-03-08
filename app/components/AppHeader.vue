@@ -1,5 +1,5 @@
 <template>
-  <div style="background: #2d6a4f; flex-shrink: 0">
+  <div class="safe-top" style="background: #2d6a4f; flex-shrink: 0">
     <!-- Top row: week nav + add recipe -->
     <div style="padding: 18px 24px 12px; display: flex; align-items: center; justify-content: center; position: relative; gap: 10px">
       <WeekNavigator :week-key="weekKey" @prev="$emit('prevWeek')" @next="$emit('nextWeek')" />
@@ -37,7 +37,7 @@
         :key="tab.id"
         :style="{
           flex: 1,
-          padding: '10px 0 11px',
+          padding: '12px 0 13px',
           background: activeTab === tab.id ? 'rgba(255,255,255,.15)' : 'transparent',
           border: 'none',
           borderRadius: '10px 10px 0 0',

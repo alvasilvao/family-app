@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column; height: 100vh; background: #f7f3ee">
+  <div style="display: flex; flex-direction: column; height: 100dvh; background: #f7f3ee">
     <!-- Modals -->
     <AddRecipeModal v-if="showAddRecipe" @close="showAddRecipe = false" @import="handleImport" />
     <RecipeDetailModal v-if="detailRecipe" :recipe="detailRecipe" @close="detailRecipe = null" />
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Tab: Recipes -->
-    <div v-else-if="activeTab === 'recipes'" style="flex: 1; overflow: auto; padding: 22px 20px 48px">
+    <div v-else-if="activeTab === 'recipes'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Built-in recipes -->
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px">
         <h2 style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520">
@@ -87,7 +87,7 @@
     </div>
 
     <!-- Tab: Weekly Plan -->
-    <div v-else-if="activeTab === 'plan'" style="flex: 1; overflow: auto; padding: 22px 20px 48px">
+    <div v-else-if="activeTab === 'plan'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="selectedRecipes.length === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1f372;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -157,14 +157,15 @@
             </div>
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0">
               <button
+                class="counter-btn"
                 style="
-                  width: 26px;
-                  height: 26px;
+                  width: 36px;
+                  height: 36px;
                   border-radius: 50%;
                   border: 1.5px solid #2d6a4f;
                   background: #fff;
                   color: #2d6a4f;
-                  font-size: 15px;
+                  font-size: 17px;
                   cursor: pointer;
                   display: flex;
                   align-items: center;
@@ -174,18 +175,19 @@
               >
                 &minus;
               </button>
-              <span style="font-size: 14px; font-weight: 700; color: #2d6a4f; min-width: 16px; text-align: center">
+              <span style="font-size: 14px; font-weight: 700; color: #2d6a4f; min-width: 20px; text-align: center">
                 {{ sr.servings }}
               </span>
               <button
+                class="counter-btn"
                 style="
-                  width: 26px;
-                  height: 26px;
+                  width: 36px;
+                  height: 36px;
                   border-radius: 50%;
                   border: 1.5px solid #2d6a4f;
                   background: #fff;
                   color: #2d6a4f;
-                  font-size: 15px;
+                  font-size: 17px;
                   cursor: pointer;
                   display: flex;
                   align-items: center;
@@ -202,7 +204,7 @@
     </div>
 
     <!-- Tab: Grocery List -->
-    <div v-else-if="activeTab === 'grocery'" style="flex: 1; overflow: auto; padding: 0 0 48px">
+    <div v-else-if="activeTab === 'grocery'" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="totalServings === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1f6d2;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -231,6 +233,7 @@
                   border: none;
                   cursor: pointer;
                   font-family: 'DM Sans', sans-serif;
+                  padding: 8px 4px;
                 "
                 @click="clearGroceryChecked()"
               >
@@ -284,8 +287,8 @@
             <div style="display: flex; align-items: center; gap: 11px">
               <div
                 :style="{
-                  width: '19px',
-                  height: '19px',
+                  width: '22px',
+                  height: '22px',
                   borderRadius: '5px',
                   flexShrink: 0,
                   transition: 'all .15s',
