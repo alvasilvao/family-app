@@ -1,4 +1,4 @@
-import type { GrocerySection } from '~/utils/ingredients'
+import type { GrocerySection } from '~~/shared/utils/ingredients'
 
 const sections = ref<GrocerySection[]>([])
 
