@@ -30,7 +30,7 @@
     </div>
 
     <!-- Tab: Recipes -->
-    <div v-else-if="activeTab === 'recipes'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else-if="activeTab === 'recipes'" v-touch-swipe="onSwipe" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <RecipeGrid
         :recipes="recipes"
         :basket="basket"
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Tab: Weekly Plan -->
-    <div v-else-if="activeTab === 'plan'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else-if="activeTab === 'plan'" v-touch-swipe="onSwipe" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="selectedRecipes.length === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1f372;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -141,7 +141,7 @@
     </div>
 
     <!-- Tab: Grocery List -->
-    <div v-else-if="activeTab === 'grocery'" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else-if="activeTab === 'grocery'" v-touch-swipe="onSwipe" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="totalServings === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1f6d2;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -275,6 +275,32 @@ definePageMeta({ layout: false })
 
 import type { RecipeData } from '~/composables/useRecipes'
 import { currentWeekKey } from '~/utils/week'
+
+const tabs = ['recipes', 'plan', 'grocery'] as const
+
+const vTouchSwipe = {
+  mounted(el: HTMLElement, binding: { value: (dir: 'left' | 'right') => void }) {
+    let startX = 0
+    let startY = 0
+    el.addEventListener('touchstart', (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+      startY = e.touches[0].clientY
+    }, { passive: true })
+    el.addEventListener('touchend', (e: TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - startX
+      const dy = e.changedTouches[0].clientY - startY
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        binding.value(dx < 0 ? 'left' : 'right')
+      }
+    }, { passive: true })
+  },
+}
+
+function onSwipe(dir: 'left' | 'right') {
+  const idx = tabs.indexOf(activeTab.value as typeof tabs[number])
+  if (dir === 'left' && idx < tabs.length - 1) activeTab.value = tabs[idx + 1]
+  if (dir === 'right' && idx > 0) activeTab.value = tabs[idx - 1]
+}
 
 const { currentWeek, goWeek } = useWeek()
 
