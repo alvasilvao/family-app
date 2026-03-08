@@ -64,21 +64,8 @@
         <div style="display: flex; align-items: center; gap: 6px">
           <button
             v-if="servings > 0"
-            class="counter-btn"
-            :style="{
-              width: '34px',
-              height: '34px',
-              borderRadius: '50%',
-              border: '1.5px solid #2d6a4f',
-              background: '#fff',
-              color: '#2d6a4f',
-              fontSize: '17px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all .18s',
-            }"
+            class="counter-btn counter-btn-circle"
+            style="width: 34px; height: 34px; transition: all .18s"
             @click="$emit('remove', recipe.id)"
           >
             &minus;
@@ -90,19 +77,12 @@
             {{ servings }}
           </span>
           <button
-            class="counter-btn"
+            class="counter-btn counter-btn-circle"
             :style="{
               width: '34px',
               height: '34px',
-              borderRadius: '50%',
-              border: '1.5px solid #2d6a4f',
               background: servings > 0 ? '#fff' : '#2d6a4f',
               color: servings > 0 ? '#2d6a4f' : '#fff',
-              fontSize: '17px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               transition: 'all .18s',
             }"
             @click="$emit('add', recipe.id)"

@@ -2,7 +2,7 @@ const basket = ref<Record<string, number>>({})
 const groceryChecked = ref<Record<string, boolean>>({})
 
 export function usePlan() {
-  const { getAccessToken } = useAuth()
+  const { authFetch } = useAuth()
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
   let currentWeekKey = ''
@@ -10,10 +10,7 @@ export function usePlan() {
   async function fetchPlan(weekKey: string) {
     currentWeekKey = weekKey
     try {
-      const token = await getAccessToken()
-      const data = await $fetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const data = await authFetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`)
       basket.value = data.basket || {}
       groceryChecked.value = data.groceryChecked || {}
     } catch (err) {
@@ -27,10 +24,8 @@ export function usePlan() {
     if (saveTimeout) clearTimeout(saveTimeout)
     saveTimeout = setTimeout(async () => {
       try {
-        const token = await getAccessToken()
-        await $fetch(`/api/plans/${currentWeekKey}`, {
+        await authFetch(`/api/plans/${currentWeekKey}`, {
           method: 'PUT',
-          headers: { Authorization: `Bearer ${token}` },
           body: { basket: basket.value, groceryChecked: groceryChecked.value },
         })
       } catch (err) {

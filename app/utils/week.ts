@@ -28,11 +28,7 @@ export function currentWeekKey(): string {
 }
 
 export function nextWeekKey(): string {
-  const now = new Date()
-  const next = new Date(now)
-  next.setDate(now.getDate() + 7)
-  const { week, year } = getISOWeek(next)
-  return `${year}-W${String(week).padStart(2, '0')}`
+  return adjacentWeek(currentWeekKey(), 1)
 }
 
 export function parseWeekKey(key: string): { year: number; week: number } {
@@ -51,13 +47,4 @@ export function adjacentWeek(key: string, delta: number): string {
   monday.setUTCDate(monday.getUTCDate() + delta * 7)
   const nw = getISOWeek(monday)
   return `${nw.year}-W${String(nw.week).padStart(2, '0')}`
-}
-
-/** Convert UUID string to a stable integer for deterministic hashing (djb2) */
-export function hashId(uuid: string): number {
-  let hash = 5381
-  for (let i = 0; i < uuid.length; i++) {
-    hash = ((hash << 5) + hash + uuid.charCodeAt(i)) | 0
-  }
-  return Math.abs(hash)
 }

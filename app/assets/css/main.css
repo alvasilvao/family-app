@@ -14,6 +14,12 @@ body { background: #f7f3ee; font-family: 'DM Sans', sans-serif; color: #1a1a1a; 
 @keyframes pulse { 0%, 100% { opacity: .25; } 50% { opacity: .85; } }
 
 .counter-btn:active { background: #2d6a4f !important; color: #fff !important; }
+.counter-btn-circle { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #2d6a4f; background: #fff; color: #2d6a4f; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.48); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-panel { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; max-height: 90dvh; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2); overflow: hidden; }
+.modal-close-btn { background: #f5f0eb; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: #6b6560; display: flex; align-items: center; justify-content: center; }
+.form-input { border: 1.5px solid #e8e2db; border-radius: 8px; background: #faf8f5; outline: none; font-family: 'DM Sans', sans-serif; }
 
 .tag { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 500; }
 

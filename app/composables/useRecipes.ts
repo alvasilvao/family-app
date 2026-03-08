@@ -47,18 +47,14 @@ const recipes = ref<RecipeData[]>([])
 const loading = ref(true)
 
 export function useRecipes() {
-  const { getAccessToken } = useAuth()
+  const { authFetch } = useAuth()
 
-  const builtInRecipes = computed(() => recipes.value.filter((r) => r.isBuiltIn))
   const userRecipes = computed(() => recipes.value.filter((r) => !r.isBuiltIn))
 
   async function fetchRecipes() {
     loading.value = true
     try {
-      const token = await getAccessToken()
-      const data = await $fetch<any[]>('/api/recipes', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const data = await authFetch<any[]>('/api/recipes')
       recipes.value = data.map(mapRecipe)
     } catch (err) {
       console.error('Failed to fetch recipes:', err)
@@ -69,10 +65,7 @@ export function useRecipes() {
 
   async function fetchScores(weekKey: string) {
     try {
-      const token = await getAccessToken()
-      const scores = await $fetch<Record<string, RecipeStats>>(`/api/recipes/scores?week=${weekKey}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const scores = await authFetch<Record<string, RecipeStats>>(`/api/recipes/scores?week=${weekKey}`)
       // Merge scores into existing recipes and sort by score
       recipes.value = [...recipes.value]
         .map((r) => ({ ...r, stats: scores[r.id] || DEFAULT_STATS }))
@@ -83,21 +76,18 @@ export function useRecipes() {
   }
 
   async function addRecipe(recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
-    const token = await getAccessToken()
-    const created = await $fetch<any>('/api/recipes', {
+    const created = await authFetch<any>('/api/recipes', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
       body: recipe,
     })
-    recipes.value = [...recipes.value, mapRecipe(created)]
-    return mapRecipe(created)
+    const mapped = mapRecipe(created)
+    recipes.value = [...recipes.value, mapped]
+    return mapped
   }
 
   async function updateRecipe(id: string, recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
-    const token = await getAccessToken()
-    const updated = await $fetch<any>(`/api/recipes/${id}`, {
+    const updated = await authFetch<any>(`/api/recipes/${id}`, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${token}` },
       body: recipe,
     })
     const mapped = mapRecipe(updated)
@@ -106,17 +96,14 @@ export function useRecipes() {
   }
 
   async function deleteRecipe(id: string) {
-    const token = await getAccessToken()
-    await $fetch(`/api/recipes/${id}`, {
+    await authFetch(`/api/recipes/${id}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
     })
     recipes.value = recipes.value.filter((r) => r.id !== id)
   }
 
   return {
     recipes,
-    builtInRecipes,
     userRecipes,
     loading,
     fetchRecipes,

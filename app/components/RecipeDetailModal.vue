@@ -1,30 +1,11 @@
 <template>
   <div
-    style="
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.48);
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    "
+    class="modal-overlay"
     @click="$emit('close')"
   >
     <div
-      class="slide-up"
-      style="
-        background: #fff;
-        border-radius: 20px;
-        width: 100%;
-        max-width: 480px;
-        max-height: 90dvh;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      "
+      class="slide-up modal-panel"
+      style="display: flex; flex-direction: column"
       @click.stop
     >
       <!-- Visual header -->
@@ -38,18 +19,8 @@
           <input
             v-if="editing"
             v-model="editForm.name"
-            style="
-              font-family: 'Fraunces', serif;
-              font-size: 21px;
-              font-weight: 700;
-              line-height: 1.3;
-              flex: 1;
-              border: 1.5px solid #e8e2db;
-              border-radius: 8px;
-              padding: 4px 8px;
-              outline: none;
-              background: #faf8f5;
-            "
+            class="form-input"
+            style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700; line-height: 1.3; flex: 1; padding: 4px 8px"
           />
           <!-- Name: read-only -->
           <h2 v-else style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700; line-height: 1.3; flex: 1">
@@ -78,19 +49,7 @@
             </button>
             <!-- Close button -->
             <button
-              style="
-                background: #f5f0eb;
-                border: none;
-                border-radius: 50%;
-                width: 36px;
-                height: 36px;
-                cursor: pointer;
-                font-size: 18px;
-                color: #6b6560;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
+              class="modal-close-btn"
               @click="$emit('close')"
             >
               &times;
@@ -103,7 +62,8 @@
           <label style="font-size: 11px; color: #9b9590; display: block; margin-bottom: 4px">Emoji</label>
           <input
             v-model="editForm.emoji"
-            style="width: 60px; font-size: 20px; text-align: center; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 4px; outline: none; background: #faf8f5"
+            class="form-input"
+            style="width: 60px; font-size: 20px; text-align: center; padding: 4px"
           />
         </div>
 
@@ -112,7 +72,8 @@
           <label style="font-size: 11px; color: #9b9590; display: block; margin-bottom: 4px">Cook time</label>
           <input
             v-model="editForm.cookTime"
-            style="width: 100%; font-size: 13px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 6px 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif"
+            class="form-input"
+            style="width: 100%; font-size: 13px; padding: 6px 8px"
           />
         </div>
         <p v-else-if="recipe.cookTime" style="font-size: 13px; color: #9b9590; margin-bottom: 12px">
@@ -130,7 +91,8 @@
           <textarea
             v-model="editForm.description"
             rows="3"
-            style="width: 100%; font-size: 13.5px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif; line-height: 1.55; resize: vertical"
+            class="form-input"
+            style="width: 100%; font-size: 13.5px; padding: 8px; line-height: 1.55; resize: vertical"
           />
         </div>
         <p v-else-if="recipe.description" style="font-size: 13.5px; color: #4a4540; line-height: 1.65; margin-bottom: 20px">
@@ -144,7 +106,8 @@
             v-model="editForm.sourceUrl"
             type="url"
             placeholder="https://..."
-            style="width: 100%; font-size: 13px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 6px 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif"
+            class="form-input"
+            style="width: 100%; font-size: 13px; padding: 6px 8px"
           />
         </div>
         <a
@@ -183,7 +146,8 @@
               <input
                 v-model="ing.name"
                 placeholder="Name"
-                style="flex: 2; font-size: 13px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 6px 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif"
+                class="form-input"
+                style="flex: 2; font-size: 13px; padding: 6px 8px"
               />
               <input
                 v-model.number="ing.perServing"
@@ -191,12 +155,14 @@
                 step="0.1"
                 min="0"
                 placeholder="Qty"
-                style="width: 60px; font-size: 13px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 6px 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif; text-align: center"
+                class="form-input"
+                style="width: 60px; font-size: 13px; padding: 6px 8px; text-align: center"
               />
               <input
                 v-model="ing.unit"
                 placeholder="Unit"
-                style="width: 60px; font-size: 13px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 6px 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif"
+                class="form-input"
+                style="width: 60px; font-size: 13px; padding: 6px 8px"
               />
               <button
                 style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #e8e2db; background: #fff; color: #c0392b; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0"
@@ -246,7 +212,8 @@
             v-model="editForm.instructions"
             rows="6"
             placeholder="One step per line..."
-            style="width: 100%; font-size: 13.5px; border: 1.5px solid #e8e2db; border-radius: 8px; padding: 8px; outline: none; background: #faf8f5; font-family: 'DM Sans', sans-serif; line-height: 1.55; resize: vertical"
+            class="form-input"
+            style="width: 100%; font-size: 13.5px; padding: 8px; line-height: 1.55; resize: vertical"
           />
         </div>
         <div v-else-if="recipe.instructions" style="margin-top: 20px">

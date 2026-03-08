@@ -16,5 +16,10 @@ export function useAuth() {
     return supabase.auth.getSession().then((res) => res.data.session?.access_token || '')
   }
 
-  return { user, signIn, signOut, getAccessToken }
+  async function authFetch<T>(url: string, opts?: Parameters<typeof $fetch>[1]): Promise<T> {
+    const token = await getAccessToken()
+    return $fetch<T>(url, { ...opts, headers: { ...opts?.headers, Authorization: `Bearer ${token}` } })
+  }
+
+  return { user, signIn, signOut, getAccessToken, authFetch }
 }

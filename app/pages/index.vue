@@ -94,20 +94,7 @@
             </div>
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0">
               <button
-                class="counter-btn"
-                style="
-                  width: 36px;
-                  height: 36px;
-                  border-radius: 50%;
-                  border: 1.5px solid #2d6a4f;
-                  background: #fff;
-                  color: #2d6a4f;
-                  font-size: 17px;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
+                class="counter-btn counter-btn-circle"
                 @click="planRemove(sr.recipe.id)"
               >
                 &minus;
@@ -116,20 +103,7 @@
                 {{ sr.servings }}
               </span>
               <button
-                class="counter-btn"
-                style="
-                  width: 36px;
-                  height: 36px;
-                  border-radius: 50%;
-                  border: 1.5px solid #2d6a4f;
-                  background: #fff;
-                  color: #2d6a4f;
-                  font-size: 17px;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
+                class="counter-btn counter-btn-circle"
                 @click="planAdd(sr.recipe.id)"
               >
                 +

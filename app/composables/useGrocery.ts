@@ -3,14 +3,11 @@ import type { GrocerySection } from '~/utils/ingredients'
 const sections = ref<GrocerySection[]>([])
 
 export function useGrocery() {
-  const { getAccessToken } = useAuth()
+  const { authFetch } = useAuth()
 
   async function fetchGrocery(weekKey: string) {
     try {
-      const token = await getAccessToken()
-      const data = await $fetch<{ sections: GrocerySection[] }>(`/api/grocery/${weekKey}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const data = await authFetch<{ sections: GrocerySection[] }>(`/api/grocery/${weekKey}`)
       sections.value = data.sections
     } catch (err) {
       console.error('Failed to fetch grocery:', err)

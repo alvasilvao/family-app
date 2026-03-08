@@ -1,29 +1,11 @@
 <template>
   <div
-    style="
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.48);
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    "
+    class="modal-overlay"
     @click="$emit('close')"
   >
     <div
-      class="slide-up"
-      style="
-        background: #fff;
-        border-radius: 20px;
-        width: 100%;
-        max-width: 500px;
-        max-height: 90dvh;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        overflow-y: auto;
-      "
+      class="slide-up modal-panel"
+      style="max-width: 500px; overflow-y: auto"
       @click.stop
     >
       <div style="padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: flex-start">
@@ -34,21 +16,8 @@
           </p>
         </div>
         <button
-          style="
-            background: #f5f0eb;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            font-size: 18px;
-            color: #6b6560;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 12px;
-            flex-shrink: 0;
-          "
+          class="modal-close-btn"
+          style="margin-left: 12px; flex-shrink: 0"
           @click="$emit('close')"
         >
           &times;
