@@ -21,5 +21,5 @@ export function useAuth() {
     return $fetch<T>(url, { ...opts, headers: { ...opts?.headers, Authorization: `Bearer ${token}` } })
   }
 
-  return { user, signIn, signOut, getAccessToken, authFetch }
+  return { user, signIn, signOut, authFetch }
 }

@@ -36,7 +36,8 @@ input::placeholder, textarea::placeholder { color: #b0a89e; }
 .ing-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 20px; transition: background .12s; cursor: default; min-height: 44px; }
 .ing-row:active { background: #f5f0ea; }
 
-.week-btn:active { background: rgba(255,255,255,.25) !important; }
+.week-nav-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.week-nav-btn:active { background: rgba(255,255,255,.25); }
 
 /* Desktop-only hover effects */
 @media (hover: hover) {
@@ -45,7 +46,7 @@ input::placeholder, textarea::placeholder { color: #b0a89e; }
   .card:hover .del-btn { opacity: 1; }
   .counter-btn:hover { background: #2d6a4f !important; color: #fff !important; }
   .ing-row:hover { background: #f5f0ea; }
-  .week-btn:hover { background: rgba(255,255,255,.25) !important; }
+  .week-nav-btn:hover { background: rgba(255,255,255,.25); }
 }
 
 /* Safe area insets for notched devices */

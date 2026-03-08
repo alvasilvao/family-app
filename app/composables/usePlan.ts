@@ -5,10 +5,10 @@ export function usePlan() {
   const { authFetch } = useAuth()
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
-  let currentWeekKey = ''
+  let activeWeekKey = ''
 
   async function fetchPlan(weekKey: string) {
-    currentWeekKey = weekKey
+    activeWeekKey = weekKey
     try {
       const data = await authFetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`)
       basket.value = data.basket || {}
@@ -22,9 +22,10 @@ export function usePlan() {
 
   function debouncedSave() {
     if (saveTimeout) clearTimeout(saveTimeout)
+    const weekKey = activeWeekKey
     saveTimeout = setTimeout(async () => {
       try {
-        await authFetch(`/api/plans/${currentWeekKey}`, {
+        await authFetch(`/api/plans/${weekKey}`, {
           method: 'PUT',
           body: { basket: basket.value, groceryChecked: groceryChecked.value },
         })

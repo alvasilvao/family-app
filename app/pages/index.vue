@@ -249,26 +249,11 @@ definePageMeta({ layout: false })
 
 import type { RecipeData } from '~/composables/useRecipes'
 import { currentWeekKey } from '~/utils/week'
+import { useTouchSwipe } from '~/composables/useTouchSwipe'
 
 const tabs = ['recipes', 'plan', 'grocery'] as const
 
-const vTouchSwipe = {
-  mounted(el: HTMLElement, binding: { value: (dir: 'left' | 'right') => void }) {
-    let startX = 0
-    let startY = 0
-    el.addEventListener('touchstart', (e: TouchEvent) => {
-      startX = e.touches[0].clientX
-      startY = e.touches[0].clientY
-    }, { passive: true })
-    el.addEventListener('touchend', (e: TouchEvent) => {
-      const dx = e.changedTouches[0].clientX - startX
-      const dy = e.changedTouches[0].clientY - startY
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-        binding.value(dx < 0 ? 'left' : 'right')
-      }
-    }, { passive: true })
-  },
-}
+const { vTouchSwipe } = useTouchSwipe()
 
 function onSwipe(dir: 'left' | 'right') {
   const idx = tabs.indexOf(activeTab.value as typeof tabs[number])
@@ -278,6 +263,7 @@ function onSwipe(dir: 'left' | 'right') {
 
 const { currentWeek, goWeek } = useWeek()
 
+// Default week is next week (plan ahead), but "today" jumps to current week
 function goToday() {
   currentWeek.value = currentWeekKey()
 }
@@ -288,7 +274,7 @@ const { sections: grocerySections, fetchGrocery } = useGrocery()
 const route = useRoute()
 const router = useRouter()
 const activeTab = computed({
-  get: () => (['recipes', 'plan', 'grocery'].includes(route.query.tab as string) ? route.query.tab as string : 'recipes'),
+  get: () => (tabs.includes(route.query.tab as typeof tabs[number]) ? route.query.tab as string : 'recipes'),
   set: (val: string) => {
     router.replace({ query: { ...route.query, tab: val } })
   },

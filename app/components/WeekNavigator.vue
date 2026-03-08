@@ -1,25 +1,6 @@
 <template>
   <div style="display: flex; align-items: center; gap: 10px">
-    <button
-      class="week-btn"
-      :style="{
-        width: '36px',
-        height: '36px',
-        borderRadius: '50%',
-        background: 'rgba(255,255,255,.15)',
-        border: 'none',
-        color: '#fff',
-        fontSize: '18px',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'background .2s',
-      }"
-      @click="$emit('prev')"
-    >
-      &lsaquo;
-    </button>
+    <button class="week-nav-btn" @click="$emit('prev')">&lsaquo;</button>
     <div style="text-align: center; min-width: 190px; cursor: pointer" @click="$emit('goToday')">
       <p
         style="
@@ -35,26 +16,7 @@
         {{ label }}
       </p>
     </div>
-    <button
-      class="week-btn"
-      :style="{
-        width: '36px',
-        height: '36px',
-        borderRadius: '50%',
-        background: 'rgba(255,255,255,.15)',
-        border: 'none',
-        color: '#fff',
-        fontSize: '18px',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'background .2s',
-      }"
-      @click="$emit('next')"
-    >
-      &rsaquo;
-    </button>
+    <button class="week-nav-btn" @click="$emit('next')">&rsaquo;</button>
   </div>
 </template>
 
