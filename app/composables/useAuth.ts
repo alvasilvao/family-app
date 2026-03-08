@@ -2,8 +2,8 @@ export function useAuth() {
   const supabase = useSupabaseClient()
   const user = useSupabaseUser()
 
-  async function signIn(email: string) {
-    const { error } = await supabase.auth.signInWithOtp({ email })
+  async function signIn(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
   }
 

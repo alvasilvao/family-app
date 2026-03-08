@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event)
-  await ensureUser(event)
+  await requireAuth(event)
   const weekKey = getRouterParam(event, 'weekKey')
   if (!weekKey) throw createError({ statusCode: 400, statusMessage: 'Missing weekKey' })
 

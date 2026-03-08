@@ -2,6 +2,7 @@
   <div style="display: flex; flex-direction: column; height: 100vh; background: #f7f3ee">
     <!-- Modals -->
     <AddRecipeModal v-if="showAddRecipe" @close="showAddRecipe = false" @import="handleImport" />
+    <RecipeDetailModal v-if="detailRecipe" :recipe="detailRecipe" @close="detailRecipe = null" />
     <GroceryModal
       v-if="showGrocery"
       :week-key="currentWeek"
@@ -42,6 +43,7 @@
           :basket="basket"
           @add="planAdd"
           @remove="planRemove"
+          @view="viewRecipe"
         />
       </div>
 
@@ -68,20 +70,15 @@
 
       <div v-if="userRecipes.length === 0">
         <div
-          :style="{
-            border: '2px dashed #ddd6ce',
-            borderRadius: '14px',
-            padding: '28px 20px',
-            textAlign: 'center',
-            cursor: 'pointer',
-            transition: 'border-color .2s',
-          }"
-          @click="showAddRecipe = true"
-          @mouseenter="($event.currentTarget as HTMLElement).style.borderColor = '#2d6a4f'"
-          @mouseleave="($event.currentTarget as HTMLElement).style.borderColor = '#ddd6ce'"
+          style="
+            border: 2px dashed #ddd6ce;
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+          "
         >
           <p style="font-size: 22px; margin-bottom: 8px">&#x1f4cb;</p>
-          <p style="font-size: 13px; color: #9b9590">Paste a recipe as JSON to add it</p>
+          <p style="font-size: 13px; color: #9b9590">Use the <strong>+ Add Recipe</strong> button on the top right to add your first recipe</p>
         </div>
       </div>
       <RecipeGrid
@@ -92,6 +89,7 @@
         @add="planAdd"
         @remove="planRemove"
         @delete="handleDelete"
+        @view="viewRecipe"
       />
     </div>
   </div>
@@ -101,12 +99,19 @@
 definePageMeta({ layout: false })
 
 const { currentWeek, goWeek } = useWeek()
+import type { RecipeData } from '~/composables/useRecipes'
 const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, addRecipe, deleteRecipe, getWeeklyRecipes } = useRecipes()
 const { basket, totalServings, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket } = usePlan()
 const { sections: grocerySections, fetchGrocery } = useGrocery()
 
 const showAddRecipe = ref(false)
 const showGrocery = ref(false)
+const detailRecipe = ref<RecipeData | null>(null)
+
+function viewRecipe(id: string) {
+  const recipe = recipes.value.find((r) => r.id === id)
+  if (recipe) detailRecipe.value = recipe
+}
 
 const weeklyRecipes = computed(() => getWeeklyRecipes(currentWeek.value))
 const allRecipes = computed(() => [...weeklyRecipes.value, ...userRecipes.value])

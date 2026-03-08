@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event)
-  await ensureUser(event)
+  await requireAuth(event)
 
   // RLS handles filtering: built-in + own recipes
   const { data: recipes, error } = await client

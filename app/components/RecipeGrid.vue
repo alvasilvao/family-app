@@ -13,6 +13,7 @@
         @add="$emit('add', $event)"
         @remove="$emit('remove', $event)"
         @delete="$emit('delete', $event)"
+        @view="$emit('view', $event)"
       />
     </div>
   </div>
@@ -37,5 +38,6 @@ defineEmits<{
   add: [id: string]
   remove: [id: string]
   delete: [id: string]
+  view: [id: string]
 }>()
 </script>

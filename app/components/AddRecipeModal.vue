@@ -54,6 +54,62 @@
       </div>
 
       <div style="padding: 18px 24px 24px; display: flex; flex-direction: column; gap: 13px">
+        <!-- Copyable AI prompt -->
+        <div style="background: #f5f0eb; border-radius: 10px; overflow: hidden">
+          <button
+            style="
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 10px 14px;
+              background: none;
+              border: none;
+              cursor: pointer;
+              font-family: 'DM Sans', sans-serif;
+              font-size: 12.5px;
+              color: #6b6560;
+            "
+            @click="showPrompt = !showPrompt"
+          >
+            <span>Use this prompt with ChatGPT / Claude to format your recipe</span>
+            <span style="font-size: 11px; transition: transform .2s" :style="{ transform: showPrompt ? 'rotate(180deg)' : '' }">&#x25BC;</span>
+          </button>
+          <div v-if="showPrompt" class="fade-in" style="padding: 0 14px 12px">
+            <div
+              style="
+                background: #fff;
+                border: 1.5px solid #e8e2db;
+                border-radius: 8px;
+                padding: 10px 12px;
+                font-size: 11.5px;
+                line-height: 1.6;
+                color: #4a4540;
+                white-space: pre-wrap;
+                max-height: 180px;
+                overflow-y: auto;
+              "
+            >{{ aiPromptText }}</div>
+            <button
+              style="
+                margin-top: 8px;
+                padding: 6px 14px;
+                border-radius: 7px;
+                background: #2d6a4f;
+                border: none;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: 'DM Sans', sans-serif;
+              "
+              @click="copyPrompt"
+            >
+              {{ promptCopied ? 'Copied!' : 'Copy prompt' }}
+            </button>
+          </div>
+        </div>
+
         <textarea
           v-model="input"
           placeholder='Paste recipe JSON here...\n{"name":"...","cookTime":"...","description":"...","tags":[...],"ingredients":{...}}'
@@ -176,6 +232,38 @@ const input = ref('')
 const status = ref<'idle' | 'done' | 'error'>('idle')
 const errMsg = ref('')
 const preview = ref<any>(null)
+const showPrompt = ref(false)
+const promptCopied = ref(false)
+
+const aiPromptText = `Convert the following recipe into this exact JSON format. Do NOT include salt, pepper, or olive oil in the ingredients list (we always have those). Output ONLY the JSON, no extra text.
+
+{
+  "name": "Recipe Name",
+  "cookTime": "30 min",
+  "description": "Short description of the dish.",
+  "tags": ["Vegetarian", "Quick"],
+  "emoji": "🥘",
+  "color": "#7ba7a7",
+  "ingredients": [
+    { "name": "Ingredient name", "unit": "g", "perServing": 150 }
+  ]
+}
+
+Rules:
+- "perServing" is the quantity needed for 1 serving
+- Use these units: g, ml, tbsp, tsp, pcs, slices
+- Tags can include: Vegetarian, Vegan, Healthy, Spicy, Quick, High Protein, Comfort Food, Classic
+- Pick an emoji that matches the dish
+- Pick a hex color that matches the dish theme
+- Do NOT include: salt, pepper, olive oil
+
+Here is the recipe:`
+
+function copyPrompt() {
+  navigator.clipboard.writeText(aiPromptText)
+  promptCopied.value = true
+  setTimeout(() => { promptCopied.value = false }, 2000)
+}
 
 function resetState() {
   status.value = 'idle'

@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event)
-  const userId = await ensureUser(event)
+  const userId = await requireAuth(event)
   const body = await readBody(event)
 
   const { name, cookTime, description, tags, emoji, color, ingredients } = body

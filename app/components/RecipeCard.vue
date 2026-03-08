@@ -11,7 +11,9 @@
       position: 'relative',
     }"
   >
-    <FoodVisual :recipe="recipe" />
+    <div style="cursor: pointer" @click="$emit('view', recipe.id)">
+      <FoodVisual :recipe="recipe" />
+    </div>
 
     <button
       v-if="deletable"
@@ -33,7 +35,7 @@
         justifyContent: 'center',
         zIndex: 10,
       }"
-      @click="$emit('delete', recipe.id)"
+      @click="confirmingDelete = true"
     >
       &times;
     </button>
@@ -42,10 +44,16 @@
       <div style="display: flex; flex-wrap: wrap; gap: 4px">
         <TagBadge v-for="t in recipe.tags" :key="t" :label="t" />
       </div>
-      <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; line-height: 1.3">
+      <h3
+        style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; line-height: 1.3; cursor: pointer"
+        @click="$emit('view', recipe.id)"
+      >
         {{ recipe.name }}
       </h3>
-      <p style="font-size: 11.5px; color: #6b6560; line-height: 1.6; flex: 1">
+      <p
+        style="font-size: 11.5px; color: #6b6560; line-height: 1.6; flex: 1; cursor: pointer"
+        @click="$emit('view', recipe.id)"
+      >
         {{ recipe.description }}
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px">
@@ -109,10 +117,68 @@
         </div>
       </div>
     </div>
+
+    <!-- Delete confirmation overlay -->
+    <div
+      v-if="confirmingDelete"
+      style="
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        border-radius: 13px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        z-index: 20;
+        padding: 20px;
+      "
+      @click.stop
+    >
+      <p style="font-size: 13px; color: #fff; text-align: center; line-height: 1.5">
+        Delete <strong>{{ recipe.name }}</strong>?
+      </p>
+      <div style="display: flex; gap: 8px">
+        <button
+          style="
+            padding: 7px 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 12.5px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+          "
+          @click="confirmingDelete = false"
+        >
+          Cancel
+        </button>
+        <button
+          style="
+            padding: 7px 16px;
+            border-radius: 8px;
+            background: #c0392b;
+            border: none;
+            color: #fff;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+          "
+          @click="$emit('delete', recipe.id); confirmingDelete = false"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const confirmingDelete = ref(false)
+
 defineProps<{
   recipe: {
     id: string
@@ -131,5 +197,6 @@ defineEmits<{
   add: [id: string]
   remove: [id: string]
   delete: [id: string]
+  view: [id: string]
 }>()
 </script>

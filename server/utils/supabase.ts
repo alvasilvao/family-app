@@ -3,7 +3,7 @@ import type { H3Event } from 'h3'
 
 /**
  * Create a Supabase client scoped to the user's JWT.
- * This ensures RLS policies apply per-user.
+ * RLS policies use auth.uid() from the token automatically.
  */
 export function serverSupabaseClient(event: H3Event) {
   const config = useRuntimeConfig()
@@ -20,30 +20,13 @@ export function serverSupabaseClient(event: H3Event) {
 }
 
 /**
- * Ensure the authenticated user exists in the users table, return their DB id.
+ * Get the authenticated user's ID (auth.uid()).
  */
-export async function ensureUser(event: H3Event): Promise<string> {
+export async function requireAuth(event: H3Event): Promise<string> {
   const client = serverSupabaseClient(event)
-
-  // Get user from Supabase Auth
-  const { data: { user }, error: authError } = await client.auth.getUser()
-  if (authError || !user) {
+  const { data: { user }, error } = await client.auth.getUser()
+  if (error || !user) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
   }
-
-  // Upsert into users table
-  const { data, error } = await client
-    .from('users')
-    .upsert(
-      { supabase_id: user.id, email: user.email || '' },
-      { onConflict: 'supabase_id' }
-    )
-    .select('id')
-    .single()
-
-  if (error || !data) {
-    throw createError({ statusCode: 500, statusMessage: 'Failed to upsert user' })
-  }
-
-  return data.id
+  return user.id
 }
