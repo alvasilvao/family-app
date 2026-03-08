@@ -1,5 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #__nuxt { height: 100%; }
+html, body, #__nuxt { height: 100%; touch-action: manipulation; }
 body { background: #f7f3ee; font-family: 'DM Sans', sans-serif; color: #1a1a1a; -webkit-tap-highlight-color: transparent; }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: #d4ccc4; border-radius: 4px; }
