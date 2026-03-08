@@ -1,0 +1,14 @@
+export default defineEventHandler(async (event) => {
+  const client = serverSupabaseClient(event)
+  await ensureUser(event)
+  const weekKey = getRouterParam(event, 'weekKey')
+  if (!weekKey) throw createError({ statusCode: 400, statusMessage: 'Missing weekKey' })
+
+  const { data } = await client
+    .from('weekly_plans')
+    .select('basket')
+    .eq('week_key', weekKey)
+    .maybeSingle()
+
+  return { basket: (data?.basket as Record<string, number>) || {} }
+})
