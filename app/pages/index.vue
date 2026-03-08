@@ -267,7 +267,7 @@ definePageMeta({ layout: false })
 import type { RecipeData } from '~/composables/useRecipes'
 
 const { currentWeek, goWeek } = useWeek()
-const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, addRecipe, deleteRecipe } = useRecipes()
+const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, deleteRecipe } = useRecipes()
 const { basket, groceryChecked, totalServings, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket, toggleGroceryItem, clearGroceryChecked } = usePlan()
 const { sections: grocerySections, fetchGrocery } = useGrocery()
 
@@ -301,13 +301,13 @@ const selectedRecipes = computed(() =>
     .filter((x) => x.recipe),
 )
 
-// Fetch recipes on mount
+// Fetch recipes once on mount, scores + plan per week
 onMounted(() => {
-  fetchRecipes()
+  fetchRecipes().then(() => fetchScores(currentWeek.value))
 })
 
-// Fetch plan when week changes
 watch(currentWeek, (weekKey) => {
+  fetchScores(weekKey)
   fetchPlan(weekKey)
 }, { immediate: true })
 

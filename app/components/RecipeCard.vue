@@ -56,6 +56,26 @@
       >
         {{ recipe.description }}
       </p>
+      <div v-if="recipe.stats" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px">
+        <span style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px">
+          {{ recipe.stats.totalCount }}x cooked
+        </span>
+        <span
+          v-if="recipe.stats.lastWeekKey"
+          style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+        >
+          {{ recipe.stats.weeksSinceLast === 0 ? 'this week' : recipe.stats.weeksSinceLast === 1 ? '1 week ago' : `${recipe.stats.weeksSinceLast}w ago` }}
+        </span>
+        <span
+          v-else
+          style="font-size: 10px; color: #b0a89e; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+        >
+          never cooked
+        </span>
+        <span style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px; font-weight: 600">
+          {{ recipe.stats.score }}
+        </span>
+      </div>
       <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px">
         <span
           :style="{
@@ -177,6 +197,8 @@
 </template>
 
 <script setup lang="ts">
+import type { RecipeStats } from '~/composables/useRecipes'
+
 const confirmingDelete = ref(false)
 
 defineProps<{
@@ -188,6 +210,7 @@ defineProps<{
     emoji: string
     color: string
     tags: string[]
+    stats?: RecipeStats
   }
   servings: number
   deletable?: boolean

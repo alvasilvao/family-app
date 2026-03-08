@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import type { RecipeStats } from '~/composables/useRecipes'
+
 defineProps<{
   recipes: Array<{
     id: string
@@ -29,6 +31,7 @@ defineProps<{
     emoji: string
     color: string
     tags: string[]
+    stats?: RecipeStats
   }>
   basket: Record<string, number>
   deletableIds?: Set<string>

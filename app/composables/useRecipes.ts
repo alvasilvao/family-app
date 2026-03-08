@@ -1,5 +1,12 @@
 import { hashId } from '~/utils/week'
 
+export interface RecipeStats {
+  totalCount: number
+  lastWeekKey: string | null
+  weeksSinceLast: number | null
+  score: number
+}
+
 export interface RecipeData {
   id: string
   name: string
@@ -10,6 +17,7 @@ export interface RecipeData {
   color: string
   isBuiltIn: boolean
   ingredients: Array<{ name: string; unit: string; perServing: number }>
+  stats?: RecipeStats
 }
 
 /** Map snake_case DB row to camelCase frontend shape */
@@ -31,6 +39,8 @@ function mapRecipe(row: any): RecipeData {
   }
 }
 
+const DEFAULT_STATS: RecipeStats = { totalCount: 0, lastWeekKey: null, weeksSinceLast: null, score: 8 }
+
 export function useRecipes() {
   const recipes = ref<RecipeData[]>([])
   const loading = ref(true)
@@ -42,8 +52,8 @@ export function useRecipes() {
   function getWeeklyRecipes(weekKey: string): RecipeData[] {
     const builtIn = builtInRecipes.value
     if (builtIn.length <= 4) return builtIn
-    const [yearStr, wStr] = weekKey.split('-W')
-    const seed = parseInt(yearStr) * 100 + parseInt(wStr)
+    const parts = weekKey.split('-W')
+    const seed = parseInt(parts[0]!) * 100 + parseInt(parts[1]!)
     return [...builtIn]
       .sort((a, b) => {
         const ha = Math.sin(seed * 9301 + hashId(a.id) * 49297) * 233280
@@ -65,6 +75,21 @@ export function useRecipes() {
       console.error('Failed to fetch recipes:', err)
     } finally {
       loading.value = false
+    }
+  }
+
+  async function fetchScores(weekKey: string) {
+    try {
+      const token = await getAccessToken()
+      const scores = await $fetch<Record<string, RecipeStats>>(`/api/recipes/scores?week=${weekKey}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      // Merge scores into existing recipes and sort by score
+      recipes.value = [...recipes.value]
+        .map((r) => ({ ...r, stats: scores[r.id] || DEFAULT_STATS }))
+        .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
+    } catch (err) {
+      console.error('Failed to fetch scores:', err)
     }
   }
 
@@ -94,6 +119,7 @@ export function useRecipes() {
     userRecipes,
     loading,
     fetchRecipes,
+    fetchScores,
     addRecipe,
     deleteRecipe,
     getWeeklyRecipes,
