@@ -1,5 +1,6 @@
 export function usePlan() {
   const basket = ref<Record<string, number>>({})
+  const groceryChecked = ref<Record<string, boolean>>({})
   const loadingPlan = ref(false)
   const { getAccessToken } = useAuth()
 
@@ -11,12 +12,14 @@ export function usePlan() {
     loadingPlan.value = true
     try {
       const token = await getAccessToken()
-      const data = await $fetch<{ basket: Record<string, number> }>(`/api/plans/${weekKey}`, {
+      const data = await $fetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       basket.value = data.basket || {}
+      groceryChecked.value = data.groceryChecked || {}
     } catch {
       basket.value = {}
+      groceryChecked.value = {}
     } finally {
       loadingPlan.value = false
     }
@@ -30,7 +33,7 @@ export function usePlan() {
         await $fetch(`/api/plans/${currentWeekKey}`, {
           method: 'PUT',
           headers: { Authorization: `Bearer ${token}` },
-          body: { basket: basket.value },
+          body: { basket: basket.value, groceryChecked: groceryChecked.value },
         })
       } catch (err) {
         console.error('Failed to save plan:', err)
@@ -55,17 +58,30 @@ export function usePlan() {
     debouncedSave()
   }
 
+  function toggleGroceryItem(key: string) {
+    groceryChecked.value = { ...groceryChecked.value, [key]: !groceryChecked.value[key] }
+    debouncedSave()
+  }
+
+  function clearGroceryChecked() {
+    groceryChecked.value = {}
+    debouncedSave()
+  }
+
   const totalServings = computed(() =>
     Object.values(basket.value).reduce((a, b) => a + b, 0),
   )
 
   return {
     basket,
+    groceryChecked,
     loadingPlan,
     fetchPlan,
     add,
     remove,
     removeRecipeFromBasket,
+    toggleGroceryItem,
+    clearGroceryChecked,
     totalServings,
   }
 }

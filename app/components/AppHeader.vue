@@ -1,62 +1,74 @@
 <template>
-  <div style="background: #2d6a4f; padding: 18px 24px 16px; flex-shrink: 0">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+  <div style="background: #2d6a4f; flex-shrink: 0">
+    <!-- Top row: week nav + add recipe -->
+    <div style="padding: 18px 24px 12px; display: flex; align-items: center; justify-content: center; position: relative; gap: 10px">
       <WeekNavigator :week-key="weekKey" @prev="$emit('prevWeek')" @next="$emit('nextWeek')" />
 
-      <div style="display: flex; gap: 8px">
-        <button
-          :style="{
-            padding: '8px 15px',
-            borderRadius: '9px',
-            background: 'rgba(255,255,255,.15)',
-            border: '1.5px solid rgba(255,255,255,.3)',
-            color: '#fff',
-            fontSize: '12px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontFamily: '\'DM Sans\', sans-serif',
-            transition: 'background .2s',
-          }"
-          @click="$emit('addRecipe')"
-          @mouseenter="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.25)'"
-          @mouseleave="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.15)'"
+      <button
+        :style="{
+          position: 'absolute',
+          right: '24px',
+          width: '36px',
+          height: '36px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,.15)',
+          border: '1.5px solid rgba(255,255,255,.3)',
+          color: '#fff',
+          fontSize: '20px',
+          fontWeight: 300,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background .2s',
+        }"
+        @click="$emit('addRecipe')"
+        @mouseenter="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.25)'"
+        @mouseleave="($event.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.15)'"
+      >
+        +
+      </button>
+    </div>
+
+    <!-- Tab bar -->
+    <div style="display: flex; padding: 0 20px; gap: 4px">
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        :style="{
+          flex: 1,
+          padding: '10px 0 11px',
+          background: activeTab === tab.id ? 'rgba(255,255,255,.15)' : 'transparent',
+          border: 'none',
+          borderRadius: '10px 10px 0 0',
+          color: activeTab === tab.id ? '#fff' : 'rgba(255,255,255,.55)',
+          fontSize: '12px',
+          fontWeight: activeTab === tab.id ? 700 : 500,
+          cursor: 'pointer',
+          fontFamily: '\'DM Sans\', sans-serif',
+          transition: 'all .2s',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '5px',
+        }"
+        @click="$emit('changeTab', tab.id)"
+      >
+        <span>{{ tab.label }}</span>
+        <span
+          v-if="tab.id === 'plan' && totalServings > 0"
+          style="
+            background: #fff;
+            color: #2d6a4f;
+            border-radius: 999px;
+            font-size: 10px;
+            padding: 1px 6px;
+            font-weight: 700;
+          "
         >
-          + Add Recipe
-        </button>
-        <button
-          :disabled="totalServings === 0"
-          :style="{
-            padding: '8px 15px',
-            borderRadius: '9px',
-            background: totalServings > 0 ? '#fff' : 'rgba(255,255,255,.1)',
-            border: 'none',
-            color: totalServings > 0 ? '#2d6a4f' : 'rgba(255,255,255,.4)',
-            fontSize: '12px',
-            fontWeight: 700,
-            cursor: totalServings > 0 ? 'pointer' : 'default',
-            fontFamily: '\'DM Sans\', sans-serif',
-            transition: 'all .2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-          }"
-          @click="$emit('showGrocery')"
-        >
-          <span>&#x1f6d2; Grocery List</span>
-          <span
-            v-if="totalServings > 0"
-            style="
-              background: #2d6a4f;
-              color: #fff;
-              border-radius: 999px;
-              font-size: 10px;
-              padding: 1px 6px;
-            "
-          >
-            {{ totalServings }}
-          </span>
-        </button>
-      </div>
+          {{ totalServings }}
+        </span>
+      </button>
     </div>
   </div>
 </template>
@@ -65,12 +77,19 @@
 defineProps<{
   weekKey: string
   totalServings: number
+  activeTab: string
 }>()
 
 defineEmits<{
   prevWeek: []
   nextWeek: []
   addRecipe: []
-  showGrocery: []
+  changeTab: [tab: string]
 }>()
+
+const tabs = [
+  { id: 'recipes', label: 'Recipes' },
+  { id: 'plan', label: 'Weekly Plan' },
+  { id: 'grocery', label: 'Grocery List' },
+]
 </script>

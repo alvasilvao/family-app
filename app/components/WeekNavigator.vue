@@ -3,13 +3,13 @@
     <button
       class="week-btn"
       :style="{
-        width: '32px',
-        height: '32px',
+        width: '36px',
+        height: '36px',
         borderRadius: '50%',
         background: 'rgba(255,255,255,.15)',
         border: 'none',
         color: '#fff',
-        fontSize: '16px',
+        fontSize: '18px',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -20,33 +20,33 @@
     >
       &lsaquo;
     </button>
-    <div style="text-align: center; min-width: 170px">
+    <div style="text-align: center; min-width: 190px">
+      <p style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2">
+        {{ label }}
+      </p>
       <p
         style="
-          font-size: 10px;
-          letter-spacing: 2.5px;
+          font-size: 11px;
+          letter-spacing: 2px;
           color: #95d5b2;
           text-transform: uppercase;
-          margin-bottom: 2px;
+          margin-top: 3px;
         "
       >
         Week {{ weekInfo.week }} &middot; {{ weekInfo.year }}
         {{ isNextWeek ? '&middot; Next week' : '' }}
       </p>
-      <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #fff; line-height: 1.2">
-        {{ label }}
-      </p>
     </div>
     <button
       class="week-btn"
       :style="{
-        width: '32px',
-        height: '32px',
+        width: '36px',
+        height: '36px',
         borderRadius: '50%',
         background: 'rgba(255,255,255,.15)',
         border: 'none',
         color: '#fff',
-        fontSize: '16px',
+        fontSize: '18px',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',

@@ -6,16 +6,17 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const basket = body.basket || {}
+  const groceryChecked = body.groceryChecked || {}
 
   const { data, error } = await client
     .from('weekly_plans')
     .upsert(
-      { user_id: userId, week_key: weekKey, basket },
+      { user_id: userId, week_key: weekKey, basket, grocery_checked: groceryChecked },
       { onConflict: 'user_id,week_key' }
     )
-    .select('basket')
+    .select('basket, grocery_checked')
     .single()
 
   if (error) throw createError({ statusCode: 500, statusMessage: error.message })
-  return { basket: data.basket }
+  return { basket: data.basket, groceryChecked: data.grocery_checked }
 })
