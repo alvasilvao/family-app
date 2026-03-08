@@ -21,20 +21,18 @@
       &lsaquo;
     </button>
     <div style="text-align: center; min-width: 190px">
-      <p style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2">
-        {{ label }}
-      </p>
       <p
         style="
-          font-size: 11px;
-          letter-spacing: 2px;
+          font-size: 12px;
           color: #95d5b2;
-          text-transform: uppercase;
-          margin-top: 3px;
+          margin-bottom: 4px;
+          letter-spacing: 0.5px;
         "
       >
-        Week {{ weekInfo.week }} &middot; {{ weekInfo.year }}
-        {{ isNextWeek ? '&middot; Next week' : '' }}
+        {{ label }}{{ isNextWeek ? ' · Next week' : '' }}
+      </p>
+      <p style="font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: #fff; line-height: 1.1">
+        Week {{ weekInfo.week }}
       </p>
     </div>
     <button

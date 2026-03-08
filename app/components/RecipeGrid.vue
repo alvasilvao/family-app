@@ -9,7 +9,7 @@
       <RecipeCard
         :recipe="recipe"
         :servings="basket[recipe.id] || 0"
-        :deletable="deletable"
+        :deletable="deletableIds ? deletableIds.has(recipe.id) : false"
         @add="$emit('add', $event)"
         @remove="$emit('remove', $event)"
         @delete="$emit('delete', $event)"
@@ -31,7 +31,7 @@ defineProps<{
     tags: string[]
   }>
   basket: Record<string, number>
-  deletable?: boolean
+  deletableIds?: Set<string>
 }>()
 
 defineEmits<{

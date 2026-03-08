@@ -22,63 +22,10 @@
 
     <!-- Tab: Recipes -->
     <div v-else-if="activeTab === 'recipes'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
-      <!-- Built-in recipes -->
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px">
-        <h2 style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520">
-          Recipes
-        </h2>
-        <div style="flex: 1; height: 1px; background: #e8e2da" />
-      </div>
-
-      <div style="margin-bottom: 36px">
-        <RecipeGrid
-          :recipes="builtInRecipes"
-          :basket="basket"
-          @add="planAdd"
-          @remove="planRemove"
-          @view="viewRecipe"
-        />
-      </div>
-
-      <!-- My Recipes -->
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px">
-        <h2 style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520">
-          My Recipes
-        </h2>
-        <span
-          v-if="userRecipes.length > 0"
-          style="
-            background: #2d6a4f;
-            color: #fff;
-            border-radius: 999px;
-            font-size: 10px;
-            padding: 1px 7px;
-            font-weight: 700;
-          "
-        >
-          {{ userRecipes.length }}
-        </span>
-        <div style="flex: 1; height: 1px; background: #e8e2da" />
-      </div>
-
-      <div v-if="userRecipes.length === 0">
-        <div
-          style="
-            border: 2px dashed #ddd6ce;
-            border-radius: 14px;
-            padding: 28px 20px;
-            text-align: center;
-          "
-        >
-          <p style="font-size: 22px; margin-bottom: 8px">&#x1f4cb;</p>
-          <p style="font-size: 13px; color: #9b9590">Use the <strong>+ Add Recipe</strong> button on the top right to add your first recipe</p>
-        </div>
-      </div>
       <RecipeGrid
-        v-else
-        :recipes="userRecipes"
+        :recipes="recipes"
         :basket="basket"
-        :deletable="true"
+        :deletable-ids="userRecipeIds"
         @add="planAdd"
         @remove="planRemove"
         @delete="handleDelete"
@@ -99,25 +46,6 @@
       </div>
 
       <div v-else>
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px">
-          <h2 style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520">
-            This week's plan
-          </h2>
-          <span
-            style="
-              background: #2d6a4f;
-              color: #fff;
-              border-radius: 999px;
-              font-size: 10px;
-              padding: 1px 7px;
-              font-weight: 700;
-            "
-          >
-            {{ totalServings }} serving{{ totalServings > 1 ? 's' : '' }}
-          </span>
-          <div style="flex: 1; height: 1px; background: #e8e2da" />
-        </div>
-
         <div style="display: flex; flex-direction: column; gap: 10px">
           <div
             v-for="sr in selectedRecipes"
@@ -354,6 +282,7 @@ const activeTab = computed({
 const showAddRecipe = ref(false)
 const detailRecipe = ref<RecipeData | null>(null)
 
+const userRecipeIds = computed(() => new Set(userRecipes.value.map((r) => r.id)))
 const groceryTotal = computed(() => grocerySections.value.reduce((sum, s) => sum + s.items.length, 0))
 const checkedCount = computed(() => Object.values(groceryChecked.value).filter(Boolean).length)
 

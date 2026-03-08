@@ -69,6 +69,6 @@ withDefaults(
     recipe: { emoji: string; color: string; cookTime: string }
     size?: number
   }>(),
-  { size: 148 },
+  { size: 100 },
 )
 </script>
