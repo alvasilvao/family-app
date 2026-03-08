@@ -11,8 +11,7 @@ interface IngredientItem { name: string; unit: string; qty: number }
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event)
   await requireAuth(event)
-  const weekKey = getRouterParam(event, 'weekKey')
-  if (!weekKey) throw createError({ statusCode: 400, statusMessage: 'Missing weekKey' })
+  const weekKey = validateWeekKey(getRouterParam(event, 'weekKey'))
 
   // Get plan
   const { data: plan } = await client

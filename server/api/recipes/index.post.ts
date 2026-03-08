@@ -3,10 +3,7 @@ export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const body = await readBody(event)
 
-  const { name, cookTime, description, tags, emoji, color, ingredients } = body
-  if (!name || !ingredients || !Array.isArray(ingredients)) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid recipe data' })
-  }
+  const { name, cookTime, description, tags, emoji, color, ingredients } = validateRecipeBody(body)
 
   // Insert recipe
   const { data: recipe, error: recipeErr } = await client
