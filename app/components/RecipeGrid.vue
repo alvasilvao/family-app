@@ -18,19 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import type { RecipeStats } from '~/composables/useRecipes'
+import type { RecipeData } from '~/composables/useRecipes'
 
 defineProps<{
-  recipes: Array<{
-    id: string
-    name: string
-    description: string
-    cookTime: string
-    emoji: string
-    color: string
-    tags: string[]
-    stats?: RecipeStats
-  }>
+  recipes: RecipeData[]
   basket: Record<string, number>
 }>()
 

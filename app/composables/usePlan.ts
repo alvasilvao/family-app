@@ -1,7 +1,7 @@
+const basket = ref<Record<string, number>>({})
+const groceryChecked = ref<Record<string, boolean>>({})
+
 export function usePlan() {
-  const basket = ref<Record<string, number>>({})
-  const groceryChecked = ref<Record<string, boolean>>({})
-  const loadingPlan = ref(false)
   const { getAccessToken } = useAuth()
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
@@ -9,7 +9,6 @@ export function usePlan() {
 
   async function fetchPlan(weekKey: string) {
     currentWeekKey = weekKey
-    loadingPlan.value = true
     try {
       const token = await getAccessToken()
       const data = await $fetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`, {
@@ -21,8 +20,6 @@ export function usePlan() {
       console.error('Failed to fetch plan:', err)
       basket.value = {}
       groceryChecked.value = {}
-    } finally {
-      loadingPlan.value = false
     }
   }
 
@@ -48,7 +45,14 @@ export function usePlan() {
   }
 
   function remove(id: string) {
-    basket.value = { ...basket.value, [id]: Math.max(0, (basket.value[id] || 0) - 1) }
+    const count = (basket.value[id] || 0) - 1
+    if (count <= 0) {
+      const newBasket = { ...basket.value }
+      delete newBasket[id]
+      basket.value = newBasket
+    } else {
+      basket.value = { ...basket.value, [id]: count }
+    }
     debouncedSave()
   }
 

@@ -285,7 +285,6 @@
             Cancel
           </button>
           <button
-            :disabled="saving"
             style="
               flex: 1;
               padding: 10px;
@@ -300,7 +299,7 @@
             "
             @click="saveEdit"
           >
-            {{ saving ? 'Saving...' : 'Save' }}
+            Save
           </button>
         </div>
 
@@ -386,7 +385,6 @@ const emit = defineEmits<{
 
 const confirmingDelete = ref(false)
 const editing = ref(false)
-const saving = ref(false)
 const editForm = ref<Omit<RecipeData, 'id' | 'isBuiltIn'>>({
   name: '',
   cookTime: '',
@@ -406,8 +404,7 @@ const instructionSteps = computed(() =>
 )
 
 function formatQuantity(val: number): string {
-  if (Number.isInteger(val)) return String(val)
-  return val % 1 === 0 ? String(val) : val.toFixed(1).replace(/\.0$/, '')
+  return Number.isInteger(val) ? String(val) : val.toFixed(1)
 }
 
 function startEditing() {
@@ -429,13 +426,8 @@ function cancelEditing() {
   editing.value = false
 }
 
-async function saveEdit() {
-  saving.value = true
-  try {
-    emit('update', { ...editForm.value, id: props.recipe.id, isBuiltIn: false } as RecipeData)
-  } finally {
-    saving.value = false
-    editing.value = false
-  }
+function saveEdit() {
+  emit('update', { ...editForm.value, id: props.recipe.id, isBuiltIn: false } as RecipeData)
+  editing.value = false
 }
 </script>

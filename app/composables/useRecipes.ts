@@ -43,9 +43,10 @@ function mapRecipe(row: any): RecipeData {
 
 const DEFAULT_STATS: RecipeStats = { totalCount: 0, lastWeekKey: null, weeksSinceLast: null, score: 8 }
 
+const recipes = ref<RecipeData[]>([])
+const loading = ref(true)
+
 export function useRecipes() {
-  const recipes = ref<RecipeData[]>([])
-  const loading = ref(true)
   const { getAccessToken } = useAuth()
 
   const builtInRecipes = computed(() => recipes.value.filter((r) => r.isBuiltIn))

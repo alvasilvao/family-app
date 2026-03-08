@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100dvh; background: #f7f3ee">
     <!-- Modals -->
-    <AddRecipeModal v-if="showAddRecipe" @close="showAddRecipe = false" @import="handleImport" />
+    <AddRecipeModal v-if="showAddRecipe" @close="showAddRecipe = false" @import="addRecipe" />
     <RecipeDetailModal
       v-if="detailRecipe"
       :recipe="detailRecipe"
@@ -307,7 +307,7 @@ const { currentWeek, goWeek } = useWeek()
 function goToday() {
   currentWeek.value = currentWeekKey()
 }
-const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 const { basket, groceryChecked, totalServings, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket, toggleGroceryItem, clearGroceryChecked } = usePlan()
 const { sections: grocerySections, fetchGrocery } = useGrocery()
 
@@ -357,10 +357,6 @@ watch([activeTab, basket], async ([tab]) => {
     await fetchGrocery(currentWeek.value)
   }
 }, { deep: true })
-
-async function handleImport(recipeData: any) {
-  await addRecipe(recipeData)
-}
 
 async function handleUpdate(recipe: RecipeData) {
   const updated = await updateRecipe(recipe.id, recipe)

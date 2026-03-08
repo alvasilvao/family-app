@@ -117,19 +117,10 @@
 </template>
 
 <script setup lang="ts">
-import type { RecipeStats } from '~/composables/useRecipes'
+import type { RecipeData } from '~/composables/useRecipes'
 
 defineProps<{
-  recipe: {
-    id: string
-    name: string
-    description: string
-    cookTime: string
-    emoji: string
-    color: string
-    tags: string[]
-    stats?: RecipeStats
-  }
+  recipe: RecipeData
   servings: number
 }>()
 
