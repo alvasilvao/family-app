@@ -1,5 +1,3 @@
-import { hashId } from '~/utils/week'
-
 export interface RecipeStats {
   totalCount: number
   lastWeekKey: string | null
@@ -52,20 +50,6 @@ export function useRecipes() {
 
   const builtInRecipes = computed(() => recipes.value.filter((r) => r.isBuiltIn))
   const userRecipes = computed(() => recipes.value.filter((r) => !r.isBuiltIn))
-
-  function getWeeklyRecipes(weekKey: string): RecipeData[] {
-    const builtIn = builtInRecipes.value
-    if (builtIn.length <= 4) return builtIn
-    const parts = weekKey.split('-W')
-    const seed = parseInt(parts[0]!) * 100 + parseInt(parts[1]!)
-    return [...builtIn]
-      .sort((a, b) => {
-        const ha = Math.sin(seed * 9301 + hashId(a.id) * 49297) * 233280
-        const hb = Math.sin(seed * 9301 + hashId(b.id) * 49297) * 233280
-        return (ha - Math.floor(ha)) - (hb - Math.floor(hb))
-      })
-      .slice(0, 4)
-  }
 
   async function fetchRecipes() {
     loading.value = true
@@ -139,6 +123,5 @@ export function useRecipes() {
     addRecipe,
     updateRecipe,
     deleteRecipe,
-    getWeeklyRecipes,
   }
 }

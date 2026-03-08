@@ -13,7 +13,8 @@ export function useGrocery() {
         headers: { Authorization: `Bearer ${token}` },
       })
       sections.value = data.sections
-    } catch {
+    } catch (err) {
+      console.error('Failed to fetch grocery:', err)
       sections.value = []
     } finally {
       loading.value = false

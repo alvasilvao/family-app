@@ -63,3 +63,25 @@ export function validateRecipeBody(body: any) {
 
   return { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients }
 }
+
+export function buildRecipeRow(body: ReturnType<typeof validateRecipeBody>) {
+  return {
+    name: body.name,
+    cook_time: body.cookTime || '',
+    description: body.description || '',
+    tags: body.tags || [],
+    emoji: body.emoji || '🥘',
+    color: body.color || '#7ba7a7',
+    source_url: body.sourceUrl || '',
+    instructions: body.instructions || '',
+  }
+}
+
+export function buildIngredientRows(ingredients: Array<{ name: string; unit: string; perServing: number }>, recipeId: string) {
+  return ingredients.map((ing) => ({
+    name: ing.name,
+    unit: ing.unit,
+    per_serving: ing.perServing,
+    recipe_id: recipeId,
+  }))
+}

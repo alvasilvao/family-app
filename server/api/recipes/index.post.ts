@@ -3,22 +3,12 @@ export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const body = await readBody(event)
 
-  const { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients } = validateRecipeBody(body)
+  const validated = validateRecipeBody(body)
 
   // Insert recipe
   const { data: recipe, error: recipeErr } = await client
     .from('recipes')
-    .insert({
-      name,
-      cook_time: cookTime || '',
-      description: description || '',
-      tags: tags || [],
-      emoji: emoji || '🥘',
-      color: color || '#7ba7a7',
-      source_url: sourceUrl || '',
-      instructions: instructions || '',
-      user_id: userId,
-    })
+    .insert({ ...buildRecipeRow(validated), user_id: userId })
     .select()
     .single()
 
@@ -27,12 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Insert ingredients
-  const ingredientRows = ingredients.map((ing: { name: string; unit: string; perServing: number }) => ({
-    name: ing.name,
-    unit: ing.unit,
-    per_serving: ing.perServing,
-    recipe_id: recipe.id,
-  }))
+  const ingredientRows = buildIngredientRows(validated.ingredients, recipe.id)
 
   const { error: ingErr } = await client.from('ingredients').insert(ingredientRows)
   if (ingErr) {

@@ -17,7 +17,8 @@ export function usePlan() {
       })
       basket.value = data.basket || {}
       groceryChecked.value = data.groceryChecked || {}
-    } catch {
+    } catch (err) {
+      console.error('Failed to fetch plan:', err)
       basket.value = {}
       groceryChecked.value = {}
     } finally {
@@ -75,7 +76,6 @@ export function usePlan() {
   return {
     basket,
     groceryChecked,
-    loadingPlan,
     fetchPlan,
     add,
     remove,
