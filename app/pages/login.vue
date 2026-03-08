@@ -22,7 +22,7 @@
     >
       <div style="font-size: 48px; margin-bottom: 16px">&#x1f96b;</div>
       <h1 style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; margin-bottom: 8px">
-        Meal Kit
+        Food Planner
       </h1>
       <p style="color: #9b9590; font-size: 14px; margin-bottom: 28px">
         Plan your weekly meals and generate grocery lists
