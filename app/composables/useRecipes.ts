@@ -16,6 +16,8 @@ export interface RecipeData {
   emoji: string
   color: string
   isBuiltIn: boolean
+  sourceUrl: string
+  instructions: string
   ingredients: Array<{ name: string; unit: string; perServing: number }>
   stats?: RecipeStats
 }
@@ -31,6 +33,8 @@ function mapRecipe(row: any): RecipeData {
     emoji: row.emoji,
     color: row.color,
     isBuiltIn: row.is_built_in,
+    sourceUrl: row.source_url || '',
+    instructions: row.instructions || '',
     ingredients: (row.ingredients || []).map((ing: any) => ({
       name: ing.name,
       unit: ing.unit,
@@ -104,6 +108,18 @@ export function useRecipes() {
     return mapRecipe(created)
   }
 
+  async function updateRecipe(id: string, recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
+    const token = await getAccessToken()
+    const updated = await $fetch<any>(`/api/recipes/${id}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+      body: recipe,
+    })
+    const mapped = mapRecipe(updated)
+    recipes.value = recipes.value.map((r) => (r.id === id ? mapped : r))
+    return mapped
+  }
+
   async function deleteRecipe(id: string) {
     const token = await getAccessToken()
     await $fetch(`/api/recipes/${id}`, {
@@ -121,6 +137,7 @@ export function useRecipes() {
     fetchRecipes,
     fetchScores,
     addRecipe,
+    updateRecipe,
     deleteRecipe,
     getWeeklyRecipes,
   }

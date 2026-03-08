@@ -2,7 +2,15 @@
   <div style="display: flex; flex-direction: column; height: 100dvh; background: #f7f3ee">
     <!-- Modals -->
     <AddRecipeModal v-if="showAddRecipe" @close="showAddRecipe = false" @import="handleImport" />
-    <RecipeDetailModal v-if="detailRecipe" :recipe="detailRecipe" @close="detailRecipe = null" />
+    <RecipeDetailModal
+      v-if="detailRecipe"
+      :recipe="detailRecipe"
+      :deletable="userRecipeIds.has(detailRecipe.id)"
+      :editable="userRecipeIds.has(detailRecipe.id)"
+      @close="detailRecipe = null"
+      @delete="handleDelete($event); detailRecipe = null"
+      @update="handleUpdate($event)"
+    />
 
     <!-- Header -->
     <AppHeader
@@ -25,10 +33,8 @@
       <RecipeGrid
         :recipes="recipes"
         :basket="basket"
-        :deletable-ids="userRecipeIds"
         @add="planAdd"
         @remove="planRemove"
-        @delete="handleDelete"
         @view="viewRecipe"
       />
     </div>
@@ -71,11 +77,13 @@
                 justifyContent: 'center',
                 fontSize: '24px',
                 flexShrink: 0,
+                cursor: 'pointer',
               }"
+              @click="viewRecipe(sr.recipe.id)"
             >
               {{ sr.recipe.emoji }}
             </div>
-            <div style="flex: 1; min-width: 0">
+            <div style="flex: 1; min-width: 0; cursor: pointer" @click="viewRecipe(sr.recipe.id)">
               <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
                 {{ sr.recipe.name }}
               </p>
@@ -267,7 +275,7 @@ definePageMeta({ layout: false })
 import type { RecipeData } from '~/composables/useRecipes'
 
 const { currentWeek, goWeek } = useWeek()
-const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, deleteRecipe } = useRecipes()
+const { recipes, builtInRecipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 const { basket, groceryChecked, totalServings, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket, toggleGroceryItem, clearGroceryChecked } = usePlan()
 const { sections: grocerySections, fetchGrocery } = useGrocery()
 
@@ -320,6 +328,11 @@ watch([activeTab, basket], async ([tab]) => {
 
 async function handleImport(recipeData: any) {
   await addRecipe(recipeData)
+}
+
+async function handleUpdate(recipe: RecipeData) {
+  const updated = await updateRecipe(recipe.id, recipe)
+  detailRecipe.value = updated
 }
 
 async function handleDelete(id: string) {
