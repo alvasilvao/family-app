@@ -60,17 +60,14 @@
 
     <!-- Tab: Plan -->
     <div v-else-if="activeTab === 'plan'" v-touch-swipe="onSwipe" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
-      <div v-if="selectedRecipes.length === 0" style="text-align: center; padding: 60px 20px">
-        <p style="font-size: 32px; margin-bottom: 12px">&#x1f372;</p>
-        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
-          No meals planned yet
-        </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5">
-          Go to <NuxtLink to="/recipes" style="color: #2d6a4f; font-weight: 600">Recipes</NuxtLink> and add servings to plan your week.
-        </p>
-      </div>
-
-      <div v-else>
+      <!-- Selected recipes summary -->
+      <div v-if="selectedRecipes.length > 0" style="margin-bottom: 20px">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+          <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+            This week's meals
+          </span>
+          <span style="font-size: 12px; color: #2d6a4f; font-weight: 600">{{ totalServings }} servings</span>
+        </div>
         <div style="display: flex; flex-direction: column; gap: 10px">
           <div
             v-for="sr in selectedRecipes"
@@ -119,6 +116,23 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- All recipes to browse and add -->
+      <div>
+        <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 12px">
+          <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+            Add recipes
+          </span>
+          <div style="flex: 1; height: 1px; background: #e8e2da" />
+        </div>
+        <RecipeGrid
+          :recipes="recipes"
+          :basket="basket"
+          @add="planAdd"
+          @remove="planRemove"
+          @view="viewRecipe"
+        />
       </div>
     </div>
 
