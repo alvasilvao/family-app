@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: column; min-height: 100dvh; background: #f7f3ee">
     <!-- Header -->
-    <div class="safe-top" style="background: #2d6a4f; padding: 40px 24px 36px; text-align: center; position: relative">
+    <div style="background: #2d6a4f; padding: calc(40px + env(safe-area-inset-top, 0px)) 24px 36px; text-align: center; position: relative">
       <h1 style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 4px">
         Food Planner
       </h1>
