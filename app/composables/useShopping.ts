@@ -8,6 +8,7 @@ export interface ShoppingItem {
   plan_id?: string
   plan_name?: string
   ingredient_key?: string
+  recipes?: Array<{ id: string; emoji: string; name: string }>
 }
 
 const items = ref<ShoppingItem[]>([])

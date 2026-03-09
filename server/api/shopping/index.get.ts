@@ -41,11 +41,25 @@ export default defineEventHandler(async (event) => {
 
   if (allRecipeIds.size === 0) return manualItems
 
-  // Batch-fetch ingredients for all recipes
-  const { data: ingredients, error: ingError } = await client
-    .from('ingredients')
-    .select('name, unit, per_serving, recipe_id')
-    .in('recipe_id', Array.from(allRecipeIds))
+  // Batch-fetch ingredients and recipe info for all recipes
+  const [ingResult, recipesResult] = await Promise.all([
+    client
+      .from('ingredients')
+      .select('name, unit, per_serving, recipe_id')
+      .in('recipe_id', Array.from(allRecipeIds)),
+    client
+      .from('recipes')
+      .select('id, emoji, name')
+      .in('id', Array.from(allRecipeIds)),
+  ])
+
+  const { data: ingredients, error: ingError } = ingResult
+  if (recipesResult.error) throw createError({ statusCode: 500, statusMessage: recipesResult.error.message })
+
+  const recipeMap = new Map<string, { id: string; emoji: string; name: string }>()
+  for (const r of recipesResult.data || []) {
+    recipeMap.set(r.id, { id: r.id, emoji: r.emoji, name: r.name })
+  }
 
   if (ingError) throw createError({ statusCode: 500, statusMessage: ingError.message })
   if (!ingredients || ingredients.length === 0) return manualItems
@@ -57,14 +71,17 @@ export default defineEventHandler(async (event) => {
     const basket = (plan.basket || {}) as Record<string, number>
     const boughtIngredients = (plan.bought_ingredients || {}) as Record<string, string>
 
-    // Aggregate quantities for this plan
+    // Aggregate quantities for this plan and track contributing recipes
     const totals: Record<string, number> = {}
+    const recipesByKey: Record<string, Set<string>> = {}
     for (const ing of ingredients) {
       const servings = basket[ing.recipe_id] || 0
       if (!servings) continue
       const qty = ing.per_serving * servings
       const key = `${ing.name}||${ing.unit}`
       totals[key] = (totals[key] || 0) + qty
+      if (!recipesByKey[key]) recipesByKey[key] = new Set()
+      recipesByKey[key].add(ing.recipe_id)
     }
 
     for (const [key, qty] of Object.entries(totals)) {
@@ -75,6 +92,10 @@ export default defineEventHandler(async (event) => {
       // Apply same bought/1h filter
       if (boughtAt && boughtAt < oneHourAgo) continue
 
+      const itemRecipes = Array.from(recipesByKey[key] || [])
+        .map((rid) => recipeMap.get(rid))
+        .filter(Boolean)
+
       planItems.push({
         id: `plan:${plan.id}:${key}`,
         name: `${name} - ${rounded} ${unit}`,
@@ -83,6 +104,7 @@ export default defineEventHandler(async (event) => {
         plan_name: plan.name,
         ingredient_key: key,
         bought_at: boughtAt,
+        recipes: itemRecipes,
       })
     }
   }
