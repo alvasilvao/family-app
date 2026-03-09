@@ -1,15 +1,3 @@
-const WEEK_KEY_RE = /^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$/
-
-export function validateWeekKey(weekKey: string | undefined): string {
-  if (!weekKey) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing weekKey' })
-  }
-  if (!WEEK_KEY_RE.test(weekKey)) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid weekKey format' })
-  }
-  return weekKey
-}
-
 export function validateString(value: unknown, field: string, maxLen = 2000): string {
   if (typeof value !== 'string') return ''
   if (value.length > maxLen) {

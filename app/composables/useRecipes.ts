@@ -1,6 +1,6 @@
 export interface RecipeStats {
   totalCount: number
-  lastWeekKey: string | null
+  lastUsedDate: string | null
   weeksSinceLast: number | null
   score: number
 }
@@ -41,7 +41,7 @@ function mapRecipe(row: any): RecipeData {
   }
 }
 
-const DEFAULT_STATS: RecipeStats = { totalCount: 0, lastWeekKey: null, weeksSinceLast: null, score: 8 }
+const DEFAULT_STATS: RecipeStats = { totalCount: 0, lastUsedDate: null, weeksSinceLast: null, score: 8 }
 
 const recipes = ref<RecipeData[]>([])
 const loading = ref(true)
@@ -63,9 +63,10 @@ export function useRecipes() {
     }
   }
 
-  async function fetchScores(weekKey: string) {
+  async function fetchScores(refDate?: string) {
     try {
-      const scores = await authFetch<Record<string, RecipeStats>>(`/api/recipes/scores?week=${weekKey}`)
+      const param = refDate ? `?ref_date=${refDate}` : ''
+      const scores = await authFetch<Record<string, RecipeStats>>(`/api/recipes/scores${param}`)
       // Merge scores into existing recipes and sort by score
       recipes.value = [...recipes.value]
         .map((r) => ({ ...r, stats: scores[r.id] || DEFAULT_STATS }))

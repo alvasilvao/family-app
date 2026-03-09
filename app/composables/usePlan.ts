@@ -1,33 +1,35 @@
+import type { MealPlan } from './usePlans'
+
+const plan = ref<MealPlan | null>(null)
 const basket = ref<Record<string, number>>({})
-const groceryChecked = ref<Record<string, boolean>>({})
 
 export function usePlan() {
   const { authFetch } = useAuth()
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
-  let activeWeekKey = ''
+  let activePlanId = ''
 
-  async function fetchPlan(weekKey: string) {
-    activeWeekKey = weekKey
+  async function fetchPlan(id: string) {
+    activePlanId = id
     try {
-      const data = await authFetch<{ basket: Record<string, number>; groceryChecked: Record<string, boolean> }>(`/api/plans/${weekKey}`)
-      basket.value = data.basket || {}
-      groceryChecked.value = data.groceryChecked || {}
+      const data = await authFetch<MealPlan>(`/api/plans/${id}`)
+      plan.value = data
+      basket.value = (data.basket as Record<string, number>) || {}
     } catch (err) {
       console.error('Failed to fetch plan:', err)
+      plan.value = null
       basket.value = {}
-      groceryChecked.value = {}
     }
   }
 
   function debouncedSave() {
     if (saveTimeout) clearTimeout(saveTimeout)
-    const weekKey = activeWeekKey
+    const planId = activePlanId
     saveTimeout = setTimeout(async () => {
       try {
-        await authFetch(`/api/plans/${weekKey}`, {
+        await authFetch(`/api/plans/${planId}`, {
           method: 'PUT',
-          body: { basket: basket.value, groceryChecked: groceryChecked.value },
+          body: { basket: basket.value },
         })
       } catch (err) {
         console.error('Failed to save plan:', err)
@@ -59,14 +61,16 @@ export function usePlan() {
     debouncedSave()
   }
 
-  function toggleGroceryItem(key: string) {
-    groceryChecked.value = { ...groceryChecked.value, [key]: !groceryChecked.value[key] }
-    debouncedSave()
+  async function closePlan(id: string): Promise<MealPlan> {
+    const data = await authFetch<MealPlan>(`/api/plans/${id}/close`, { method: 'POST' })
+    plan.value = data
+    return data
   }
 
-  function clearGroceryChecked() {
-    groceryChecked.value = {}
-    debouncedSave()
+  async function reopenPlan(id: string): Promise<MealPlan> {
+    const data = await authFetch<MealPlan>(`/api/plans/${id}/reopen`, { method: 'POST' })
+    plan.value = data
+    return data
   }
 
   const totalServings = computed(() =>
@@ -74,14 +78,14 @@ export function usePlan() {
   )
 
   return {
+    plan,
     basket,
-    groceryChecked,
     fetchPlan,
     add,
     remove,
     removeRecipeFromBasket,
-    toggleGroceryItem,
-    clearGroceryChecked,
+    closePlan,
+    reopenPlan,
     totalServings,
   }
 }

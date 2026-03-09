@@ -45,9 +45,6 @@
     <div v-else style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <RecipeGrid
         :recipes="recipes"
-        :basket="basket"
-        @add="planAdd"
-        @remove="planRemove"
         @view="viewRecipe"
       />
     </div>
@@ -59,9 +56,7 @@ import type { RecipeData } from '~/composables/useRecipes'
 
 definePageMeta({ layout: false })
 
-const { currentWeek } = useWeek()
 const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
-const { basket, fetchPlan, add: planAdd, remove: planRemove, removeRecipeFromBasket } = usePlan()
 
 const showAddRecipe = ref(false)
 const detailRecipe = ref<RecipeData | null>(null)
@@ -73,13 +68,8 @@ function viewRecipe(id: string) {
 }
 
 onMounted(() => {
-  fetchRecipes().then(() => fetchScores(currentWeek.value))
+  fetchRecipes().then(() => fetchScores())
 })
-
-watch(currentWeek, (weekKey) => {
-  fetchScores(weekKey)
-  fetchPlan(weekKey)
-}, { immediate: true })
 
 async function handleUpdate(recipe: RecipeData) {
   const updated = await updateRecipe(recipe.id, recipe)
@@ -88,6 +78,5 @@ async function handleUpdate(recipe: RecipeData) {
 
 async function handleDelete(id: string) {
   await deleteRecipe(id)
-  removeRecipeFromBasket(id)
 }
 </script>

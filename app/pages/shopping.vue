@@ -16,7 +16,7 @@
           type="text"
           placeholder="Add an item..."
           class="form-input"
-          style="flex: 1; padding: 10px 14px; font-size: 14px; border-radius: 10px"
+          style="flex: 1; padding: 10px 14px; font-size: 16px; border-radius: 10px"
         />
         <button
           type="submit"
@@ -73,7 +73,7 @@
         </div>
 
         <!-- Unbought items -->
-        <div v-for="item in unboughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item.id)">
+        <div v-for="item in unboughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item)">
           <div style="display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0">
             <div
               style="
@@ -106,7 +106,7 @@
             <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
             <span style="font-size: 11px; color: #b0a89e">{{ boughtItems.length }}</span>
           </div>
-          <div v-for="item in boughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item.id)">
+          <div v-for="item in boughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item)">
             <div style="display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0">
               <div
                 style="
@@ -160,7 +160,7 @@ const boughtItems = computed(() => items.value.filter((i) => i.bought_at))
 const boughtCount = computed(() => boughtItems.value.length)
 
 function canDelete(item: ShoppingItem) {
-  return item.added_by === user.value?.id
+  return item.type === 'manual' && item.added_by === user.value?.id
 }
 
 function formatBoughtDate(dateStr: string) {
@@ -182,8 +182,8 @@ async function handleAdd() {
   await addItem(name)
 }
 
-async function handleToggle(id: string) {
-  await toggleBought(id)
+async function handleToggle(item: ShoppingItem) {
+  await toggleBought(item)
 }
 
 async function handleDelete(id: string) {

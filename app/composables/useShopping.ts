@@ -1,9 +1,12 @@
 export interface ShoppingItem {
   id: string
   name: string
-  added_by: string
+  type: 'manual' | 'plan'
   bought_at: string | null
-  created_at: string
+  added_by?: string
+  created_at?: string
+  plan_id?: string
+  ingredient_key?: string
 }
 
 const items = ref<ShoppingItem[]>([])
@@ -32,11 +35,24 @@ export function useShopping() {
     items.value = [item, ...items.value]
   }
 
-  async function toggleBought(id: string) {
-    const updated = await authFetch<ShoppingItem>(`/api/shopping/${id}`, {
-      method: 'PUT',
-    })
-    items.value = items.value.map((i) => (i.id === id ? updated : i))
+  async function toggleBought(item: ShoppingItem) {
+    if (item.type === 'plan') {
+      const result = await authFetch<{ plan_id: string; ingredient_key: string; bought_at: string | null }>(
+        '/api/shopping/plan-ingredient',
+        {
+          method: 'PUT',
+          body: { plan_id: item.plan_id, ingredient_key: item.ingredient_key },
+        },
+      )
+      items.value = items.value.map((i) =>
+        i.id === item.id ? { ...i, bought_at: result.bought_at } : i,
+      )
+    } else {
+      const updated = await authFetch<ShoppingItem>(`/api/shopping/${item.id}`, {
+        method: 'PUT',
+      })
+      items.value = items.value.map((i) => (i.id === item.id ? { ...updated, type: 'manual' } : i))
+    }
   }
 
   async function deleteItem(id: string) {

@@ -8,7 +8,7 @@
     >
       <RecipeCard
         :recipe="recipe"
-        :servings="basket[recipe.id] || 0"
+        :servings="basket ? (basket[recipe.id] || 0) : undefined"
         @add="$emit('add', $event)"
         @remove="$emit('remove', $event)"
         @view="$emit('view', $event)"
@@ -22,7 +22,7 @@ import type { RecipeData } from '~/composables/useRecipes'
 
 defineProps<{
   recipes: RecipeData[]
-  basket: Record<string, number>
+  basket?: Record<string, number>
 }>()
 
 defineEmits<{

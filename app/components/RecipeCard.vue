@@ -1,11 +1,11 @@
 <template>
   <div
-    :class="['card', { selected: servings > 0 }]"
+    :class="['card', { selected: servings && servings > 0 }]"
     :style="{
       background: '#fff',
       borderRadius: '13px',
       overflow: 'hidden',
-      boxShadow: servings > 0 ? '0 6px 28px rgba(45,106,79,.16)' : '0 3px 16px rgba(0,0,0,.07)',
+      boxShadow: servings && servings > 0 ? '0 6px 28px rgba(45,106,79,.16)' : '0 3px 16px rgba(0,0,0,.07)',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
@@ -36,7 +36,7 @@
           {{ recipe.stats.totalCount }}x cooked
         </span>
         <span
-          v-if="recipe.stats.lastWeekKey"
+          v-if="recipe.stats.lastUsedDate"
           style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
         >
           {{ recipe.stats.weeksSinceLast === 0 ? 'this week' : recipe.stats.weeksSinceLast === 1 ? '1 week ago' : `${recipe.stats.weeksSinceLast}w ago` }}
@@ -51,7 +51,7 @@
           {{ recipe.stats.score }}
         </span>
       </div>
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px">
+      <div v-if="servings != null" style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px">
         <span
           :style="{
             fontSize: '11px',
@@ -101,7 +101,7 @@ import type { RecipeData } from '~/composables/useRecipes'
 
 defineProps<{
   recipe: RecipeData
-  servings: number
+  servings?: number
 }>()
 
 defineEmits<{
