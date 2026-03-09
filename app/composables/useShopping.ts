@@ -6,6 +6,7 @@ export interface ShoppingItem {
   added_by?: string
   created_at?: string
   plan_id?: string
+  plan_name?: string
   ingredient_key?: string
 }
 

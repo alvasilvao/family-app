@@ -85,7 +85,13 @@
                 background: #fff;
               "
             />
-            <span style="font-size: 13.5px; color: #1a1a1a">{{ item.name }}</span>
+            <div style="min-width: 0">
+              <span style="font-size: 13.5px; color: #1a1a1a">{{ item.name }}</span>
+              <span
+                v-if="item.plan_name"
+                style="display: inline-block; font-size: 10px; color: #7a9e7e; background: #e8f0e8; border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; white-space: nowrap"
+              >{{ item.plan_name }}</span>
+            </div>
           </div>
           <button
             v-if="canDelete(item)"
@@ -125,6 +131,10 @@
               </div>
               <div style="min-width: 0">
                 <span style="font-size: 13.5px; color: #b0a89e; text-decoration: line-through">{{ item.name }}</span>
+                <span
+                  v-if="item.plan_name"
+                  style="display: inline-block; font-size: 10px; color: #a8bfa9; background: #f0f4f0; border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; white-space: nowrap"
+                >{{ item.plan_name }}</span>
                 <span style="font-size: 11px; color: #c8c0b8; margin-left: 8px">
                   {{ formatBoughtDate(item.bought_at!) }}
                 </span>

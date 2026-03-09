@@ -29,7 +29,7 @@
           Close this plan?
         </p>
         <p style="font-size: 13px; color: #9b9590; line-height: 1.5; margin-bottom: 20px">
-          This will add {{ totalServings }} servings worth of ingredients to your shopping list.
+          Its ingredients will appear in your shopping list.
         </p>
         <div style="display: flex; gap: 10px">
           <button

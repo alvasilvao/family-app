@@ -14,8 +14,9 @@ export default defineEventHandler(async (event) => {
       .order('created_at', { ascending: false }),
     client
       .from('meal_plans')
-      .select('id, basket, bought_ingredients')
-      .eq('status', 'closed'),
+      .select('id, name, basket, bought_ingredients')
+      .eq('status', 'closed')
+      .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
   ])
 
   if (manualResult.error) throw createError({ statusCode: 500, statusMessage: manualResult.error.message })
@@ -79,6 +80,7 @@ export default defineEventHandler(async (event) => {
         name: `${name} - ${rounded} ${unit}`,
         type: 'plan' as const,
         plan_id: plan.id,
+        plan_name: plan.name,
         ingredient_key: key,
         bought_at: boughtAt,
       })
