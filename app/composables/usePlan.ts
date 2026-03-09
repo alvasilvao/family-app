@@ -54,13 +54,6 @@ export function usePlan() {
     debouncedSave()
   }
 
-  function removeRecipeFromBasket(id: string) {
-    const newBasket = { ...basket.value }
-    delete newBasket[id]
-    basket.value = newBasket
-    debouncedSave()
-  }
-
   async function closePlan(id: string): Promise<MealPlan> {
     const data = await authFetch<MealPlan>(`/api/plans/${id}/close`, { method: 'POST' })
     plan.value = data
@@ -83,7 +76,6 @@ export function usePlan() {
     fetchPlan,
     add,
     remove,
-    removeRecipeFromBasket,
     closePlan,
     reopenPlan,
     totalServings,

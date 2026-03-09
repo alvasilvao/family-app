@@ -200,16 +200,7 @@ function initForm() {
   newEndDate.value = sunday.toISOString().slice(0, 10)
 }
 
-const newName = ref('')
 watch(showForm, (v) => { if (v) initForm() })
-
-function formatDateRange(start: string, end: string): string {
-  const s = new Date(start + 'T00:00:00')
-  const e = new Date(end + 'T00:00:00')
-  const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-  if (start === end) return fmt(s)
-  return `${fmt(s)} – ${fmt(e)}`
-}
 
 function recipeCount(p: MealPlan): number {
   return Object.values(p.basket || {}).filter((v) => v > 0).length

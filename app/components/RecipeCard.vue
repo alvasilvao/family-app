@@ -11,18 +11,15 @@
       position: 'relative',
     }"
   >
-    <div style="cursor: pointer" @click="$emit('view', recipe.id)">
-      <FoodVisual :recipe="recipe" />
-    </div>
-
-    <div style="padding: 12px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 7px">
+    <div style="padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 7px">
       <div style="display: flex; flex-wrap: wrap; gap: 4px">
         <TagBadge v-for="t in recipe.tags" :key="t" :label="t" />
       </div>
       <h3
-        style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; line-height: 1.3; cursor: pointer"
+        style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; line-height: 1.3; cursor: pointer; display: flex; align-items: center; gap: 6px"
         @click="$emit('view', recipe.id)"
       >
+        <span style="font-size: 20px">{{ recipe.emoji }}</span>
         {{ recipe.name }}
       </h3>
       <p
@@ -31,7 +28,13 @@
       >
         {{ recipe.description }}
       </p>
-      <div v-if="recipe.stats" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px">
+      <div v-if="recipe.stats" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
+        <span
+          v-if="recipe.cookTime"
+          style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+        >
+          {{ recipe.cookTime }}
+        </span>
         <span style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px">
           {{ recipe.stats.totalCount }}x cooked
         </span>
