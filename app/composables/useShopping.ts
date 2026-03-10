@@ -57,10 +57,27 @@ export function useShopping() {
     }
   }
 
+  async function bulkMarkBought(toBuy: ShoppingItem[]) {
+    const payload = toBuy.map((item) => ({
+      type: item.type,
+      id: item.id,
+      plan_id: item.plan_id,
+      ingredient_key: item.ingredient_key,
+    }))
+    const result = await authFetch<{ bought_at: string }>('/api/shopping/bulk-toggle', {
+      method: 'PUT',
+      body: { items: payload },
+    })
+    const ids = new Set(toBuy.map((i) => i.id))
+    items.value = items.value.map((i) =>
+      ids.has(i.id) && !i.bought_at ? { ...i, bought_at: result.bought_at } : i,
+    )
+  }
+
   async function deleteItem(id: string) {
     await authFetch(`/api/shopping/${id}`, { method: 'DELETE' })
     items.value = items.value.filter((i) => i.id !== id)
   }
 
-  return { items, loading, fetchItems, addItem, toggleBought, deleteItem }
+  return { items, loading, fetchItems, addItem, toggleBought, bulkMarkBought, deleteItem }
 }

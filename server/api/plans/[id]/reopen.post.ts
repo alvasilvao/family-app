@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (planError || !plan) throw createError({ statusCode: 404, statusMessage: 'Plan not found' })
-  if (plan.status === 'open') throw createError({ statusCode: 400, statusMessage: 'Plan is already open' })
+  if (plan.status !== 'closed' && plan.status !== 'closed_no_shop') throw createError({ statusCode: 400, statusMessage: 'Plan is already open' })
 
   // Reopen the plan and reset bought_ingredients
   const { data, error } = await client

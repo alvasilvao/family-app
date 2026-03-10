@@ -54,8 +54,11 @@ export function usePlan() {
     debouncedSave()
   }
 
-  async function closePlan(id: string): Promise<MealPlan> {
-    const data = await authFetch<MealPlan>(`/api/plans/${id}/close`, { method: 'POST' })
+  async function closePlan(id: string, addToShopping = true): Promise<MealPlan> {
+    const data = await authFetch<MealPlan>(`/api/plans/${id}/close`, {
+      method: 'POST',
+      body: { addToShopping },
+    })
     plan.value = data
     return data
   }

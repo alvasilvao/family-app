@@ -5,6 +5,9 @@ export default defineEventHandler(async (event) => {
 
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing plan id' })
 
+  const body = await readBody(event)
+  const addToShopping = body?.addToShopping !== false
+
   // Get the plan
   const { data: plan, error: planError } = await client
     .from('meal_plans')
@@ -13,12 +16,13 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (planError || !plan) throw createError({ statusCode: 404, statusMessage: 'Plan not found' })
-  if (plan.status === 'closed') throw createError({ statusCode: 400, statusMessage: 'Plan is already closed' })
+  if (plan.status !== 'open') throw createError({ statusCode: 400, statusMessage: 'Plan is already closed' })
 
   // Mark plan as closed
+  const status = addToShopping ? 'closed' : 'closed_no_shop'
   const { data, error } = await client
     .from('meal_plans')
-    .update({ status: 'closed', updated_at: new Date().toISOString() })
+    .update({ status, updated_at: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single()

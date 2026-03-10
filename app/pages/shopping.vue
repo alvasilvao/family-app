@@ -76,11 +76,51 @@
             </button>
           </div>
 
+          <!-- Plan filter -->
+          <div v-if="availablePlans.length > 0" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap">
+            <button
+              :style="{
+                padding: '5px 12px',
+                borderRadius: '999px',
+                border: planFilter === 'all' ? '1.5px solid #b45309' : '1.5px solid #e8e2db',
+                background: planFilter === 'all' ? '#fef3c7' : '#fff',
+                color: planFilter === 'all' ? '#b45309' : '#6b6560',
+                fontSize: '12px',
+                fontWeight: planFilter === 'all' ? 600 : 400,
+                cursor: 'pointer',
+                fontFamily: '\'DM Sans\', sans-serif',
+                transition: 'all .2s',
+              }"
+              @click="planFilter = 'all'"
+            >
+              All plans
+            </button>
+            <button
+              v-for="p in availablePlans"
+              :key="p.id"
+              :style="{
+                padding: '5px 12px',
+                borderRadius: '999px',
+                border: planFilter === p.id ? '1.5px solid #b45309' : '1.5px solid #e8e2db',
+                background: planFilter === p.id ? '#fef3c7' : '#fff',
+                color: planFilter === p.id ? '#b45309' : '#6b6560',
+                fontSize: '12px',
+                fontWeight: planFilter === p.id ? 600 : 400,
+                cursor: 'pointer',
+                fontFamily: '\'DM Sans\', sans-serif',
+                transition: 'all .2s',
+              }"
+              @click="planFilter = p.id"
+            >
+              {{ p.name }}
+            </button>
+          </div>
+
           <!-- Progress -->
           <div v-if="boughtCount > 0">
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px">
-              <span style="font-size: 11px; color: #9b9590">{{ boughtCount }} of {{ items.length }} bought</span>
-              <span v-if="boughtCount === items.length" style="font-size: 11px; color: #2d6a4f; font-weight: 600">
+              <span style="font-size: 11px; color: #9b9590">{{ boughtCount }} of {{ filteredItems.length }} bought</span>
+              <span v-if="boughtCount === filteredItems.length" style="font-size: 11px; color: #2d6a4f; font-weight: 600">
                 &#x2713; All done!
               </span>
             </div>
@@ -90,12 +130,25 @@
                   height: '4px',
                   background: '#2d6a4f',
                   borderRadius: '999px',
-                  width: `${(boughtCount / items.length) * 100}%`,
+                  width: `${(boughtCount / filteredItems.length) * 100}%`,
                   transition: 'width .3s',
                 }"
               />
             </div>
           </div>
+        </div>
+
+        <!-- Check all (single group mode) -->
+        <div
+          v-if="unboughtGroups.length === 1 && unboughtItems.length > 1"
+          style="padding: 0 20px 8px; display: flex; justify-content: flex-end"
+        >
+          <button
+            style="background: none; border: 1.5px solid #d4ccc4; border-radius: 5px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif"
+            @click="handleBulkCheck(unboughtItems)"
+          >
+            Check all
+          </button>
         </div>
 
         <!-- Grouped unbought items -->
@@ -110,6 +163,12 @@
             </span>
             <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
             <span style="font-size: 11px; color: #b0a89e">{{ group.items.length }}</span>
+            <button
+              style="background: none; border: 1.5px solid #d4ccc4; border-radius: 5px; padding: 2px 8px; font-size: 10px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap"
+              @click="handleBulkCheck(group.items)"
+            >
+              Check all
+            </button>
           </div>
 
           <div
@@ -229,7 +288,7 @@ import type { RecipeData } from '~/composables/useRecipes'
 definePageMeta({ layout: false })
 
 const { user } = useAuth()
-const { items, loading, fetchItems, addItem, toggleBought, deleteItem } = useShopping()
+const { items, loading, fetchItems, addItem, toggleBought, bulkMarkBought, deleteItem } = useShopping()
 const { recipes, fetchRecipes } = useRecipes()
 
 const selectedRecipe = ref<RecipeData | null>(null)
@@ -243,6 +302,25 @@ const sortOptions: Array<{ label: string; value: SortMode }> = [
   { label: 'Category', value: 'category' },
   { label: 'By recipe', value: 'recipe' },
 ]
+
+// --- Plan filter ---
+const planFilter = ref<string>('all')
+
+const availablePlans = computed(() => {
+  const plans = new Map<string, string>()
+  for (const item of items.value) {
+    if (item.plan_id && item.plan_name) {
+      plans.set(item.plan_id, item.plan_name)
+    }
+  }
+  return Array.from(plans, ([id, name]) => ({ id, name }))
+})
+
+const filteredItems = computed(() => {
+  if (planFilter.value === 'all') return items.value
+  if (planFilter.value === 'manual') return items.value.filter((i) => i.type === 'manual')
+  return items.value.filter((i) => i.plan_id === planFilter.value || i.type === 'manual')
+})
 
 // --- Category mapping ---
 const CATEGORY_KEYWORDS: Record<string, string[]> = {
@@ -323,8 +401,8 @@ interface ItemGroup {
   items: ShoppingItem[]
 }
 
-const unboughtItems = computed(() => items.value.filter((i) => !i.bought_at))
-const boughtItems = computed(() => items.value.filter((i) => i.bought_at))
+const unboughtItems = computed(() => filteredItems.value.filter((i) => !i.bought_at))
+const boughtItems = computed(() => filteredItems.value.filter((i) => i.bought_at))
 const boughtCount = computed(() => boughtItems.value.length)
 
 const unboughtGroups = computed<ItemGroup[]>(() => {
@@ -413,6 +491,12 @@ async function handleAdd() {
 
 async function handleToggle(item: ShoppingItem) {
   await toggleBought(item)
+}
+
+async function handleBulkCheck(groupItems: ShoppingItem[]) {
+  const unbought = groupItems.filter((i) => !i.bought_at)
+  if (unbought.length === 0) return
+  await bulkMarkBought(unbought)
 }
 
 async function handleDelete(id: string) {

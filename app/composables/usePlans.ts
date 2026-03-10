@@ -4,7 +4,7 @@ export interface MealPlan {
   start_date: string
   end_date: string
   basket: Record<string, number>
-  status: 'open' | 'closed'
+  status: 'open' | 'closed' | 'closed_no_shop'
   created_at: string
   updated_at: string
 }

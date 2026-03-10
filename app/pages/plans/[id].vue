@@ -28,9 +28,19 @@
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; margin-bottom: 8px">
           Close this plan?
         </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5; margin-bottom: 20px">
-          Its ingredients will appear in your shopping list.
-        </p>
+        <label
+          style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; cursor: pointer; padding: 10px 12px; background: #f9f7f4; border-radius: 10px"
+          @click.stop
+        >
+          <input
+            v-model="addToShopping"
+            type="checkbox"
+            style="width: 18px; height: 18px; accent-color: #2d6a4f; cursor: pointer; flex-shrink: 0"
+          />
+          <span style="font-size: 13px; color: #4a4540; line-height: 1.4">
+            Add ingredients to shopping list
+          </span>
+        </label>
         <div style="display: flex; gap: 10px">
           <button
             style="flex: 1; background: #f5f0eb; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif"
@@ -52,7 +62,7 @@
     <PageHeader :title="plan?.name || 'Plan'" back-to="/plans">
       <template #right>
         <button
-          v-if="plan?.status === 'open' && totalServings > 0"
+          v-if="!isClosed && plan?.status === 'open' && totalServings > 0"
           style="
             background: #fff;
             border: none;
@@ -70,7 +80,7 @@
           Close Plan
         </button>
         <button
-          v-else-if="plan?.status === 'closed'"
+          v-else-if="isClosed"
           style="
             background: #fff;
             border: none;
@@ -96,7 +106,7 @@
     </div>
 
     <!-- Closed plan: read-only view -->
-    <div v-else-if="plan?.status === 'closed'" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else-if="isClosed" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="selectedRecipes.length === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1F4CB;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -252,6 +262,9 @@ const { plan, basket, totalServings, fetchPlan, add: planAdd, remove: planRemove
 
 const detailRecipe = ref<RecipeData | null>(null)
 const showCloseConfirm = ref(false)
+const addToShopping = ref(true)
+
+const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop')
 
 function viewRecipe(id: string) {
   const recipe = recipes.value.find((r) => r.id === id)
@@ -271,7 +284,7 @@ const selectedRecipes = computed(() =>
 async function handleClose() {
   showCloseConfirm.value = false
   try {
-    await closePlan(planId)
+    await closePlan(planId, addToShopping.value)
   } catch (err) {
     console.error('Failed to close plan:', err)
   }
