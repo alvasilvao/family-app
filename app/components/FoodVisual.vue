@@ -12,18 +12,38 @@
       overflow: 'hidden',
     }"
   >
+    <!-- Loading overlay -->
+    <div
+      v-if="loading"
+      :style="{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(240,235,229,0.85)',
+        zIndex: 10,
+      }"
+    >
+      <div :style="{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }">
+        <div class="food-visual-spinner" />
+        <span :style="{ fontSize: '12px', color: '#6b6560', fontFamily: 'DM Sans, sans-serif', fontWeight: 500 }">Processing photo...</span>
+      </div>
+    </div>
     <!-- Recipe photo -->
     <img
       v-if="recipe.imagePath"
       :src="imageUrl"
+      alt="Recipe photo"
       :style="{
         width: '100%',
         height: '100%',
         objectFit: 'cover',
       }"
+      @error="imgFailed = true"
     />
     <!-- Emoji fallback -->
-    <template v-else>
+    <template v-if="!recipe.imagePath || imgFailed">
       <div
         :style="{
           position: 'absolute',
@@ -81,11 +101,18 @@ const props = withDefaults(
   defineProps<{
     recipe: { emoji: string; color: string; cookTime: string; imagePath?: string | null }
     size?: number
+    loading?: boolean
   }>(),
-  { size: 100 },
+  { size: 100, loading: false },
 )
 
 const config = useRuntimeConfig()
+const imgFailed = ref(false)
+
+// Reset error state when imagePath changes
+watch(() => props.recipe.imagePath, () => {
+  imgFailed.value = false
+})
 
 const imageUrl = computed(() => {
   if (!props.recipe.imagePath) return ''
@@ -93,3 +120,17 @@ const imageUrl = computed(() => {
   return `${base}/storage/v1/object/public/recipe-images/${props.recipe.imagePath}?t=${Date.now()}`
 })
 </script>
+
+<style scoped>
+@keyframes food-visual-spin {
+  to { transform: rotate(360deg); }
+}
+.food-visual-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid #e8e2db;
+  border-top-color: #2d6a4f;
+  border-radius: 50%;
+  animation: food-visual-spin 0.7s linear infinite;
+}
+</style>

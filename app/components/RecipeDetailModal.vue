@@ -9,7 +9,7 @@
       @click.stop
     >
       <!-- Visual header -->
-      <FoodVisual :recipe="displayRecipe" />
+      <FoodVisual :recipe="displayRecipe" :loading="imageUploading" />
 
       <!-- Scrollable content -->
       <div style="flex: 1; overflow-y: auto; padding: 20px 24px 24px">
