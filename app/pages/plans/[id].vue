@@ -224,7 +224,7 @@ definePageMeta({ layout: false })
 const route = useRoute()
 const planId = route.params.id as string
 
-const { recipes, loading: recipesLoading, fetchRecipes, fetchScores } = useRecipes()
+const { recipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings } = useRecipes()
 const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan } = usePlan()
 
 const detailRecipeId = ref<string | null>(null)
@@ -282,5 +282,6 @@ onMounted(async () => {
   await fetchRecipes()
   await fetchPlan(planId)
   fetchScores(plan.value?.start_date)
+  fetchRatings()
 })
 </script>
