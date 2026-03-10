@@ -43,10 +43,10 @@ export default defineEventHandler(async (event) => {
     .from('meal_plans')
     .update({ basket, cooked, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('status', 'open')
+    .in('status', ['open', 'closed', 'closed_no_shop'])
     .select()
     .single()
 
-  if (error) throw createError({ statusCode: 400, statusMessage: 'Plan not found or is closed' })
+  if (error) throw createError({ statusCode: 400, statusMessage: 'Plan not found' })
   return data
 })

@@ -136,9 +136,23 @@
                 display: flex;
                 align-items: center;
                 gap: 14px;
-                opacity: 0.7;
               "
             >
+              <button
+                style="
+                  width: 26px;
+                  height: 26px;
+                  border-radius: 50%;
+                  border: 2px solid #d4cfc8;
+                  background: #fff;
+                  cursor: pointer;
+                  flex-shrink: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+                @click="toggleCooked(sr.recipe.id)"
+              />
               <div
                 :style="{
                   width: '48px',
@@ -194,6 +208,27 @@
                 opacity: 0.5;
               "
             >
+              <button
+                style="
+                  width: 26px;
+                  height: 26px;
+                  border-radius: 50%;
+                  border: 2px solid #2d6a4f;
+                  background: #2d6a4f;
+                  cursor: pointer;
+                  flex-shrink: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: 700;
+                  line-height: 1;
+                "
+                @click="toggleCooked(sr.recipe.id)"
+              >
+                &#x2713;
+              </button>
               <div
                 :style="{
                   width: '48px',
