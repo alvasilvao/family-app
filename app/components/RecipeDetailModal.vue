@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="modal-overlay"
-    @click="$emit('close')"
-  >
-    <div
-      class="slide-up modal-panel"
-      style="display: flex; flex-direction: column"
-      @click.stop
-    >
+  <BaseModal style="display: flex; flex-direction: column" @close="$emit('close')">
       <!-- Visual header -->
       <FoodVisual :recipe="displayRecipe" :loading="editing ? (editFormRef?.imageUploading ?? false) : imageUploading" />
 
@@ -175,8 +167,7 @@
           </div>
         </template>
       </div>
-    </div>
-  </div>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">

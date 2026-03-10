@@ -93,15 +93,12 @@
 
     <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 16px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Empty state -->
-      <div v-if="plans.length === 0 && !showForm" style="text-align: center; padding: 60px 20px">
-        <p style="font-size: 32px; margin-bottom: 12px">&#x1F4CB;</p>
-        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
-          No meal plans yet
-        </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5">
-          Create a plan to start organizing your meals.
-        </p>
-      </div>
+      <EmptyState
+        v-if="plans.length === 0 && !showForm"
+        emoji="&#x1F4CB;"
+        title="No meal plans yet"
+        message="Create a plan to start organizing your meals."
+      />
 
       <!-- Plans list -->
       <div style="display: flex; flex-direction: column; gap: 10px">
@@ -170,7 +167,6 @@ import type { MealPlan } from '~/composables/usePlans'
 
 definePageMeta({ layout: false })
 
-const router = useRouter()
 const { plans, loading, fetchPlans, createPlan } = usePlans()
 
 const showForm = ref(false)
@@ -211,7 +207,7 @@ async function handleCreate() {
   try {
     const plan = await createPlan(autoName.value, newStartDate.value, newEndDate.value)
     showForm.value = false
-    router.push(`/plans/${plan.id}`)
+    navigateTo(`/plans/${plan.id}`)
   } catch (err) {
     console.error('Failed to create plan:', err)
   }

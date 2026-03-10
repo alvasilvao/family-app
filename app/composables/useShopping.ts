@@ -16,20 +16,12 @@ const loading = ref(false)
 
 export function useShopping() {
   const { authFetch } = useAuth()
-  const toast = useToast()
-
-  async function fetchItems() {
-    loading.value = true
-    try {
-      items.value = await authFetch<ShoppingItem[]>('/api/shopping')
-    } catch (err) {
-      console.error('Failed to fetch shopping items:', err)
-      toast.error('Failed to load shopping list')
-      items.value = []
-    } finally {
-      loading.value = false
-    }
-  }
+  const { fetch: fetchItems } = useAsyncFetch<ShoppingItem>(
+    items,
+    loading,
+    () => authFetch<ShoppingItem[]>('/api/shopping'),
+    'Failed to load shopping list',
+  )
 
   async function addItem(name: string) {
     const item = await authFetch<ShoppingItem>('/api/shopping', {

@@ -44,15 +44,12 @@
       </form>
 
       <!-- Empty state -->
-      <div v-if="allTodos.length === 0" style="text-align: center; padding: 60px 20px">
-        <p style="font-size: 32px; margin-bottom: 12px">&#x2705;</p>
-        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
-          All clear!
-        </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5">
-          Add a to-do above to get started.
-        </p>
-      </div>
+      <EmptyState
+        v-if="allTodos.length === 0"
+        emoji="&#x2705;"
+        title="All clear!"
+        message="Add a to-do above to get started."
+      />
 
       <div v-else>
         <!-- Progress -->
@@ -63,17 +60,7 @@
               &#x2713; All done!
             </span>
           </div>
-          <div style="height: 4px; background: #f0ebe4; border-radius: 999px">
-            <div
-              :style="{
-                height: '4px',
-                background: '#2d6a4f',
-                borderRadius: '999px',
-                width: `${(completedTodos.length / allTodos.length) * 100}%`,
-                transition: 'width .3s',
-              }"
-            />
-          </div>
+          <ProgressBar :value="completedTodos.length / allTodos.length" />
         </div>
 
         <!-- Overdue -->
@@ -100,13 +87,7 @@
 
         <!-- Upcoming (with due date, not overdue) -->
         <template v-if="upcomingTodos.length > 0">
-          <div style="display: flex; align-items: center; gap: 7px; padding: 10px 20px 4px">
-            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
-              Upcoming
-            </span>
-            <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
-            <span style="font-size: 11px; color: #b0a89e">{{ upcomingTodos.length }}</span>
-          </div>
+          <SectionHeader label="Upcoming" :count="upcomingTodos.length" style="padding: 10px 20px 4px" />
           <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
             <TodoItem
               v-for="todo in upcomingTodos"
@@ -122,13 +103,12 @@
 
         <!-- No due date -->
         <template v-if="noDueDateTodos.length > 0">
-          <div v-if="overdueTodos.length > 0 || upcomingTodos.length > 0" style="display: flex; align-items: center; gap: 7px; padding: 10px 20px 4px">
-            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
-              No date
-            </span>
-            <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
-            <span style="font-size: 11px; color: #b0a89e">{{ noDueDateTodos.length }}</span>
-          </div>
+          <SectionHeader
+            v-if="overdueTodos.length > 0 || upcomingTodos.length > 0"
+            label="No date"
+            :count="noDueDateTodos.length"
+            style="padding: 10px 20px 4px"
+          />
           <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
             <TodoItem
               v-for="todo in noDueDateTodos"
@@ -144,13 +124,7 @@
 
         <!-- Completed -->
         <template v-if="completedTodos.length > 0">
-          <div style="display: flex; align-items: center; gap: 7px; padding: 16px 20px 4px">
-            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
-              Done
-            </span>
-            <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
-            <span style="font-size: 11px; color: #b0a89e">{{ completedTodos.length }}</span>
-          </div>
+          <SectionHeader label="Done" :count="completedTodos.length" style="padding: 16px 20px 4px" />
           <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
             <TodoItem
               v-for="todo in completedTodos"

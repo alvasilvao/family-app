@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
   if (!Array.isArray(items) || items.length === 0) {
     throw createError({ statusCode: 400, statusMessage: 'items array is required' })
   }
-  if (items.length > 200) {
-    throw createError({ statusCode: 400, statusMessage: 'Too many items (max 200)' })
+  if (items.length > MAX_BULK_TOGGLE_ITEMS) {
+    throw createError({ statusCode: 400, statusMessage: `Too many items (max ${MAX_BULK_TOGGLE_ITEMS})` })
   }
 
   const now = new Date().toISOString()

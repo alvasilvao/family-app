@@ -2,6 +2,7 @@ export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const client = serverSupabaseClient(event)
   const id = getRouterParam(event, 'id')
+  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
   const body = await readBody(event)
 
   const title = validateString(body?.title, 'title', 500)

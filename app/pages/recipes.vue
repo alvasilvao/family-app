@@ -29,6 +29,7 @@
             align-items: center;
             justify-content: center;
           "
+          aria-label="Add recipe"
           @click="showAddRecipe = true"
         >
           +

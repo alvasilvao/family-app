@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Validate size
-  if (filePart.data.length > 5 * 1024 * 1024) {
+  if (filePart.data.length > MAX_IMAGE_SIZE) {
     throw createError({ statusCode: 400, statusMessage: 'Image must be under 5MB' })
   }
 

@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
-  const client = serverSupabaseClient(event)
   await requireAuth(event)
+  const client = serverSupabaseClient(event)
 
   const query = getQuery(event)
   const limit = query.limit ? parseInt(query.limit as string) : null

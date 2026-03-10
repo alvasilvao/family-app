@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const dueDate = body?.due_date || null
+  const dateRe = /^\d{4}-\d{2}-\d{2}$/
+  if (dueDate && !dateRe.test(dueDate)) throw createError({ statusCode: 400, statusMessage: 'Invalid date format' })
 
   const { data, error } = await client
     .from('todos')

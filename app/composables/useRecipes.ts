@@ -11,6 +11,29 @@ export interface RecipeRating {
   ratingCount: number
 }
 
+interface IngredientRow {
+  id: string
+  name: string
+  unit: string
+  per_serving: number
+}
+
+interface RecipeRow {
+  id: string
+  name: string
+  cook_time: string
+  emoji: string
+  color: string
+  description: string
+  source_url: string
+  image_path: string
+  tags: string[]
+  is_built_in: boolean
+  instructions: string
+  ingredients: IngredientRow[]
+  created_at: string
+}
+
 export interface RecipeData {
   id: string
   name: string
@@ -24,13 +47,13 @@ export interface RecipeData {
   instructions: string
   ingredients: Array<{ name: string; unit: string; perServing: number }>
   imagePath: string | null
-  createdAt: string | null
+  createdAt?: string | null
   stats?: RecipeStats
   rating?: RecipeRating
 }
 
 /** Map snake_case DB row to camelCase frontend shape */
-function mapRecipe(row: any): RecipeData {
+function mapRecipe(row: RecipeRow): RecipeData {
   return {
     id: row.id,
     name: row.name,
@@ -42,7 +65,7 @@ function mapRecipe(row: any): RecipeData {
     isBuiltIn: row.is_built_in,
     sourceUrl: row.source_url || '',
     instructions: row.instructions || '',
-    ingredients: (row.ingredients || []).map((ing: any) => ({
+    ingredients: (row.ingredients || []).map((ing: IngredientRow) => ({
       name: ing.name,
       unit: ing.unit,
       perServing: ing.per_serving,
@@ -66,9 +89,9 @@ export function useRecipes() {
   async function fetchRecipes() {
     loading.value = true
     try {
-      const data = await authFetch<any[]>('/api/recipes')
+      const data = await authFetch<RecipeRow[]>('/api/recipes')
       recipes.value = data.map(mapRecipe)
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to fetch recipes:', err)
       toast.error('Failed to load recipes')
     } finally {
@@ -84,7 +107,7 @@ export function useRecipes() {
       recipes.value = [...recipes.value]
         .map((r) => ({ ...r, stats: scores[r.id] || DEFAULT_STATS }))
         .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to fetch scores:', err)
       toast.error('Failed to load recipe scores')
     }
@@ -97,7 +120,7 @@ export function useRecipes() {
         ...r,
         rating: ratings[r.id] || r.rating,
       }))
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to fetch ratings:', err)
       toast.error('Failed to load ratings')
     }
@@ -121,7 +144,7 @@ export function useRecipes() {
         method: 'PUT',
         body: { rating },
       })
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to set rating:', err)
       toast.error('Failed to save rating')
       await fetchRatings()
@@ -129,7 +152,7 @@ export function useRecipes() {
   }
 
   async function addRecipe(recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
-    const created = await authFetch<any>('/api/recipes', {
+    const created = await authFetch<RecipeRow>('/api/recipes', {
       method: 'POST',
       body: recipe,
     })
@@ -139,7 +162,7 @@ export function useRecipes() {
   }
 
   async function updateRecipe(id: string, recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
-    const updated = await authFetch<any>(`/api/recipes/${id}`, {
+    const updated = await authFetch<RecipeRow>(`/api/recipes/${id}`, {
       method: 'PUT',
       body: recipe,
     })
@@ -151,7 +174,7 @@ export function useRecipes() {
   async function uploadRecipeImage(id: string, blob: Blob) {
     const form = new FormData()
     form.append('image', blob, 'image.jpg')
-    const updated = await authFetch<any>(`/api/recipes/${id}/image`, {
+    const updated = await authFetch<RecipeRow>(`/api/recipes/${id}/image`, {
       method: 'POST',
       body: form,
     })
@@ -161,7 +184,7 @@ export function useRecipes() {
   }
 
   async function removeRecipeImage(id: string) {
-    const updated = await authFetch<any>(`/api/recipes/${id}/image`, {
+    const updated = await authFetch<RecipeRow>(`/api/recipes/${id}/image`, {
       method: 'DELETE',
     })
     const mapped = mapRecipe(updated)

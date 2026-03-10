@@ -94,15 +94,12 @@
       </div>
 
       <!-- Empty state -->
-      <div v-if="!editing && activeNotes.length === 0 && !showArchived" style="text-align: center; padding: 60px 20px">
-        <p style="font-size: 32px; margin-bottom: 12px">&#x1F4DD;</p>
-        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
-          No notes yet
-        </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5">
-          Create a note to share with everyone.
-        </p>
-      </div>
+      <EmptyState
+        v-if="!editing && activeNotes.length === 0 && !showArchived"
+        emoji="&#x1F4DD;"
+        title="No notes yet"
+        message="Create a note to share with everyone."
+      />
 
       <!-- Notes list -->
       <div v-if="!editing" class="notes-grid" style="padding: 12px 20px; display: grid; grid-template-columns: 1fr; gap: 10px">
@@ -135,6 +132,7 @@
               <button
                 style="background: none; border: none; font-size: 14px; cursor: pointer; padding: 4px; color: #b0a89e"
                 :title="note.archived_at ? 'Unarchive' : 'Archive'"
+                :aria-label="note.archived_at ? 'Unarchive note' : 'Archive note'"
                 @click.stop="handleArchiveToggle(note)"
               >
                 {{ note.archived_at ? '&#x21A9;' : '&#x1F4E6;' }}
@@ -149,49 +147,48 @@
     </div>
 
     <!-- Note detail modal -->
-    <div v-if="viewingNote" class="modal-overlay" @click="viewingNote = null">
-      <div class="slide-up modal-panel" style="display: flex; flex-direction: column" @click.stop>
-        <div style="flex: 1; overflow-y: auto; padding: 20px 24px 24px">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px">
-            <h2
-              v-if="viewingNote.title"
-              style="font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; line-height: 1.3; flex: 1"
+    <BaseModal v-if="viewingNote" style="display: flex; flex-direction: column" @close="viewingNote = null">
+      <div style="flex: 1; overflow-y: auto; padding: 20px 24px 24px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px">
+          <h2
+            v-if="viewingNote.title"
+            style="font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; line-height: 1.3; flex: 1"
+          >
+            {{ viewingNote.title }}
+          </h2>
+          <div v-else style="flex: 1" />
+          <div style="display: flex; gap: 6px; margin-left: 12px; flex-shrink: 0">
+            <button
+              v-if="!viewingNote.archived_at"
+              aria-label="Edit note"
+              style="
+                background: #f5f0eb;
+                border: none;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                cursor: pointer;
+                font-size: 15px;
+                color: #6b6560;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              @click="startEditFromModal"
             >
-              {{ viewingNote.title }}
-            </h2>
-            <div v-else style="flex: 1" />
-            <div style="display: flex; gap: 6px; margin-left: 12px; flex-shrink: 0">
-              <button
-                v-if="!viewingNote.archived_at"
-                style="
-                  background: #f5f0eb;
-                  border: none;
-                  border-radius: 50%;
-                  width: 36px;
-                  height: 36px;
-                  cursor: pointer;
-                  font-size: 15px;
-                  color: #6b6560;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
-                @click="startEditFromModal"
-              >
-                &#x270E;
-              </button>
-              <button class="modal-close-btn" @click="viewingNote = null">
-                &times;
-              </button>
-            </div>
+              &#x270E;
+            </button>
+            <button class="modal-close-btn" aria-label="Close" @click="viewingNote = null">
+              &times;
+            </button>
           </div>
-          <p style="font-size: 14px; color: #4a4540; line-height: 1.65; white-space: pre-wrap">{{ viewingNote.body }}</p>
-          <p style="font-size: 11px; color: #b0a89e; margin-top: 16px">
-            {{ formatDate(viewingNote.updated_at) }}
-          </p>
         </div>
+        <p style="font-size: 14px; color: #4a4540; line-height: 1.65; white-space: pre-wrap">{{ viewingNote.body }}</p>
+        <p style="font-size: 11px; color: #b0a89e; margin-top: 16px">
+          {{ formatDate(viewingNote.updated_at) }}
+        </p>
       </div>
-    </div>
+    </BaseModal>
   </div>
 </template>
 

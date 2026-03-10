@@ -22,8 +22,8 @@ export function validateRecipeBody(body: any) {
   validateString(instructions, 'instructions', 10000)
 
   if (tags != null) {
-    if (!Array.isArray(tags) || tags.length > 50) {
-      throw createError({ statusCode: 400, statusMessage: 'Tags must be an array of up to 50 items' })
+    if (!Array.isArray(tags) || tags.length > MAX_TAGS) {
+      throw createError({ statusCode: 400, statusMessage: `Tags must be an array of up to ${MAX_TAGS} items` })
     }
     for (const tag of tags) {
       validateString(tag, 'tag', 100)

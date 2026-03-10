@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="modal-overlay"
-    @click="$emit('close')"
-  >
-    <div
-      class="slide-up modal-panel"
-      style="max-width: 500px; overflow-y: auto"
-      @click.stop
-    >
+  <BaseModal style="max-width: 500px; overflow-y: auto" @close="$emit('close')">
       <div style="padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: flex-start">
         <div>
           <h2 style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700">Add a Recipe</h2>
@@ -187,22 +179,35 @@
           </button>
         </div>
       </div>
-    </div>
-  </div>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
 import { EMOJIS, IMPORT_COLORS } from '~/utils/constants'
 
+interface ImportedRecipe {
+  name: string
+  cookTime: string
+  description: string
+  sourceUrl: string
+  instructions: string
+  tags: string[]
+  emoji: string
+  color: string
+  ingredients: Array<{ name: string; unit: string; perServing: number }>
+  imagePath: string | null
+  createdAt: string | null
+}
+
 const emit = defineEmits<{
   close: []
-  import: [recipe: any]
+  import: [recipe: ImportedRecipe]
 }>()
 
 const input = ref('')
 const status = ref<'idle' | 'done' | 'error'>('idle')
 const errMsg = ref('')
-const preview = ref<any>(null)
+const preview = ref<ImportedRecipe | null>(null)
 const showPrompt = ref(false)
 const promptCopied = ref(false)
 
@@ -260,11 +265,14 @@ function parseRecipe() {
     if (Array.isArray(parsed.ingredients)) {
       ingredients = parsed.ingredients
     } else {
-      ingredients = Object.entries(parsed.ingredients).map(([name, val]: [string, any]) => ({
-        name,
-        unit: val.unit || 'pcs',
-        perServing: val.perServing || 0,
-      }))
+      ingredients = Object.entries(parsed.ingredients).map(([name, val]) => {
+        const v = val as Record<string, unknown>
+        return {
+          name,
+          unit: (v.unit as string) || 'pcs',
+          perServing: (v.perServing as number) || 0,
+        }
+      })
     }
 
     // Ensure "Imported" tag is present
@@ -281,6 +289,8 @@ function parseRecipe() {
       emoji: parsed.emoji || EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
       color: parsed.color || IMPORT_COLORS[Math.floor(Math.random() * IMPORT_COLORS.length)],
       ingredients,
+      imagePath: null,
+      createdAt: null,
     }
     status.value = 'done'
   } catch {

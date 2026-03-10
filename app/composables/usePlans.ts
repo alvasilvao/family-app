@@ -15,20 +15,12 @@ const loading = ref(false)
 
 export function usePlans() {
   const { authFetch } = useAuth()
-  const toast = useToast()
-
-  async function fetchPlans() {
-    loading.value = true
-    try {
-      plans.value = await authFetch<MealPlan[]>('/api/plans')
-    } catch (err) {
-      console.error('Failed to fetch plans:', err)
-      toast.error('Failed to load meal plans')
-      plans.value = []
-    } finally {
-      loading.value = false
-    }
-  }
+  const { fetch: fetchPlans } = useAsyncFetch<MealPlan>(
+    plans,
+    loading,
+    () => authFetch<MealPlan[]>('/api/plans'),
+    'Failed to load meal plans',
+  )
 
   async function createPlan(name: string, startDate: string, endDate: string): Promise<MealPlan> {
     const plan = await authFetch<MealPlan>('/api/plans', {

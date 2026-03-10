@@ -18,7 +18,7 @@ export function usePlan() {
       plan.value = data
       basket.value = (data.basket as Record<string, number>) || {}
       cooked.value = (data.cooked as Record<string, boolean>) || {}
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to fetch plan:', err)
       toast.error('Failed to load meal plan')
       plan.value = null
@@ -36,7 +36,7 @@ export function usePlan() {
           method: 'PUT',
           body: { basket: basket.value, cooked: cooked.value },
         })
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Failed to save plan:', err)
         toast.error('Failed to save plan changes')
       }

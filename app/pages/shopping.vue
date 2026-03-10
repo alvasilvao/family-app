@@ -39,15 +39,12 @@
       </form>
 
       <!-- Empty state -->
-      <div v-if="items.length === 0" class="empty-state">
-        <p class="empty-emoji">&#x1f6d2;</p>
-        <p class="empty-title">
-          Shopping list is empty
-        </p>
-        <p class="empty-subtitle">
-          Add items above to get started.
-        </p>
-      </div>
+      <EmptyState
+        v-if="items.length === 0"
+        emoji="&#x1f6d2;"
+        title="Shopping list is empty"
+        message="Add items above to get started."
+      />
 
       <!-- Items list -->
       <div v-else>
@@ -91,12 +88,7 @@
                 &#x2713; All done!
               </span>
             </div>
-            <div class="progress-track">
-              <div
-                class="progress-fill"
-                :style="{ width: `${(boughtCount / filteredItems.length) * 100}%` }"
-              />
-            </div>
+            <ProgressBar :value="boughtCount / filteredItems.length" />
           </div>
         </div>
 
@@ -117,23 +109,19 @@
         <!-- Grouped unbought items -->
         <template v-for="group in unboughtGroups" :key="group.label">
           <!-- Group header (only when there are multiple groups) -->
-          <div
+          <SectionHeader
             v-if="unboughtGroups.length > 1"
-            class="section-divider"
+            :label="group.label"
+            :count="group.items.length"
             style="padding: 10px 20px 4px"
           >
-            <span class="section-label">
-              {{ group.label }}
-            </span>
-            <div class="section-line" />
-            <span class="section-count">{{ group.items.length }}</span>
             <button
               class="check-all-btn"
               @click="handleBulkCheck(group.items)"
             >
               Check all
             </button>
-          </div>
+          </SectionHeader>
 
           <div
             v-for="item in group.items"
@@ -162,6 +150,7 @@
             <button
               v-if="canDelete(item)"
               class="del-btn delete-btn"
+              aria-label="Delete item"
               @click.stop="handleDelete(item.id)"
             >
               &times;
@@ -171,13 +160,7 @@
 
         <!-- Bought items -->
         <div v-if="boughtItems.length > 0">
-          <div class="section-divider" style="padding: 16px 20px 5px">
-            <span class="section-label">
-              Bought
-            </span>
-            <div class="section-line" />
-            <span class="section-count">{{ boughtItems.length }}</span>
-          </div>
+          <SectionHeader label="Bought" :count="boughtItems.length" style="padding: 16px 20px 5px" />
           <div v-for="item in boughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item)">
             <div style="display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0">
               <div class="checkbox-checked">
@@ -204,6 +187,7 @@
             <button
               v-if="canDelete(item)"
               class="del-btn delete-btn"
+              aria-label="Delete item"
               @click.stop="handleDelete(item.id)"
             >
               &times;

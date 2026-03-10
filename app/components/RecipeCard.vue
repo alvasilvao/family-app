@@ -81,6 +81,7 @@
             v-if="servings > 0"
             class="counter-btn counter-btn-circle"
             style="width: 34px; height: 34px; transition: all .18s"
+            aria-label="Remove serving"
             @click="$emit('remove', recipe.id)"
           >
             &minus;
@@ -100,6 +101,7 @@
               color: servings > 0 ? '#2d6a4f' : '#fff',
               transition: 'all .18s',
             }"
+            aria-label="Add serving"
             @click="$emit('add', recipe.id)"
           >
             +

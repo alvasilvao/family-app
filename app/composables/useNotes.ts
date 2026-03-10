@@ -14,20 +14,12 @@ const loading = ref(false)
 
 export function useNotes() {
   const { authFetch } = useAuth()
-  const toast = useToast()
-
-  async function fetchNotes() {
-    loading.value = true
-    try {
-      notes.value = await authFetch<Note[]>('/api/notes')
-    } catch (err) {
-      console.error('Failed to fetch notes:', err)
-      toast.error('Failed to load notes')
-      notes.value = []
-    } finally {
-      loading.value = false
-    }
-  }
+  const { fetch: fetchNotes } = useAsyncFetch<Note>(
+    notes,
+    loading,
+    () => authFetch<Note[]>('/api/notes'),
+    'Failed to load notes',
+  )
 
   async function createNote(title: string, body: string) {
     const note = await authFetch<Note>('/api/notes', {

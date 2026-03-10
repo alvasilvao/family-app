@@ -2,6 +2,7 @@ export default defineEventHandler(async (event) => {
   await requireAuth(event)
   const client = serverSupabaseClient(event)
   const id = getRouterParam(event, 'id')
+  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
 
   // Fetch current state
   const { data: existing, error: fetchError } = await client
