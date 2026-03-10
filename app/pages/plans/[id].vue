@@ -59,45 +59,104 @@
       </div>
     </div>
 
+    <!-- Confirm delete modal -->
+    <div
+      v-if="showDeleteConfirm"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0,0,0,.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      "
+      @click.self="showDeleteConfirm = false"
+    >
+      <div style="background: #fff; border-radius: 16px; padding: 24px; max-width: 340px; width: 100%; text-align: center">
+        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; margin-bottom: 8px">
+          Delete this plan?
+        </p>
+        <p style="font-size: 13px; color: #9b9590; margin-bottom: 20px">
+          This action cannot be undone.
+        </p>
+        <div style="display: flex; gap: 10px">
+          <button
+            style="flex: 1; background: #f5f0eb; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif"
+            @click="showDeleteConfirm = false"
+          >
+            Cancel
+          </button>
+          <button
+            style="flex: 1; background: #dc2626; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'DM Sans', sans-serif"
+            @click="handleDelete"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <PageHeader :title="plan?.name || 'Plan'" back-to="/plans">
       <template #right>
-        <button
-          v-if="!isClosed && plan?.status === 'open' && totalServings > 0"
-          style="
-            background: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #2d6a4f;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            box-shadow: 0 1px 4px rgba(0,0,0,.08);
-          "
-          @click="showCloseConfirm = true"
-        >
-          Close Plan
-        </button>
-        <button
-          v-else-if="isClosed"
-          style="
-            background: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #b45309;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            box-shadow: 0 1px 4px rgba(0,0,0,.08);
-          "
-          @click="handleReopen"
-        >
-          Reopen
-        </button>
+        <div style="display: flex; gap: 8px">
+          <button
+            v-if="plan"
+            style="
+              background: #fff;
+              border: none;
+              border-radius: 10px;
+              padding: 8px 14px;
+              font-size: 13px;
+              font-weight: 600;
+              color: #dc2626;
+              cursor: pointer;
+              font-family: 'DM Sans', sans-serif;
+              box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            "
+            @click="showDeleteConfirm = true"
+          >
+            Delete
+          </button>
+          <button
+            v-if="!isClosed && plan?.status === 'open' && totalServings > 0"
+            style="
+              background: #fff;
+              border: none;
+              border-radius: 10px;
+              padding: 8px 14px;
+              font-size: 13px;
+              font-weight: 600;
+              color: #2d6a4f;
+              cursor: pointer;
+              font-family: 'DM Sans', sans-serif;
+              box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            "
+            @click="showCloseConfirm = true"
+          >
+            Close Plan
+          </button>
+          <button
+            v-else-if="isClosed"
+            style="
+              background: #fff;
+              border: none;
+              border-radius: 10px;
+              padding: 8px 14px;
+              font-size: 13px;
+              font-weight: 600;
+              color: #b45309;
+              cursor: pointer;
+              font-family: 'DM Sans', sans-serif;
+              box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            "
+            @click="handleReopen"
+          >
+            Reopen
+          </button>
+        </div>
       </template>
     </PageHeader>
 
@@ -225,7 +284,7 @@ const route = useRoute()
 const planId = route.params.id as string
 
 const { recipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings } = useRecipes()
-const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan } = usePlan()
+const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan, deletePlan } = usePlan()
 
 const detailRecipeId = ref<string | null>(null)
 const detailRecipe = computed(() =>
@@ -235,6 +294,7 @@ const detailServings = computed(() =>
   detailRecipeId.value ? basket.value[detailRecipeId.value] || 1 : 1,
 )
 const showCloseConfirm = ref(false)
+const showDeleteConfirm = ref(false)
 const addToShopping = ref(true)
 
 const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop')
@@ -275,6 +335,16 @@ async function handleReopen() {
     await reopenPlan(planId)
   } catch (err) {
     console.error('Failed to reopen plan:', err)
+  }
+}
+
+async function handleDelete() {
+  showDeleteConfirm.value = false
+  try {
+    await deletePlan(planId)
+    navigateTo('/plans')
+  } catch (err) {
+    console.error('Failed to delete plan:', err)
   }
 }
 

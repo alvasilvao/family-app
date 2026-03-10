@@ -92,6 +92,15 @@ export function usePlan() {
     return data
   }
 
+  async function deletePlan(id: string) {
+    await authFetch(`/api/plans/${id}`, { method: 'DELETE' })
+    plan.value = null
+    basket.value = {}
+    cooked.value = {}
+    const { plans } = usePlans()
+    plans.value = plans.value.filter((p) => p.id !== id)
+  }
+
   const totalServings = computed(() =>
     Object.values(basket.value).reduce((a, b) => a + b, 0),
   )
@@ -106,6 +115,7 @@ export function usePlan() {
     toggleCooked,
     closePlan,
     reopenPlan,
+    deletePlan,
     totalServings,
   }
 }
