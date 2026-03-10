@@ -13,6 +13,9 @@ export function usePlan() {
 
   async function fetchPlan(id: string) {
     activePlanId = id
+    plan.value = null
+    basket.value = {}
+    cooked.value = {}
     try {
       const data = await authFetch<MealPlan>(`/api/plans/${id}`)
       plan.value = data

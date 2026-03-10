@@ -9,6 +9,7 @@ export function useAsyncFetch<T>(
   const toast = useToast()
 
   async function fetch() {
+    data.value = [] as unknown as T[]
     loading.value = true
     try {
       data.value = await fetchFn()
