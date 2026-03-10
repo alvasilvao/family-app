@@ -116,15 +116,131 @@
       </div>
 
       <div v-else>
+        <!-- To cook (closed view) -->
+        <div v-if="toCookRecipes.length > 0" style="margin-bottom: 16px">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+              To cook
+            </span>
+            <span style="font-size: 12px; color: #2d6a4f; font-weight: 600">{{ totalServings }} servings</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <div
+              v-for="sr in toCookRecipes"
+              :key="sr.recipe.id"
+              style="
+                background: #fff;
+                border-radius: 13px;
+                padding: 14px 16px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                opacity: 0.7;
+              "
+            >
+              <div
+                :style="{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: sr.recipe.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px',
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                }"
+                @click="viewRecipe(sr.recipe.id)"
+              >
+                {{ sr.recipe.emoji }}
+              </div>
+              <div style="flex: 1; min-width: 0; cursor: pointer" @click="viewRecipe(sr.recipe.id)">
+                <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
+                  {{ sr.recipe.name }}
+                </p>
+                <p style="font-size: 11.5px; color: #9b9590; margin-top: 2px">
+                  {{ sr.recipe.cookTime }} &middot; {{ sr.recipe.ingredients.length }} ingredients
+                </p>
+              </div>
+              <span style="font-size: 14px; font-weight: 700; color: #2d6a4f; min-width: 20px; text-align: center">
+                {{ sr.servings }}x
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cooked (closed view) -->
+        <div v-if="cookedRecipes.length > 0">
+          <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 10px">
+            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+              Cooked
+            </span>
+            <div style="flex: 1; height: 1px; background: #e8e2da" />
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <div
+              v-for="sr in cookedRecipes"
+              :key="sr.recipe.id"
+              style="
+                background: #fff;
+                border-radius: 13px;
+                padding: 14px 16px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                opacity: 0.5;
+              "
+            >
+              <div
+                :style="{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: sr.recipe.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px',
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                }"
+                @click="viewRecipe(sr.recipe.id)"
+              >
+                {{ sr.recipe.emoji }}
+              </div>
+              <div style="flex: 1; min-width: 0; cursor: pointer" @click="viewRecipe(sr.recipe.id)">
+                <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3; text-decoration: line-through; color: #9b9590">
+                  {{ sr.recipe.name }}
+                </p>
+                <p style="font-size: 11.5px; color: #9b9590; margin-top: 2px">
+                  {{ sr.recipe.cookTime }} &middot; {{ sr.recipe.ingredients.length }} ingredients
+                </p>
+              </div>
+              <span style="font-size: 14px; font-weight: 700; color: #9b9590; min-width: 20px; text-align: center">
+                {{ sr.servings }}x
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open plan: editable -->
+    <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+      <!-- To cook -->
+      <div v-if="toCookRecipes.length > 0" style="margin-bottom: 20px">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
           <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
-            Planned meals
+            To cook
           </span>
           <span style="font-size: 12px; color: #2d6a4f; font-weight: 600">{{ totalServings }} servings</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px">
           <div
-            v-for="sr in selectedRecipes"
+            v-for="sr in toCookRecipes"
             :key="sr.recipe.id"
             style="
               background: #fff;
@@ -134,9 +250,23 @@
               display: flex;
               align-items: center;
               gap: 14px;
-              opacity: 0.7;
             "
           >
+            <button
+              style="
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                border: 2px solid #d4cfc8;
+                background: #fff;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              @click="toggleCooked(sr.recipe.id)"
+            />
             <div
               :style="{
                 width: '48px',
@@ -162,27 +292,28 @@
                 {{ sr.recipe.cookTime }} &middot; {{ sr.recipe.ingredients.length }} ingredients
               </p>
             </div>
-            <span style="font-size: 14px; font-weight: 700; color: #2d6a4f; min-width: 20px; text-align: center">
-              {{ sr.servings }}x
-            </span>
+            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0">
+              <button class="counter-btn counter-btn-circle" @click="planRemove(sr.recipe.id)">&minus;</button>
+              <span style="font-size: 14px; font-weight: 700; color: #2d6a4f; min-width: 20px; text-align: center">
+                {{ sr.servings }}
+              </span>
+              <button class="counter-btn counter-btn-circle" @click="planAdd(sr.recipe.id)">+</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Open plan: editable -->
-    <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
-      <!-- Selected recipes summary -->
-      <div v-if="selectedRecipes.length > 0" style="margin-bottom: 20px">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+      <!-- Cooked -->
+      <div v-if="cookedRecipes.length > 0" style="margin-bottom: 20px">
+        <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 10px">
           <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
-            Planned meals
+            Cooked
           </span>
-          <span style="font-size: 12px; color: #2d6a4f; font-weight: 600">{{ totalServings }} servings</span>
+          <div style="flex: 1; height: 1px; background: #e8e2da" />
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px">
           <div
-            v-for="sr in selectedRecipes"
+            v-for="sr in cookedRecipes"
             :key="sr.recipe.id"
             style="
               background: #fff;
@@ -192,8 +323,30 @@
               display: flex;
               align-items: center;
               gap: 14px;
+              opacity: 0.6;
             "
           >
+            <button
+              style="
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                border: 2px solid #2d6a4f;
+                background: #2d6a4f;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 1;
+              "
+              @click="toggleCooked(sr.recipe.id)"
+            >
+              &#x2713;
+            </button>
             <div
               :style="{
                 width: '48px',
@@ -212,7 +365,7 @@
               {{ sr.recipe.emoji }}
             </div>
             <div style="flex: 1; min-width: 0; cursor: pointer" @click="viewRecipe(sr.recipe.id)">
-              <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
+              <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3; text-decoration: line-through; color: #9b9590">
                 {{ sr.recipe.name }}
               </p>
               <p style="font-size: 11.5px; color: #9b9590; margin-top: 2px">
