@@ -24,6 +24,7 @@ export interface RecipeData {
   instructions: string
   ingredients: Array<{ name: string; unit: string; perServing: number }>
   imagePath: string | null
+  createdAt: string | null
   stats?: RecipeStats
   rating?: RecipeRating
 }
@@ -47,6 +48,7 @@ function mapRecipe(row: any): RecipeData {
       perServing: ing.per_serving,
     })),
     imagePath: row.image_path || null,
+    createdAt: row.created_at || null,
   }
 }
 

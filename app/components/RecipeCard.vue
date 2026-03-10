@@ -28,6 +28,12 @@
       >
         {{ recipe.description }}
       </p>
+      <p
+        v-if="recipe.createdAt"
+        style="font-size: 10px; color: #b0a89e; margin: 0"
+      >
+        Added {{ formatDate(recipe.createdAt) }}
+      </p>
       <div v-if="recipe.stats" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
         <span
           v-if="recipe.cookTime"
@@ -118,4 +124,9 @@ defineEmits<{
   remove: [id: string]
   view: [id: string]
 }>()
+
+function formatDate(iso: string) {
+  const d = new Date(iso)
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 </script>
