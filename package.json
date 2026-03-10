@@ -7,7 +7,10 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@nuxtjs/supabase": "^2.0.4",
@@ -15,6 +18,11 @@
     "vue": "^3.5.29"
   },
   "devDependencies": {
-    "@vite-pwa/nuxt": "^1.1.1"
+    "@nuxt/eslint": "^1.15.2",
+    "@vite-pwa/nuxt": "^1.1.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1"
   }
 }

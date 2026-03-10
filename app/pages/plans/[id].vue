@@ -259,7 +259,7 @@ const route = useRoute()
 const planId = route.params.id as string
 
 const { recipes, loading: recipesLoading, fetchRecipes, fetchScores } = useRecipes()
-const { plan, basket, totalServings, fetchPlan, add: planAdd, remove: planRemove, closePlan, reopenPlan } = usePlan()
+const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan } = usePlan()
 
 const detailRecipeId = ref<string | null>(null)
 const detailRecipe = computed(() =>
@@ -285,6 +285,14 @@ const selectedRecipes = computed(() =>
       servings,
     }))
     .filter((x) => x.recipe),
+)
+
+const toCookRecipes = computed(() =>
+  selectedRecipes.value.filter((sr) => !cooked.value[sr.recipe.id]),
+)
+
+const cookedRecipes = computed(() =>
+  selectedRecipes.value.filter((sr) => cooked.value[sr.recipe.id]),
 )
 
 async function handleClose() {

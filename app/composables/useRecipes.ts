@@ -59,6 +59,7 @@ const loading = ref(true)
 
 export function useRecipes() {
   const { authFetch } = useAuth()
+  const toast = useToast()
 
   const userRecipes = computed(() => recipes.value.filter((r) => !r.isBuiltIn))
 
@@ -69,6 +70,7 @@ export function useRecipes() {
       recipes.value = data.map(mapRecipe)
     } catch (err) {
       console.error('Failed to fetch recipes:', err)
+      toast.error('Failed to load recipes')
     } finally {
       loading.value = false
     }
@@ -84,6 +86,7 @@ export function useRecipes() {
         .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
     } catch (err) {
       console.error('Failed to fetch scores:', err)
+      toast.error('Failed to load recipe scores')
     }
   }
 
@@ -96,6 +99,7 @@ export function useRecipes() {
       }))
     } catch (err) {
       console.error('Failed to fetch ratings:', err)
+      toast.error('Failed to load ratings')
     }
   }
 
@@ -119,7 +123,7 @@ export function useRecipes() {
       })
     } catch (err) {
       console.error('Failed to set rating:', err)
-      // Revert on error by refetching
+      toast.error('Failed to save rating')
       await fetchRatings()
     }
   }

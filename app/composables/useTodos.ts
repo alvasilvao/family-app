@@ -13,6 +13,7 @@ const loading = ref(false)
 
 export function useTodos() {
   const { authFetch } = useAuth()
+  const toast = useToast()
 
   async function fetchTodos() {
     loading.value = true
@@ -20,6 +21,7 @@ export function useTodos() {
       todos.value = await authFetch<Todo[]>('/api/todos')
     } catch (err) {
       console.error('Failed to fetch todos:', err)
+      toast.error('Failed to load todos')
       todos.value = []
     } finally {
       loading.value = false

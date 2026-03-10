@@ -11,13 +11,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'No image provided' })
   }
 
-  // Validate type and size
-  const mime = filePart.type || ''
-  if (!mime.startsWith('image/')) {
-    throw createError({ statusCode: 400, statusMessage: 'File must be an image' })
-  }
+  // Validate size
   if (filePart.data.length > 5 * 1024 * 1024) {
     throw createError({ statusCode: 400, statusMessage: 'Image must be under 5MB' })
+  }
+
+  // Validate image type via magic bytes (don't trust client-provided MIME)
+  const header = filePart.data.subarray(0, 12)
+  const isJPEG = header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF
+  const isPNG = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47
+  const isWebP = header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50
+  if (!isJPEG && !isPNG && !isWebP) {
+    throw createError({ statusCode: 400, statusMessage: 'File must be a JPEG, PNG, or WebP image' })
   }
 
   const storagePath = `${userId}/${id}.jpg`

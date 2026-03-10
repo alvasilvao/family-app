@@ -2,9 +2,11 @@ import type { MealPlan } from './usePlans'
 
 const plan = ref<MealPlan | null>(null)
 const basket = ref<Record<string, number>>({})
+const cooked = ref<Record<string, boolean>>({})
 
 export function usePlan() {
   const { authFetch } = useAuth()
+  const toast = useToast()
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
   let activePlanId = ''
@@ -15,10 +17,13 @@ export function usePlan() {
       const data = await authFetch<MealPlan>(`/api/plans/${id}`)
       plan.value = data
       basket.value = (data.basket as Record<string, number>) || {}
+      cooked.value = (data.cooked as Record<string, boolean>) || {}
     } catch (err) {
       console.error('Failed to fetch plan:', err)
+      toast.error('Failed to load meal plan')
       plan.value = null
       basket.value = {}
+      cooked.value = {}
     }
   }
 
@@ -29,10 +34,11 @@ export function usePlan() {
       try {
         await authFetch(`/api/plans/${planId}`, {
           method: 'PUT',
-          body: { basket: basket.value },
+          body: { basket: basket.value, cooked: cooked.value },
         })
       } catch (err) {
         console.error('Failed to save plan:', err)
+        toast.error('Failed to save plan changes')
       }
     }, 300)
   }
@@ -48,8 +54,22 @@ export function usePlan() {
       const newBasket = { ...basket.value }
       delete newBasket[id]
       basket.value = newBasket
+      const newCooked = { ...cooked.value }
+      delete newCooked[id]
+      cooked.value = newCooked
     } else {
       basket.value = { ...basket.value, [id]: count }
+    }
+    debouncedSave()
+  }
+
+  function toggleCooked(id: string) {
+    if (cooked.value[id]) {
+      const newCooked = { ...cooked.value }
+      delete newCooked[id]
+      cooked.value = newCooked
+    } else {
+      cooked.value = { ...cooked.value, [id]: true }
     }
     debouncedSave()
   }
@@ -76,9 +96,11 @@ export function usePlan() {
   return {
     plan,
     basket,
+    cooked,
     fetchPlan,
     add,
     remove,
+    toggleCooked,
     closePlan,
     reopenPlan,
     totalServings,

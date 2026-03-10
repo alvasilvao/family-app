@@ -4,6 +4,7 @@ export interface MealPlan {
   start_date: string
   end_date: string
   basket: Record<string, number>
+  cooked: Record<string, boolean>
   status: 'open' | 'closed' | 'closed_no_shop'
   created_at: string
   updated_at: string
@@ -14,6 +15,7 @@ const loading = ref(false)
 
 export function usePlans() {
   const { authFetch } = useAuth()
+  const toast = useToast()
 
   async function fetchPlans() {
     loading.value = true
@@ -21,6 +23,7 @@ export function usePlans() {
       plans.value = await authFetch<MealPlan[]>('/api/plans')
     } catch (err) {
       console.error('Failed to fetch plans:', err)
+      toast.error('Failed to load meal plans')
       plans.value = []
     } finally {
       loading.value = false

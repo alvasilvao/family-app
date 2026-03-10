@@ -4,7 +4,7 @@
     <PageHeader title="Shopping List" />
 
     <!-- Loading -->
-    <div v-if="loading" style="flex: 1; display: flex; align-items: center; justify-content: center">
+    <div v-if="loading" class="flex-center" style="flex: 1">
       <LoadingDots />
     </div>
 
@@ -39,12 +39,12 @@
       </form>
 
       <!-- Empty state -->
-      <div v-if="items.length === 0" style="text-align: center; padding: 60px 20px">
-        <p style="font-size: 32px; margin-bottom: 12px">&#x1f6d2;</p>
-        <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
+      <div v-if="items.length === 0" class="empty-state">
+        <p class="empty-emoji">&#x1f6d2;</p>
+        <p class="empty-title">
           Shopping list is empty
         </p>
-        <p style="font-size: 13px; color: #9b9590; line-height: 1.5">
+        <p class="empty-subtitle">
           Add items above to get started.
         </p>
       </div>
@@ -58,18 +58,7 @@
             <button
               v-for="opt in sortOptions"
               :key="opt.value"
-              :style="{
-                padding: '5px 12px',
-                borderRadius: '999px',
-                border: sortMode === opt.value ? '1.5px solid #2d6a4f' : '1.5px solid #e8e2db',
-                background: sortMode === opt.value ? '#e8f5ee' : '#fff',
-                color: sortMode === opt.value ? '#2d6a4f' : '#6b6560',
-                fontSize: '12px',
-                fontWeight: sortMode === opt.value ? 600 : 400,
-                cursor: 'pointer',
-                fontFamily: '\'DM Sans\', sans-serif',
-                transition: 'all .2s',
-              }"
+              :class="['pill', sortMode === opt.value ? 'pill-active' : '']"
               @click="sortMode = opt.value"
             >
               {{ opt.label }}
@@ -79,18 +68,7 @@
           <!-- Plan filter -->
           <div v-if="availablePlans.length > 0" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap">
             <button
-              :style="{
-                padding: '5px 12px',
-                borderRadius: '999px',
-                border: planFilter === 'all' ? '1.5px solid #b45309' : '1.5px solid #e8e2db',
-                background: planFilter === 'all' ? '#fef3c7' : '#fff',
-                color: planFilter === 'all' ? '#b45309' : '#6b6560',
-                fontSize: '12px',
-                fontWeight: planFilter === 'all' ? 600 : 400,
-                cursor: 'pointer',
-                fontFamily: '\'DM Sans\', sans-serif',
-                transition: 'all .2s',
-              }"
+              :class="['pill', 'pill-amber', planFilter === 'all' ? 'pill-amber-active' : '']"
               @click="planFilter = 'all'"
             >
               All plans
@@ -98,18 +76,7 @@
             <button
               v-for="p in availablePlans"
               :key="p.id"
-              :style="{
-                padding: '5px 12px',
-                borderRadius: '999px',
-                border: planFilter === p.id ? '1.5px solid #b45309' : '1.5px solid #e8e2db',
-                background: planFilter === p.id ? '#fef3c7' : '#fff',
-                color: planFilter === p.id ? '#b45309' : '#6b6560',
-                fontSize: '12px',
-                fontWeight: planFilter === p.id ? 600 : 400,
-                cursor: 'pointer',
-                fontFamily: '\'DM Sans\', sans-serif',
-                transition: 'all .2s',
-              }"
+              :class="['pill', 'pill-amber', planFilter === p.id ? 'pill-amber-active' : '']"
               @click="planFilter = p.id"
             >
               {{ p.name }}
@@ -118,21 +85,16 @@
 
           <!-- Progress -->
           <div v-if="boughtCount > 0">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px">
-              <span style="font-size: 11px; color: #9b9590">{{ boughtCount }} of {{ filteredItems.length }} bought</span>
-              <span v-if="boughtCount === filteredItems.length" style="font-size: 11px; color: #2d6a4f; font-weight: 600">
+            <div class="flex-between" style="margin-bottom: 4px">
+              <span class="text-xs text-muted">{{ boughtCount }} of {{ filteredItems.length }} bought</span>
+              <span v-if="boughtCount === filteredItems.length" class="text-xs" style="color: #2d6a4f; font-weight: 600">
                 &#x2713; All done!
               </span>
             </div>
-            <div style="height: 4px; background: #f0ebe4; border-radius: 999px">
+            <div class="progress-track">
               <div
-                :style="{
-                  height: '4px',
-                  background: '#2d6a4f',
-                  borderRadius: '999px',
-                  width: `${(boughtCount / filteredItems.length) * 100}%`,
-                  transition: 'width .3s',
-                }"
+                class="progress-fill"
+                :style="{ width: `${(boughtCount / filteredItems.length) * 100}%` }"
               />
             </div>
           </div>
@@ -144,7 +106,8 @@
           style="padding: 0 20px 8px; display: flex; justify-content: flex-end"
         >
           <button
-            style="background: none; border: 1.5px solid #d4ccc4; border-radius: 5px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif"
+            class="check-all-btn"
+            style="padding: 3px 10px; font-size: 11px"
             @click="handleBulkCheck(unboughtItems)"
           >
             Check all
@@ -156,15 +119,16 @@
           <!-- Group header (only when there are multiple groups) -->
           <div
             v-if="unboughtGroups.length > 1"
-            style="display: flex; align-items: center; gap: 7px; padding: 10px 20px 4px"
+            class="section-divider"
+            style="padding: 10px 20px 4px"
           >
-            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+            <span class="section-label">
               {{ group.label }}
             </span>
-            <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
-            <span style="font-size: 11px; color: #b0a89e">{{ group.items.length }}</span>
+            <div class="section-line" />
+            <span class="section-count">{{ group.items.length }}</span>
             <button
-              style="background: none; border: 1.5px solid #d4ccc4; border-radius: 5px; padding: 2px 8px; font-size: 10px; font-weight: 600; color: #9b9590; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap"
+              class="check-all-btn"
               @click="handleBulkCheck(group.items)"
             >
               Check all
@@ -179,16 +143,7 @@
             @click="handleToggle(item)"
           >
             <div style="display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0">
-              <div
-                style="
-                  width: 22px;
-                  height: 22px;
-                  border-radius: 5px;
-                  flex-shrink: 0;
-                  border: 1.5px solid #d4ccc4;
-                  background: #fff;
-                "
-              />
+              <div class="checkbox" />
               <div style="min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
                 <span style="font-size: 13.5px; color: #1a1a1a">{{ item.name }}</span>
                 <span
@@ -200,14 +155,13 @@
                 >{{ r.emoji }}</span>
                 <span
                   v-if="item.plan_name"
-                  style="display: inline-block; font-size: 10px; color: #7a9e7e; background: #e8f0e8; border-radius: 4px; padding: 1px 6px; vertical-align: middle; white-space: nowrap"
+                  class="plan-badge"
                 >{{ item.plan_name }}</span>
               </div>
             </div>
             <button
               v-if="canDelete(item)"
-              class="del-btn"
-              style="background: none; border: none; font-size: 16px; color: #b0a89e; cursor: pointer; padding: 4px 8px"
+              class="del-btn delete-btn"
               @click.stop="handleDelete(item.id)"
             >
               &times;
@@ -217,28 +171,16 @@
 
         <!-- Bought items -->
         <div v-if="boughtItems.length > 0">
-          <div style="display: flex; align-items: center; gap: 7px; padding: 16px 20px 5px">
-            <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
+          <div class="section-divider" style="padding: 16px 20px 5px">
+            <span class="section-label">
               Bought
             </span>
-            <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
-            <span style="font-size: 11px; color: #b0a89e">{{ boughtItems.length }}</span>
+            <div class="section-line" />
+            <span class="section-count">{{ boughtItems.length }}</span>
           </div>
           <div v-for="item in boughtItems" :key="item.id" class="ing-row" style="cursor: pointer" @click="handleToggle(item)">
             <div style="display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0">
-              <div
-                style="
-                  width: 22px;
-                  height: 22px;
-                  border-radius: 5px;
-                  flex-shrink: 0;
-                  border: 1.5px solid #2d6a4f;
-                  background: #2d6a4f;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
-              >
+              <div class="checkbox-checked">
                 <span style="color: #fff; font-size: 11px">&#x2713;</span>
               </div>
               <div style="min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
@@ -252,7 +194,7 @@
                 >{{ r.emoji }}</span>
                 <span
                   v-if="item.plan_name"
-                  style="display: inline-block; font-size: 10px; color: #a8bfa9; background: #f0f4f0; border-radius: 4px; padding: 1px 6px; vertical-align: middle; white-space: nowrap"
+                  class="plan-badge-faded"
                 >{{ item.plan_name }}</span>
                 <span style="font-size: 11px; color: #c8c0b8">
                   {{ formatBoughtDate(item.bought_at!) }}
@@ -261,8 +203,7 @@
             </div>
             <button
               v-if="canDelete(item)"
-              class="del-btn"
-              style="background: none; border: none; font-size: 16px; color: #b0a89e; cursor: pointer; padding: 4px 8px"
+              class="del-btn delete-btn"
               @click.stop="handleDelete(item.id)"
             >
               &times;
@@ -284,6 +225,7 @@
 <script setup lang="ts">
 import type { ShoppingItem } from '~/composables/useShopping'
 import type { RecipeData } from '~/composables/useRecipes'
+import { CATEGORY_ORDER, getIngredientName, categorize } from '~/utils/shoppingCategories'
 
 definePageMeta({ layout: false })
 
@@ -322,79 +264,7 @@ const filteredItems = computed(() => {
   return items.value.filter((i) => i.plan_id === planFilter.value || i.type === 'manual')
 })
 
-// --- Category mapping ---
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  'Produce': [
-    'tomato', 'onion', 'garlic', 'pepper', 'carrot', 'potato', 'lettuce', 'spinach',
-    'broccoli', 'zucchini', 'cucumber', 'celery', 'mushroom', 'avocado', 'lemon',
-    'lime', 'ginger', 'basil', 'cilantro', 'parsley', 'mint', 'thyme', 'rosemary',
-    'oregano', 'dill', 'chive', 'scallion', 'shallot', 'leek', 'cabbage', 'kale',
-    'arugula', 'beetroot', 'beet', 'radish', 'turnip', 'squash', 'pumpkin',
-    'eggplant', 'aubergine', 'corn', 'pea', 'bean sprout', 'spring onion',
-    'apple', 'banana', 'orange', 'berry', 'strawberr', 'blueberr', 'raspberr',
-    'mango', 'pineapple', 'grape', 'melon', 'watermelon', 'peach', 'pear',
-    'plum', 'cherry', 'fig', 'date', 'pomegranate', 'kiwi', 'papaya',
-    'fennel', 'artichoke', 'asparagus', 'chard', 'endive', 'watercress',
-    'coriander', 'sage', 'bay lea', 'tarragon', 'chili', 'jalape',
-  ],
-  'Dairy & Eggs': [
-    'milk', 'cheese', 'butter', 'cream', 'yogurt', 'yoghurt', 'egg',
-    'mozzarella', 'parmesan', 'cheddar', 'feta', 'ricotta', 'gouda',
-    'brie', 'mascarpone', 'sour cream', 'cr??me fra', 'creme frai',
-    'whipping cream', 'cottage cheese', 'cream cheese', 'quark',
-  ],
-  'Meat & Fish': [
-    'chicken', 'beef', 'pork', 'lamb', 'turkey', 'duck', 'veal',
-    'bacon', 'sausage', 'ham', 'salami', 'prosciutto', 'chorizo',
-    'mince', 'ground meat', 'steak', 'fillet', 'filet', 'thigh', 'breast',
-    'salmon', 'tuna', 'shrimp', 'prawn', 'cod', 'tilapia', 'trout',
-    'sardine', 'anchov', 'mussel', 'clam', 'squid', 'octopus', 'crab',
-    'lobster', 'mackerel', 'halibut', 'sea bass', 'haddock',
-  ],
-  'Grains & Bread': [
-    'rice', 'pasta', 'bread', 'flour', 'noodle', 'oat', 'cereal',
-    'tortilla', 'wrap', 'pita', 'couscous', 'quinoa', 'bulgur',
-    'barley', 'polenta', 'cornmeal', 'semolina', 'spaghetti',
-    'penne', 'fusilli', 'macaroni', 'lasagna', 'fettuccine',
-    'ramen', 'udon', 'soba', 'gnocchi', 'cracker', 'breadcrumb',
-    'panko', 'baguette', 'ciabatta', 'focaccia', 'sourdough',
-    'croissant', 'brioche', 'muesli', 'granola',
-  ],
-  'Pantry': [
-    'oil', 'vinegar', 'sauce', 'soy sauce', 'ketchup', 'mustard',
-    'mayonnaise', 'honey', 'sugar', 'salt', 'pepper', 'spice',
-    'cumin', 'paprika', 'turmeric', 'cinnamon', 'nutmeg', 'clove',
-    'curry', 'chili flake', 'red pepper flake', 'cayenne',
-    'vanilla', 'baking', 'yeast', 'cocoa', 'chocolate',
-    'can', 'tinned', 'tomato paste', 'passata', 'stock', 'broth',
-    'bouillon', 'coconut milk', 'coconut cream',
-    'nut', 'almond', 'walnut', 'cashew', 'peanut', 'pistachio',
-    'seed', 'sesame', 'sunflower', 'chia', 'flax', 'lentil',
-    'chickpea', 'bean', 'kidney', 'black bean', 'white bean',
-    'tahini', 'pesto', 'miso', 'fish sauce', 'oyster sauce',
-    'worcestershire', 'hot sauce', 'sriracha', 'sambal',
-    'jam', 'preserve', 'syrup', 'maple', 'molasses',
-    'cornstarch', 'corn starch', 'gelatine', 'gelatin',
-    'dried', 'canned', 'jarred',
-  ],
-}
-
-function getIngredientName(item: ShoppingItem): string {
-  // Plan items have format "Name - qty unit", manual items are just the name
-  if (item.type === 'plan') {
-    const dashIdx = item.name.lastIndexOf(' - ')
-    return dashIdx > 0 ? item.name.substring(0, dashIdx) : item.name
-  }
-  return item.name
-}
-
-function categorize(item: ShoppingItem): string {
-  const name = getIngredientName(item).toLowerCase()
-  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-    if (keywords.some((kw) => name.includes(kw))) return category
-  }
-  return 'Other'
-}
+// Category mapping imported from ~/utils/shoppingCategories
 
 interface ItemGroup {
   label: string
@@ -423,8 +293,7 @@ const unboughtGroups = computed<ItemGroup[]>(() => {
       groups[cat].push(item)
     }
     // Fixed order for categories
-    const order = ['Produce', 'Dairy & Eggs', 'Meat & Fish', 'Grains & Bread', 'Pantry', 'Other']
-    return order
+    return CATEGORY_ORDER
       .filter((cat) => groups[cat]?.length)
       .map((cat) => ({ label: cat, items: groups[cat]! }))
   }

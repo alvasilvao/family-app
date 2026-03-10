@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const basket = body.basket || {}
+  const cooked = body.cooked || {}
 
   // Validate basket: must be Record<string, number>
   if (typeof basket !== 'object' || Array.isArray(basket)) {
@@ -25,9 +26,22 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Validate cooked: must be Record<string, boolean>
+  if (typeof cooked !== 'object' || Array.isArray(cooked)) {
+    throw createError({ statusCode: 400, statusMessage: 'cooked must be an object' })
+  }
+  for (const [key, val] of Object.entries(cooked)) {
+    if (key.length > 100) {
+      throw createError({ statusCode: 400, statusMessage: 'cooked key too long' })
+    }
+    if (typeof val !== 'boolean') {
+      throw createError({ statusCode: 400, statusMessage: 'cooked values must be booleans' })
+    }
+  }
+
   const { data, error } = await client
     .from('meal_plans')
-    .update({ basket, updated_at: new Date().toISOString() })
+    .update({ basket, cooked, updated_at: new Date().toISOString() })
     .eq('id', id)
     .eq('status', 'open')
     .select()

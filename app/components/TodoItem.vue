@@ -11,7 +11,8 @@
   >
     <div style="display: flex; align-items: flex-start; gap: 11px">
       <!-- Checkbox -->
-      <div
+      <button
+        :aria-label="todo.completed_at ? `Mark '${todo.title}' as incomplete` : `Mark '${todo.title}' as complete`"
         :style="{
           width: '22px',
           height: '22px',
@@ -24,11 +25,12 @@
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
+          padding: 0,
         }"
         @click="$emit('toggle', todo.id)"
       >
         <span v-if="todo.completed_at" style="color: #fff; font-size: 11px">&#x2713;</span>
-      </div>
+      </button>
 
       <!-- Content -->
       <div style="flex: 1; min-width: 0">
@@ -122,6 +124,7 @@
       <!-- Delete button -->
       <button
         v-if="todo.created_by === userId"
+        :aria-label="`Delete '${todo.title}'`"
         style="
           background: none;
           border: none;
