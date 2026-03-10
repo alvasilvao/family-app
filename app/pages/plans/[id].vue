@@ -6,7 +6,7 @@
       :recipe="detailRecipe"
       :deletable="false"
       :editable="false"
-      @close="detailRecipe = null"
+      @close="detailRecipeId = null"
     />
 
     <!-- Confirm close modal -->
@@ -260,15 +260,17 @@ const planId = route.params.id as string
 const { recipes, loading: recipesLoading, fetchRecipes, fetchScores } = useRecipes()
 const { plan, basket, totalServings, fetchPlan, add: planAdd, remove: planRemove, closePlan, reopenPlan } = usePlan()
 
-const detailRecipe = ref<RecipeData | null>(null)
+const detailRecipeId = ref<string | null>(null)
+const detailRecipe = computed(() =>
+  detailRecipeId.value ? recipes.value.find((r) => r.id === detailRecipeId.value) ?? null : null,
+)
 const showCloseConfirm = ref(false)
 const addToShopping = ref(true)
 
 const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop')
 
 function viewRecipe(id: string) {
-  const recipe = recipes.value.find((r) => r.id === id)
-  if (recipe) detailRecipe.value = recipe
+  detailRecipeId.value = id
 }
 
 const selectedRecipes = computed(() =>

@@ -7,8 +7,8 @@
       :recipe="detailRecipe"
       :deletable="userRecipeIds.has(detailRecipe.id)"
       :editable="userRecipeIds.has(detailRecipe.id)"
-      @close="detailRecipe = null"
-      @delete="handleDelete($event); detailRecipe = null"
+      @close="detailRecipeId = null"
+      @delete="handleDelete($event); detailRecipeId = null"
       @update="handleUpdate($event)"
     />
 
@@ -119,7 +119,10 @@ definePageMeta({ layout: false })
 const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 
 const showAddRecipe = ref(false)
-const detailRecipe = ref<RecipeData | null>(null)
+const detailRecipeId = ref<string | null>(null)
+const detailRecipe = computed(() =>
+  detailRecipeId.value ? recipes.value.find((r) => r.id === detailRecipeId.value) ?? null : null,
+)
 const userRecipeIds = computed(() => new Set(userRecipes.value.map((r) => r.id)))
 
 const searchQuery = ref('')
@@ -194,8 +197,7 @@ const recipeGroups = computed<RecipeGroup[]>(() => {
 })
 
 function viewRecipe(id: string) {
-  const recipe = recipes.value.find((r) => r.id === id)
-  if (recipe) detailRecipe.value = recipe
+  detailRecipeId.value = id
 }
 
 onMounted(() => {
@@ -207,7 +209,7 @@ onMounted(() => {
 
 async function handleUpdate(recipe: RecipeData) {
   const updated = await updateRecipe(recipe.id, recipe)
-  detailRecipe.value = updated
+  detailRecipeId.value = updated.id
 }
 
 async function handleDelete(id: string) {
