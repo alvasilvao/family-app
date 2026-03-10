@@ -91,7 +91,7 @@
       <LoadingDots />
     </div>
 
-    <div v-else style="flex: 1; overflow: auto; padding: 16px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 16px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Empty state -->
       <div v-if="plans.length === 0 && !showForm" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1F4CB;</p>

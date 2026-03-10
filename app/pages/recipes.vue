@@ -44,7 +44,7 @@
     <!-- Content -->
     <div v-else style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Search + sort controls -->
-      <div style="padding: 16px 20px 0">
+      <div class="page-content-wide" style="padding: 16px 20px 0">
         <!-- Search -->
         <input
           v-model="searchQuery"
@@ -84,7 +84,7 @@
       </div>
 
       <!-- Flat grid (default / A-Z / search active) -->
-      <div v-else-if="recipeGroups.length <= 1" style="padding: 0 20px 22px">
+      <div v-else-if="recipeGroups.length <= 1" class="page-content-wide" style="padding: 0 20px 22px">
         <RecipeGrid
           :recipes="recipeGroups[0]?.items ?? []"
           @view="viewRecipe"
@@ -92,7 +92,7 @@
       </div>
 
       <!-- Grouped grid (by tag) -->
-      <div v-else style="padding: 0 20px 22px">
+      <div v-else class="page-content-wide" style="padding: 0 20px 22px">
         <div v-for="group in recipeGroups" :key="group.label" style="margin-bottom: 20px">
           <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 10px">
             <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">

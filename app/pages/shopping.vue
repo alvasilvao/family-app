@@ -8,7 +8,7 @@
       <LoadingDots />
     </div>
 
-    <div v-else style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Add item form -->
       <form style="padding: 16px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
         <input

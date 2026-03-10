@@ -106,7 +106,7 @@
     </div>
 
     <!-- Closed plan: read-only view -->
-    <div v-else-if="isClosed" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else-if="isClosed" class="page-content-wide" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <div v-if="selectedRecipes.length === 0" style="text-align: center; padding: 60px 20px">
         <p style="font-size: 32px; margin-bottom: 12px">&#x1F4CB;</p>
         <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #2a2520; margin-bottom: 6px">
@@ -170,7 +170,7 @@
     </div>
 
     <!-- Open plan: editable -->
-    <div v-else style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 22px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Selected recipes summary -->
       <div v-if="selectedRecipes.length > 0" style="margin-bottom: 20px">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">

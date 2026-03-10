@@ -7,7 +7,7 @@
       <LoadingDots />
     </div>
 
-    <div v-else style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Add form -->
       <form style="padding: 16px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
         <input
@@ -85,14 +85,17 @@
             <div style="flex: 1; height: 1px; background: #fecaca; margin-left: 4px" />
             <span style="font-size: 11px; color: #dc2626">{{ overdueTodos.length }}</span>
           </div>
-          <TodoItem
-            v-for="todo in overdueTodos"
-            :key="todo.id"
-            :todo="todo"
-            :user-id="user?.id"
-            @toggle="handleToggle"
-            @delete="handleDelete"
-          />
+          <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
+            <TodoItem
+              v-for="todo in overdueTodos"
+              :key="todo.id"
+              :todo="todo"
+              :user-id="user?.id"
+              @toggle="handleToggle"
+              @update="handleUpdate"
+              @delete="handleDelete"
+            />
+          </div>
         </template>
 
         <!-- Upcoming (with due date, not overdue) -->
@@ -104,14 +107,17 @@
             <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
             <span style="font-size: 11px; color: #b0a89e">{{ upcomingTodos.length }}</span>
           </div>
-          <TodoItem
-            v-for="todo in upcomingTodos"
-            :key="todo.id"
-            :todo="todo"
-            :user-id="user?.id"
-            @toggle="handleToggle"
-            @delete="handleDelete"
-          />
+          <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
+            <TodoItem
+              v-for="todo in upcomingTodos"
+              :key="todo.id"
+              :todo="todo"
+              :user-id="user?.id"
+              @toggle="handleToggle"
+              @update="handleUpdate"
+              @delete="handleDelete"
+            />
+          </div>
         </template>
 
         <!-- No due date -->
@@ -123,14 +129,17 @@
             <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
             <span style="font-size: 11px; color: #b0a89e">{{ noDueDateTodos.length }}</span>
           </div>
-          <TodoItem
-            v-for="todo in noDueDateTodos"
-            :key="todo.id"
-            :todo="todo"
-            :user-id="user?.id"
-            @toggle="handleToggle"
-            @delete="handleDelete"
-          />
+          <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
+            <TodoItem
+              v-for="todo in noDueDateTodos"
+              :key="todo.id"
+              :todo="todo"
+              :user-id="user?.id"
+              @toggle="handleToggle"
+              @update="handleUpdate"
+              @delete="handleDelete"
+            />
+          </div>
         </template>
 
         <!-- Completed -->
@@ -142,14 +151,17 @@
             <div style="flex: 1; height: 1px; background: #f0ebe4; margin-left: 4px" />
             <span style="font-size: 11px; color: #b0a89e">{{ completedTodos.length }}</span>
           </div>
-          <TodoItem
-            v-for="todo in completedTodos"
-            :key="todo.id"
-            :todo="todo"
-            :user-id="user?.id"
-            @toggle="handleToggle"
-            @delete="handleDelete"
-          />
+          <div style="padding: 6px 20px; display: flex; flex-direction: column; gap: 10px">
+            <TodoItem
+              v-for="todo in completedTodos"
+              :key="todo.id"
+              :todo="todo"
+              :user-id="user?.id"
+              @toggle="handleToggle"
+              @update="handleUpdate"
+              @delete="handleDelete"
+            />
+          </div>
         </template>
       </div>
     </div>
@@ -162,7 +174,7 @@ import type { Todo } from '~/composables/useTodos'
 definePageMeta({ layout: false })
 
 const { user } = useAuth()
-const { todos, loading, fetchTodos, addTodo, toggleTodo, deleteTodo } = useTodos()
+const { todos, loading, fetchTodos, addTodo, toggleTodo, updateTodo, deleteTodo } = useTodos()
 
 const newTitle = ref('')
 const newDueDate = ref('')
@@ -194,6 +206,10 @@ async function handleAdd() {
 
 async function handleToggle(id: string) {
   await toggleTodo(id)
+}
+
+async function handleUpdate(id: string, title: string, dueDate: string | null) {
+  await updateTodo(id, title, dueDate)
 }
 
 async function handleDelete(id: string) {

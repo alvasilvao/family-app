@@ -27,7 +27,7 @@
       <LoadingDots />
     </div>
 
-    <div v-else style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
+    <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Editor -->
       <div v-if="editing" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px">
         <input
@@ -42,7 +42,7 @@
           v-model="editBody"
           placeholder="Write your note..."
           class="form-input"
-          style="padding: 10px 14px; font-size: 14px; border-radius: 10px; min-height: 200px; resize: vertical; line-height: 1.6"
+          style="padding: 10px 14px; font-size: 16px; border-radius: 10px; min-height: 200px; resize: vertical; line-height: 1.6"
         />
         <div style="display: flex; gap: 10px">
           <button
@@ -105,7 +105,7 @@
       </div>
 
       <!-- Notes list -->
-      <div v-if="!editing" style="padding: 12px 20px; display: flex; flex-direction: column; gap: 10px">
+      <div v-if="!editing" class="notes-grid" style="padding: 12px 20px; display: grid; grid-template-columns: 1fr; gap: 10px">
         <div
           v-for="note in displayedNotes"
           :key="note.id"
@@ -115,48 +115,27 @@
             padding: '16px 18px',
             boxShadow: note.archived_at ? 'none' : '0 2px 10px rgba(0,0,0,.06)',
             opacity: note.archived_at ? 0.7 : 1,
+            cursor: 'pointer',
           }"
+          @click="openDetail(note)"
         >
           <div style="display: flex; align-items: flex-start; gap: 10px">
-            <div style="flex: 1; min-width: 0" @click="startEdit(note)">
+            <div style="flex: 1; min-width: 0">
               <p
                 v-if="note.title"
-                style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; cursor: pointer"
+                style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3; margin-bottom: 4px"
               >
                 {{ note.title }}
               </p>
               <p
-                style="font-size: 13px; color: #6b6560; line-height: 1.5; white-space: pre-wrap; cursor: pointer"
-                :style="{ display: '-webkit-box', '-webkit-line-clamp': expandedNotes.has(note.id) ? 'unset' : '4', '-webkit-box-orient': 'vertical', overflow: expandedNotes.has(note.id) ? 'visible' : 'hidden' }"
+                style="font-size: 13px; color: #6b6560; line-height: 1.5; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden"
               >{{ note.body }}</p>
-              <button
-                v-if="isLongNote(note) && !expandedNotes.has(note.id)"
-                style="background: none; border: none; font-size: 12px; color: #2d6a4f; cursor: pointer; padding: 4px 0 0; font-weight: 600; font-family: 'DM Sans', sans-serif"
-                @click.stop="expandedNotes.add(note.id)"
-              >
-                Show more
-              </button>
-              <button
-                v-if="expandedNotes.has(note.id)"
-                style="background: none; border: none; font-size: 12px; color: #2d6a4f; cursor: pointer; padding: 4px 0 0; font-weight: 600; font-family: 'DM Sans', sans-serif"
-                @click.stop="expandedNotes.delete(note.id)"
-              >
-                Show less
-              </button>
             </div>
             <div style="display: flex; gap: 4px; flex-shrink: 0">
               <button
-                v-if="!note.archived_at"
-                style="background: none; border: none; font-size: 14px; cursor: pointer; padding: 4px; color: #b0a89e"
-                title="Edit"
-                @click="startEdit(note)"
-              >
-                &#x270E;
-              </button>
-              <button
                 style="background: none; border: none; font-size: 14px; cursor: pointer; padding: 4px; color: #b0a89e"
                 :title="note.archived_at ? 'Unarchive' : 'Archive'"
-                @click="handleArchiveToggle(note)"
+                @click.stop="handleArchiveToggle(note)"
               >
                 {{ note.archived_at ? '&#x21A9;' : '&#x1F4E6;' }}
               </button>
@@ -164,6 +143,51 @@
           </div>
           <p style="font-size: 11px; color: #b0a89e; margin-top: 8px">
             {{ formatDate(note.updated_at) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note detail modal -->
+    <div v-if="viewingNote" class="modal-overlay" @click="viewingNote = null">
+      <div class="slide-up modal-panel" style="display: flex; flex-direction: column" @click.stop>
+        <div style="flex: 1; overflow-y: auto; padding: 20px 24px 24px">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px">
+            <h2
+              v-if="viewingNote.title"
+              style="font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; line-height: 1.3; flex: 1"
+            >
+              {{ viewingNote.title }}
+            </h2>
+            <div v-else style="flex: 1" />
+            <div style="display: flex; gap: 6px; margin-left: 12px; flex-shrink: 0">
+              <button
+                v-if="!viewingNote.archived_at"
+                style="
+                  background: #f5f0eb;
+                  border: none;
+                  border-radius: 50%;
+                  width: 36px;
+                  height: 36px;
+                  cursor: pointer;
+                  font-size: 15px;
+                  color: #6b6560;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+                @click="startEditFromModal"
+              >
+                &#x270E;
+              </button>
+              <button class="modal-close-btn" @click="viewingNote = null">
+                &times;
+              </button>
+            </div>
+          </div>
+          <p style="font-size: 14px; color: #4a4540; line-height: 1.65; white-space: pre-wrap">{{ viewingNote.body }}</p>
+          <p style="font-size: 11px; color: #b0a89e; margin-top: 16px">
+            {{ formatDate(viewingNote.updated_at) }}
           </p>
         </div>
       </div>
@@ -184,7 +208,7 @@ const editTitle = ref('')
 const editBody = ref('')
 const bodyInput = ref<HTMLTextAreaElement | null>(null)
 const showArchived = ref(false)
-const expandedNotes = reactive(new Set<string>())
+const viewingNote = ref<Note | null>(null)
 
 const activeNotes = computed(() => notes.value.filter((n) => !n.archived_at))
 const archivedNotes = computed(() => notes.value.filter((n) => n.archived_at))
@@ -193,8 +217,14 @@ const displayedNotes = computed(() => {
   return activeNotes.value
 })
 
-function isLongNote(note: Note) {
-  return note.body.split('\n').length > 4 || note.body.length > 200
+function openDetail(note: Note) {
+  viewingNote.value = note
+}
+
+function startEditFromModal() {
+  if (!viewingNote.value) return
+  startEdit(viewingNote.value)
+  viewingNote.value = null
 }
 
 function startNew() {

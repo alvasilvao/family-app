@@ -4,7 +4,7 @@
     <PageHeader title="Profile" />
 
     <!-- Content -->
-    <div style="flex: 1; overflow: auto; padding: 24px 20px calc(48px + env(safe-area-inset-bottom, 0px)); max-width: 480px; margin: 0 auto; width: 100%">
+    <div class="page-content-narrow" style="flex: 1; overflow: auto; padding: 24px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- User info -->
       <div
         style="

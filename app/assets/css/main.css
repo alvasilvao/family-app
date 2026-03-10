@@ -48,6 +48,23 @@ input::placeholder, textarea::placeholder { color: #b0a89e; }
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 }
 
+/* Responsive page container */
+.page-content { max-width: 600px; margin: 0 auto; width: 100%; }
+.page-content-wide { max-width: 960px; margin: 0 auto; width: 100%; }
+.page-content-narrow { max-width: 480px; margin: 0 auto; width: 100%; }
+
+@media (min-width: 640px) {
+  .page-content { max-width: 680px; }
+  .home-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .notes-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (min-width: 1024px) {
+  .page-content { max-width: 760px; }
+  .page-content-wide { max-width: 1100px; }
+  .notes-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
 /* Small screen adjustments */
 @media (max-width: 400px) {
   .card { font-size: 13px; }
