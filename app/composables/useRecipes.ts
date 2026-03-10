@@ -5,6 +5,12 @@ export interface RecipeStats {
   score: number
 }
 
+export interface RecipeRating {
+  userRating: number | null
+  avgRating: number
+  ratingCount: number
+}
+
 export interface RecipeData {
   id: string
   name: string
@@ -17,7 +23,9 @@ export interface RecipeData {
   sourceUrl: string
   instructions: string
   ingredients: Array<{ name: string; unit: string; perServing: number }>
+  imagePath: string | null
   stats?: RecipeStats
+  rating?: RecipeRating
 }
 
 /** Map snake_case DB row to camelCase frontend shape */
@@ -38,6 +46,7 @@ function mapRecipe(row: any): RecipeData {
       unit: ing.unit,
       perServing: ing.per_serving,
     })),
+    imagePath: row.image_path || null,
   }
 }
 
@@ -76,6 +85,43 @@ export function useRecipes() {
     }
   }
 
+  async function fetchRatings() {
+    try {
+      const ratings = await authFetch<Record<string, RecipeRating>>('/api/recipes/ratings')
+      recipes.value = recipes.value.map((r) => ({
+        ...r,
+        rating: ratings[r.id] || r.rating,
+      }))
+    } catch (err) {
+      console.error('Failed to fetch ratings:', err)
+    }
+  }
+
+  async function setRating(recipeId: string, rating: number) {
+    // Optimistic update
+    recipes.value = recipes.value.map((r) => {
+      if (r.id !== recipeId) return r
+      const prev = r.rating || { userRating: null, avgRating: 0, ratingCount: 0 }
+      const wasRated = prev.userRating !== null
+      const newCount = wasRated ? prev.ratingCount : prev.ratingCount + 1
+      const newAvg = wasRated
+        ? (prev.avgRating * prev.ratingCount - prev.userRating! + rating) / newCount
+        : (prev.avgRating * prev.ratingCount + rating) / newCount
+      return { ...r, rating: { userRating: rating, avgRating: Math.round(newAvg * 10) / 10, ratingCount: newCount } }
+    })
+
+    try {
+      await authFetch(`/api/recipes/${recipeId}/rating`, {
+        method: 'PUT',
+        body: { rating },
+      })
+    } catch (err) {
+      console.error('Failed to set rating:', err)
+      // Revert on error by refetching
+      await fetchRatings()
+    }
+  }
+
   async function addRecipe(recipe: Omit<RecipeData, 'id' | 'isBuiltIn'>) {
     const created = await authFetch<any>('/api/recipes', {
       method: 'POST',
@@ -96,6 +142,27 @@ export function useRecipes() {
     return mapped
   }
 
+  async function uploadRecipeImage(id: string, blob: Blob) {
+    const form = new FormData()
+    form.append('image', blob, 'image.jpg')
+    const updated = await authFetch<any>(`/api/recipes/${id}/image`, {
+      method: 'POST',
+      body: form,
+    })
+    const mapped = mapRecipe(updated)
+    recipes.value = recipes.value.map((r) => (r.id === id ? { ...r, imagePath: mapped.imagePath } : r))
+    return mapped
+  }
+
+  async function removeRecipeImage(id: string) {
+    const updated = await authFetch<any>(`/api/recipes/${id}/image`, {
+      method: 'DELETE',
+    })
+    const mapped = mapRecipe(updated)
+    recipes.value = recipes.value.map((r) => (r.id === id ? { ...r, imagePath: null } : r))
+    return mapped
+  }
+
   async function deleteRecipe(id: string) {
     await authFetch(`/api/recipes/${id}`, {
       method: 'DELETE',
@@ -109,8 +176,12 @@ export function useRecipes() {
     loading,
     fetchRecipes,
     fetchScores,
+    fetchRatings,
+    setRating,
     addRecipe,
     updateRecipe,
     deleteRecipe,
+    uploadRecipeImage,
+    removeRecipeImage,
   }
 }

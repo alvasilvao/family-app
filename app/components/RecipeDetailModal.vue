@@ -9,7 +9,7 @@
       @click.stop
     >
       <!-- Visual header -->
-      <FoodVisual :recipe="editing ? editForm : recipe" />
+      <FoodVisual :recipe="displayRecipe" />
 
       <!-- Scrollable content -->
       <div style="flex: 1; overflow-y: auto; padding: 20px 24px 24px">
@@ -57,6 +57,54 @@
           </div>
         </div>
 
+        <!-- Photo upload (editing) -->
+        <div v-if="editing" style="margin-bottom: 12px">
+          <label style="font-size: 11px; color: #9b9590; display: block; margin-bottom: 4px">Photo</label>
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            @change="onFileSelect"
+          />
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button
+              :disabled="imageUploading"
+              style="
+                font-size: 12.5px;
+                color: #2d6a4f;
+                background: #e8f5ee;
+                border: none;
+                border-radius: 8px;
+                padding: 6px 12px;
+                cursor: pointer;
+                font-family: 'DM Sans', sans-serif;
+                font-weight: 500;
+              "
+              @click="fileInputRef?.click()"
+            >
+              {{ imageUploading ? 'Uploading...' : (displayRecipe.imagePath ? 'Change photo' : 'Add photo') }}
+            </button>
+            <button
+              v-if="displayRecipe.imagePath && !imageUploading"
+              style="
+                font-size: 12.5px;
+                color: #c0392b;
+                background: #fdecea;
+                border: none;
+                border-radius: 8px;
+                padding: 6px 12px;
+                cursor: pointer;
+                font-family: 'DM Sans', sans-serif;
+                font-weight: 500;
+              "
+              @click="handleRemoveImage"
+            >
+              Remove photo
+            </button>
+          </div>
+        </div>
+
         <!-- Emoji (editing) -->
         <div v-if="editing" style="margin-bottom: 10px">
           <label style="font-size: 11px; color: #9b9590; display: block; margin-bottom: 4px">Emoji</label>
@@ -83,6 +131,17 @@
         <!-- Tags -->
         <div v-if="!editing && recipe.tags?.length" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px">
           <TagBadge v-for="t in recipe.tags" :key="t" :label="t" />
+        </div>
+
+        <!-- Rating -->
+        <div v-if="!editing" style="margin-bottom: 16px">
+          <RecipeRating
+            :user-rating="recipe.rating?.userRating ?? null"
+            :avg-rating="recipe.rating?.avgRating ?? null"
+            :rating-count="recipe.rating?.ratingCount ?? 0"
+            size="md"
+            @rate="handleRate"
+          />
         </div>
 
         <!-- Description -->
@@ -337,6 +396,7 @@
 
 <script setup lang="ts">
 import type { RecipeData } from '~/composables/useRecipes'
+import { compressImage } from '~/utils/compressImage'
 
 const props = defineProps<{
   recipe: RecipeData
@@ -350,8 +410,17 @@ const emit = defineEmits<{
   update: [recipe: RecipeData]
 }>()
 
+const { uploadRecipeImage, removeRecipeImage, setRating } = useRecipes()
+
+async function handleRate(value: number) {
+  await setRating(props.recipe.id, value)
+}
+
 const confirmingDelete = ref(false)
 const editing = ref(false)
+const imageUploading = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const localImagePath = ref<string | null>(null)
 const editForm = ref<Omit<RecipeData, 'id' | 'isBuiltIn'>>({
   name: '',
   cookTime: '',
@@ -362,6 +431,14 @@ const editForm = ref<Omit<RecipeData, 'id' | 'isBuiltIn'>>({
   sourceUrl: '',
   instructions: '',
   ingredients: [],
+  imagePath: null,
+})
+
+const displayRecipe = computed(() => {
+  if (editing.value) {
+    return { ...editForm.value, imagePath: localImagePath.value }
+  }
+  return { ...props.recipe, imagePath: localImagePath.value ?? props.recipe.imagePath }
 })
 
 const instructionSteps = computed(() =>
@@ -374,7 +451,36 @@ function formatQuantity(val: number): string {
   return Number.isInteger(val) ? String(val) : val.toFixed(1)
 }
 
+async function onFileSelect(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  imageUploading.value = true
+  try {
+    const blob = await compressImage(file)
+    const updated = await uploadRecipeImage(props.recipe.id, blob)
+    localImagePath.value = updated.imagePath
+  } catch (err) {
+    console.error('Image upload failed:', err)
+  } finally {
+    imageUploading.value = false
+    if (fileInputRef.value) fileInputRef.value.value = ''
+  }
+}
+
+async function handleRemoveImage() {
+  imageUploading.value = true
+  try {
+    await removeRecipeImage(props.recipe.id)
+    localImagePath.value = null
+  } catch (err) {
+    console.error('Image remove failed:', err)
+  } finally {
+    imageUploading.value = false
+  }
+}
+
 function startEditing() {
+  localImagePath.value = props.recipe.imagePath
   editForm.value = {
     name: props.recipe.name,
     cookTime: props.recipe.cookTime,
@@ -385,6 +491,7 @@ function startEditing() {
     sourceUrl: props.recipe.sourceUrl,
     instructions: props.recipe.instructions,
     ingredients: (props.recipe.ingredients || []).map(ing => ({ ...ing })),
+    imagePath: props.recipe.imagePath,
   }
   editing.value = true
 }

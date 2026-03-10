@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing recipe id' })
 
-  // Clean up storage image if exists
+  // Get current image_path
   const { data: recipe } = await client
     .from('recipes')
     .select('image_path')
@@ -12,12 +12,25 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (recipe?.image_path) {
+    // Delete from storage
     await client.storage.from('recipe-images').remove([recipe.image_path])
   }
 
-  // RLS ensures only own non-built-in recipes can be deleted
-  const { error } = await client.from('recipes').delete().eq('id', id)
-  if (error) throw createError({ statusCode: 500, statusMessage: error.message })
+  // Clear image_path on recipe
+  const { error: updateErr } = await client
+    .from('recipes')
+    .update({ image_path: null })
+    .eq('id', id)
+  if (updateErr) {
+    throw createError({ statusCode: 500, statusMessage: updateErr.message })
+  }
 
-  return { success: true }
+  // Return full recipe
+  const { data: full } = await client
+    .from('recipes')
+    .select('*, ingredients(*)')
+    .eq('id', id)
+    .single()
+
+  return full
 })
