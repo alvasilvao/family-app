@@ -116,7 +116,7 @@ import type { RecipeData } from '~/composables/useRecipes'
 
 definePageMeta({ layout: false })
 
-const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 
 const showAddRecipe = ref(false)
 const detailRecipe = ref<RecipeData | null>(null)
@@ -124,13 +124,14 @@ const userRecipeIds = computed(() => new Set(userRecipes.value.map((r) => r.id))
 
 const searchQuery = ref('')
 
-type SortMode = 'default' | 'alphabetical' | 'tag'
+type SortMode = 'default' | 'alphabetical' | 'tag' | 'rating'
 const sortMode = ref<SortMode>('default')
 
 const sortOptions: Array<{ label: string; value: SortMode }> = [
   { label: 'Default', value: 'default' },
   { label: 'A-Z', value: 'alphabetical' },
   { label: 'By tag', value: 'tag' },
+  { label: 'My rating', value: 'rating' },
 ]
 
 const filteredRecipes = computed(() => {
@@ -181,6 +182,13 @@ const recipeGroups = computed<RecipeGroup[]>(() => {
     return result
   }
 
+  if (sortMode.value === 'rating') {
+    const sorted = [...list].sort((a, b) =>
+      (b.rating?.userRating ?? 0) - (a.rating?.userRating ?? 0),
+    )
+    return [{ label: 'All', items: sorted }]
+  }
+
   // Default — keep score order from composable
   return [{ label: 'All', items: list }]
 })
@@ -191,7 +199,10 @@ function viewRecipe(id: string) {
 }
 
 onMounted(() => {
-  fetchRecipes().then(() => fetchScores())
+  fetchRecipes().then(() => {
+    fetchScores()
+    fetchRatings()
+  })
 })
 
 async function handleUpdate(recipe: RecipeData) {

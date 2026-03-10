@@ -53,6 +53,12 @@
         <span style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px; font-weight: 600">
           {{ recipe.stats.score }}
         </span>
+        <span
+          v-if="recipe.rating?.userRating"
+          style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px"
+        >
+          {{ '\u2605'.repeat(recipe.rating.userRating) }}{{ '\u2606'.repeat(5 - recipe.rating.userRating) }}
+        </span>
       </div>
       <div v-if="servings != null" style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px">
         <span
