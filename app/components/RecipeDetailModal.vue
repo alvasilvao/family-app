@@ -31,6 +31,7 @@
             <button
               v-if="editable && !editing"
               :disabled="imageUploading"
+              aria-label="Upload photo"
               style="
                 background: #f5f0eb;
                 border: none;
@@ -51,6 +52,7 @@
             <!-- Edit button -->
             <button
               v-if="editable && !editing"
+              aria-label="Edit recipe"
               style="
                 background: #f5f0eb;
                 border: none;
@@ -71,6 +73,7 @@
             <!-- Close button -->
             <button
               class="modal-close-btn"
+              aria-label="Close"
               @click="$emit('close')"
             >
               &times;
@@ -263,7 +266,7 @@
         </div>
         <div v-else-if="recipe.ingredients?.length">
           <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 10px">
-            Ingredients <span style="font-weight: 400; color: #9b9590; font-family: 'DM Sans', sans-serif; font-size: 12px">(per serving)</span>
+            Ingredients <span style="font-weight: 400; color: #9b9590; font-family: 'DM Sans', sans-serif; font-size: 12px">{{ displayServings > 1 ? `(for ${displayServings} servings)` : '(per serving)' }}</span>
           </h3>
           <div style="display: flex; flex-direction: column; gap: 0">
             <div
@@ -279,7 +282,7 @@
             >
               <span style="font-size: 13.5px; color: #2a2520">{{ ing.name }}</span>
               <span style="font-size: 12.5px; color: #9b9590; flex-shrink: 0; margin-left: 12px">
-                {{ formatQuantity(ing.perServing) }} {{ ing.unit }}
+                {{ formatQuantity(ing.perServing * displayServings) }} {{ ing.unit }}
               </span>
             </div>
           </div>
@@ -425,6 +428,7 @@ const props = defineProps<{
   recipe: RecipeData
   deletable?: boolean
   editable?: boolean
+  servings?: number
 }>()
 
 const emit = defineEmits<{
@@ -434,6 +438,7 @@ const emit = defineEmits<{
 }>()
 
 const { uploadRecipeImage, removeRecipeImage, setRating } = useRecipes()
+const toast = useToast()
 
 async function handleRate(value: number) {
   await setRating(props.recipe.id, value)
@@ -464,6 +469,8 @@ const displayRecipe = computed(() => {
   return { ...props.recipe, imagePath: localImagePath.value ?? props.recipe.imagePath }
 })
 
+const displayServings = computed(() => props.servings && props.servings > 1 ? props.servings : 1)
+
 const instructionSteps = computed(() =>
   props.recipe.instructions
     ? props.recipe.instructions.split('\n').map(s => s.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
@@ -484,6 +491,7 @@ async function onFileSelect(e: Event) {
     localImagePath.value = updated.imagePath
   } catch (err) {
     console.error('Image upload failed:', err)
+    toast.error('Image upload failed')
   } finally {
     imageUploading.value = false
     if (fileInputRef.value) fileInputRef.value.value = ''
@@ -497,6 +505,7 @@ async function handleRemoveImage() {
     localImagePath.value = null
   } catch (err) {
     console.error('Image remove failed:', err)
+    toast.error('Failed to remove image')
   } finally {
     imageUploading.value = false
   }

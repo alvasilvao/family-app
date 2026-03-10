@@ -6,6 +6,7 @@
       :recipe="detailRecipe"
       :deletable="false"
       :editable="false"
+      :servings="detailServings"
       @close="detailRecipeId = null"
     />
 
@@ -263,6 +264,9 @@ const { plan, basket, totalServings, fetchPlan, add: planAdd, remove: planRemove
 const detailRecipeId = ref<string | null>(null)
 const detailRecipe = computed(() =>
   detailRecipeId.value ? recipes.value.find((r) => r.id === detailRecipeId.value) ?? null : null,
+)
+const detailServings = computed(() =>
+  detailRecipeId.value ? basket.value[detailRecipeId.value] || 1 : 1,
 )
 const showCloseConfirm = ref(false)
 const addToShopping = ref(true)
