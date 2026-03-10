@@ -10,9 +10,62 @@
 
     <!-- Nav cards -->
     <div class="page-content" style="flex: 1; padding: 24px 20px; overflow: auto">
-      <div class="home-grid" style="display: grid; grid-template-columns: 1fr; gap: 14px">
+      <!-- Food section -->
+      <p style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 600; color: #9b9590; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; padding-left: 4px">
+        Food
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 14px">
         <NuxtLink
-          v-for="section in sections"
+          v-for="section in foodSections"
+          :key="section.to"
+          :to="section.to"
+          class="card fade-in"
+          :style="{
+            background: '#fff',
+            borderRadius: '16px',
+            padding: '22px 20px',
+            boxShadow: '0 2px 12px rgba(0,0,0,.06)',
+            textDecoration: 'none',
+            color: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            animationDelay: section.delay,
+          }"
+        >
+          <div
+            :style="{
+              width: '52px',
+              height: '52px',
+              borderRadius: '14px',
+              background: section.bg,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '26px',
+              flexShrink: 0,
+            }"
+          >
+            {{ section.icon }}
+          </div>
+          <div>
+            <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; line-height: 1.3">
+              {{ section.title }}
+            </p>
+            <p style="font-size: 13px; color: #9b9590; margin-top: 3px; line-height: 1.4">
+              {{ section.description }}
+            </p>
+          </div>
+        </NuxtLink>
+      </div>
+
+      <!-- Other section -->
+      <p style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 600; color: #9b9590; text-transform: uppercase; letter-spacing: .5px; margin: 24px 0 10px; padding-left: 4px">
+        Other
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 14px">
+        <NuxtLink
+          v-for="section in otherSections"
           :key="section.to"
           :to="section.to"
           class="card fade-in"
@@ -103,7 +156,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
-const sections = [
+const foodSections = [
   {
     to: '/recipes',
     icon: '\uD83C\uDF73',
@@ -128,6 +181,9 @@ const sections = [
     bg: '#e0e7ff',
     delay: '.12s',
   },
+]
+
+const otherSections = [
   {
     to: '/notes',
     icon: '\uD83D\uDCDD',
