@@ -23,7 +23,10 @@
     </PageHeader>
 
     <!-- New plan form -->
-    <div v-if="showForm" style="padding: 16px 20px; background: #fff; margin: 0 0 2px; box-shadow: 0 2px 8px rgba(0,0,0,.06)">
+    <div v-if="showForm" style="padding: 16px 20px; background: #fff; margin: 0 auto 2px; max-width: 480px; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,.06)">
+      <p style="font-size: 12.5px; color: #9b9590; line-height: 1.5; margin-bottom: 12px">
+        Pick the dates for your plan. After creating it, you'll add recipes and set servings. When you're done, close the plan to send ingredients to the shopping list.
+      </p>
       <form @submit.prevent="handleCreate" style="display: flex; flex-direction: column; gap: 10px">
         <div style="display: flex; gap: 10px">
           <div style="flex: 1">

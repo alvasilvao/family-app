@@ -4,7 +4,7 @@
         <div>
           <h2 style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700">Add a Recipe</h2>
           <p style="font-size: 13px; color: #9b9590; margin-top: 4px">
-            Paste a recipe as JSON to add it to your collection.
+            Use an AI to convert any recipe into the right format.
           </p>
         </div>
         <button
@@ -17,59 +17,88 @@
       </div>
 
       <div style="padding: 18px 24px 24px; display: flex; flex-direction: column; gap: 13px">
-        <!-- Copyable AI prompt -->
-        <div style="background: #f5f0eb; border-radius: 10px; overflow: hidden">
-          <button
-            style="
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding: 10px 14px;
-              background: none;
-              border: none;
-              cursor: pointer;
-              font-family: 'DM Sans', sans-serif;
-              font-size: 12.5px;
-              color: #6b6560;
-            "
-            @click="showPrompt = !showPrompt"
-          >
-            <span>Use this prompt with an AI to format your recipe</span>
-            <span style="font-size: 11px; transition: transform .2s" :style="{ transform: showPrompt ? 'rotate(180deg)' : '' }">&#x25BC;</span>
-          </button>
-          <div v-if="showPrompt" class="fade-in" style="padding: 0 14px 12px">
-            <div
-              style="
-                background: #fff;
-                border: 1.5px solid #e8e2db;
-                border-radius: 8px;
-                padding: 10px 12px;
-                font-size: 11.5px;
-                line-height: 1.6;
-                color: #4a4540;
-                white-space: pre-wrap;
-                max-height: 180px;
-                overflow-y: auto;
-              "
-            >{{ aiPromptText }}</div>
-            <button
-              style="
-                margin-top: 8px;
-                padding: 6px 14px;
-                border-radius: 7px;
-                background: #2d6a4f;
-                border: none;
-                color: #fff;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                font-family: 'DM Sans', sans-serif;
-              "
-              @click="copyPrompt"
-            >
-              {{ promptCopied ? 'Copied!' : 'Copy prompt' }}
-            </button>
+        <!-- Step-by-step instructions -->
+        <div style="background: #f5f0eb; border-radius: 10px; padding: 14px">
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <!-- Step 1 -->
+            <div style="display: flex; gap: 10px; align-items: flex-start">
+              <span style="background: #2d6a4f; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px">1</span>
+              <div style="flex: 1">
+                <p style="font-size: 12.5px; color: #4a4540; line-height: 1.5">
+                  Copy the prompt below and paste it into
+                  <strong>ChatGPT</strong>, <strong>Claude</strong>, or any AI.
+                </p>
+                <div style="margin-top: 8px">
+                  <button
+                    style="
+                      width: 100%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 8px 12px;
+                      background: #fff;
+                      border: 1.5px solid #e8e2db;
+                      border-radius: 8px;
+                      cursor: pointer;
+                      font-family: 'DM Sans', sans-serif;
+                      font-size: 11.5px;
+                      color: #6b6560;
+                    "
+                    @click="showPrompt = !showPrompt"
+                  >
+                    <span>{{ showPrompt ? 'Hide prompt' : 'Show prompt' }}</span>
+                    <span style="font-size: 10px; transition: transform .2s" :style="{ transform: showPrompt ? 'rotate(180deg)' : '' }">&#x25BC;</span>
+                  </button>
+                  <div v-if="showPrompt" class="fade-in" style="margin-top: 6px">
+                    <div
+                      style="
+                        background: #fff;
+                        border: 1.5px solid #e8e2db;
+                        border-radius: 8px;
+                        padding: 10px 12px;
+                        font-size: 11.5px;
+                        line-height: 1.6;
+                        color: #4a4540;
+                        white-space: pre-wrap;
+                        max-height: 140px;
+                        overflow-y: auto;
+                      "
+                    >{{ aiPromptText }}</div>
+                  </div>
+                  <button
+                    style="
+                      margin-top: 6px;
+                      padding: 6px 14px;
+                      border-radius: 7px;
+                      background: #2d6a4f;
+                      border: none;
+                      color: #fff;
+                      font-size: 12px;
+                      font-weight: 600;
+                      cursor: pointer;
+                      font-family: 'DM Sans', sans-serif;
+                    "
+                    @click="copyPrompt"
+                  >
+                    {{ promptCopied ? 'Copied!' : 'Copy prompt' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Step 2 -->
+            <div style="display: flex; gap: 10px; align-items: flex-start">
+              <span style="background: #2d6a4f; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px">2</span>
+              <p style="font-size: 12.5px; color: #4a4540; line-height: 1.5">
+                After the prompt, paste the recipe URL or text, then send.
+              </p>
+            </div>
+            <!-- Step 3 -->
+            <div style="display: flex; gap: 10px; align-items: flex-start">
+              <span style="background: #2d6a4f; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px">3</span>
+              <p style="font-size: 12.5px; color: #4a4540; line-height: 1.5">
+                Copy the JSON the AI gives you and paste it below.
+              </p>
+            </div>
           </div>
         </div>
 

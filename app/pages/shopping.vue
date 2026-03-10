@@ -9,8 +9,13 @@
     </div>
 
     <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
+      <!-- Explanation -->
+      <p style="padding: 14px 20px 0; font-size: 12.5px; color: #9b9590; line-height: 1.5">
+        Ingredients from closed meal plans appear here automatically. You can also add items manually.
+      </p>
+
       <!-- Add item form -->
-      <form style="padding: 16px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
+      <form style="padding: 12px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
         <input
           v-model="newItemName"
           type="text"
