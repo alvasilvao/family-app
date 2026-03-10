@@ -67,7 +67,7 @@
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
-          animationDelay: '.18s',
+          animationDelay: '.30s',
           marginTop: '6px',
         }"
       >
@@ -126,6 +126,22 @@ const sections = [
     description: 'Shared list for grocery shopping',
     bg: '#e0e7ff',
     delay: '.12s',
+  },
+  {
+    to: '/notes',
+    icon: '\uD83D\uDCDD',
+    title: 'Notes',
+    description: 'Shared notes for everyone',
+    bg: '#fef9c3',
+    delay: '.18s',
+  },
+  {
+    to: '/todos',
+    icon: '\u2705',
+    title: 'To-dos',
+    description: 'Shared tasks and to-do list',
+    bg: '#ede9fe',
+    delay: '.24s',
   },
 ]
 </script>
