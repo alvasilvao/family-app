@@ -27,6 +27,27 @@
             {{ recipe.name }}
           </h2>
           <div style="display: flex; gap: 6px; margin-left: 12px; flex-shrink: 0">
+            <!-- Camera button -->
+            <button
+              v-if="editable && !editing"
+              :disabled="imageUploading"
+              style="
+                background: #f5f0eb;
+                border: none;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                cursor: pointer;
+                font-size: 15px;
+                color: #6b6560;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+              @click="fileInputRef?.click()"
+            >
+              &#x1F4F7;
+            </button>
             <!-- Edit button -->
             <button
               v-if="editable && !editing"
@@ -57,16 +78,18 @@
           </div>
         </div>
 
+        <!-- Hidden file input (always in DOM for camera button + edit mode) -->
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept="image/*"
+          style="display: none"
+          @change="onFileSelect"
+        />
+
         <!-- Photo upload (editing) -->
         <div v-if="editing" style="margin-bottom: 12px">
           <label style="font-size: 11px; color: #9b9590; display: block; margin-bottom: 4px">Photo</label>
-          <input
-            ref="fileInputRef"
-            type="file"
-            accept="image/*"
-            style="display: none"
-            @change="onFileSelect"
-          />
           <div style="display: flex; gap: 8px; align-items: center">
             <button
               :disabled="imageUploading"
