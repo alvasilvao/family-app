@@ -28,10 +28,14 @@ export function useNotifications() {
       permission.value = perm
       if (perm !== 'granted') return
 
+      const vapidKey = config.public.vapidPublicKey
+      console.log('VAPID public key:', JSON.stringify(vapidKey))
+      console.log('VAPID key length:', typeof vapidKey === 'string' ? vapidKey.length : 'not a string')
+
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: config.public.vapidPublicKey,
+        applicationServerKey: vapidKey,
       })
 
       await authFetch('/api/notifications/subscribe', {
