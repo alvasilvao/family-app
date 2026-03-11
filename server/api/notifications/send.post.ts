@@ -60,6 +60,8 @@ export default defineEventHandler(async (event) => {
   )
 
   const sent = results.filter((r) => r.status === 'fulfilled').length
-  const failed = results.filter((r) => r.status === 'rejected').length
-  return { sent, failed }
+  const errors = results
+    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+    .map((r) => r.reason?.message || String(r.reason))
+  return { sent, failed: errors.length, errors }
 })
