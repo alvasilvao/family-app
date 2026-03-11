@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <g transform="translate(56, 56) scale(5.0)">
+    <!-- House body -->
+    <rect x="12" y="34" width="56" height="40" rx="3" stroke="#2d6a4f" stroke-width="4" fill="none"/>
+
+    <!-- Roof -->
+    <path d="M4 37 L40 6 L76 37" stroke="#2d6a4f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+    <!-- Heart in roof/center -->
+    <path d="M40 26 C40 26 32 14 26 17 C20 20 23 27 40 38 C57 27 60 20 54 17 C48 14 40 26 40 26Z" fill="#2d6a4f" opacity="0.85"/>
+
+    <!-- Door -->
+    <rect x="33" y="52" width="14" height="22" rx="2" stroke="#2d6a4f" stroke-width="3" fill="none"/>
+    <circle cx="43" cy="63" r="1.8" fill="#2d6a4f"/>
+
+    <!-- Window left -->
+    <rect x="16" y="42" width="12" height="12" rx="1.5" stroke="#2d6a4f" stroke-width="2.5" fill="none"/>
+    <line x1="22" y1="42" x2="22" y2="54" stroke="#2d6a4f" stroke-width="1.5" opacity="0.5"/>
+    <line x1="16" y1="48" x2="28" y2="48" stroke="#2d6a4f" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Window right -->
+    <rect x="52" y="42" width="12" height="12" rx="1.5" stroke="#2d6a4f" stroke-width="2.5" fill="none"/>
+    <line x1="58" y1="42" x2="58" y2="54" stroke="#2d6a4f" stroke-width="1.5" opacity="0.5"/>
+    <line x1="52" y1="48" x2="64" y2="48" stroke="#2d6a4f" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Chimney -->
+    <rect x="56" y="10" width="8" height="20" rx="1.5" stroke="#2d6a4f" stroke-width="2.5" fill="none"/>
+  </g>
+</svg>
