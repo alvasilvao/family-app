@@ -13,11 +13,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'TMDB API key not configured' })
   }
 
-  const url = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(search)}&include_adult=false&language=en-US&page=1`
+  const url = `https://api.themoviedb.org/3/search/multi?api_key=${config.tmdbApiKey}&query=${encodeURIComponent(search)}&include_adult=false&language=en-US&page=1`
 
-  const data = await $fetch<{ results: any[] }>(url, {
-    headers: { Authorization: `Bearer ${config.tmdbApiKey}` },
-  })
+  const data = await $fetch<{ results: any[] }>(url)
 
   // Filter to only movies and TV shows, return clean shape
   const results = (data.results || [])
