@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   const results = await Promise.allSettled(
     subscriptions.map((sub) =>
       webpush
-        .sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload)
+        .sendNotification({ endpoint: sub.endpoint, keys: { ...sub.keys } }, payload)
         .catch(async (err) => {
           // Remove invalid subscriptions (gone or expired)
           if (err.statusCode === 404 || err.statusCode === 410) {
