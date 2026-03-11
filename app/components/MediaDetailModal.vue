@@ -93,8 +93,7 @@
       <div style="display: flex; gap: 10px">
         <button
           style="
-            flex: 1;
-            padding: 14px;
+            padding: 10px 16px;
             border-radius: 12px;
             border: 1.5px solid #dc2626;
             background: #fff;
