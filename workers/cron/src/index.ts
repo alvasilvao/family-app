@@ -11,7 +11,8 @@ export default {
       fetch(url, { method: "POST" })
         .then(async (res) => {
           if (res.ok) {
-            console.log("Notifications sent successfully");
+            const data = await res.json();
+            console.log("Notifications sent:", JSON.stringify(data));
           } else {
             console.error(`Failed to send notifications: ${res.status} ${await res.text()}`);
           }
