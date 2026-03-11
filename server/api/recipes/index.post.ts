@@ -33,5 +33,11 @@ export default defineEventHandler(async (event) => {
     .eq('id', recipe.id)
     .single()
 
+  // Notify other users about the new recipe (fire and forget)
+  sendPushNotification(
+    { title: 'New Recipe', body: `${validated.name} was just added!`, url: `/recipes/${recipe.id}` },
+    userId,
+  ).catch(() => {})
+
   return full
 })
