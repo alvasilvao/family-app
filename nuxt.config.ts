@@ -60,7 +60,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
-    tmdbApiKey: process.env.TMDB_API_KEY || '',
+    tmdbApiKey: '',
     vapidPrivateKey: '',
     vapidEmail: '',
     cronSecret: '',
