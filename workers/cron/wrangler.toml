@@ -1,0 +1,10 @@
+name = "food-app-cron"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+[triggers]
+crons = ["0 12 * * 6"]  # Saturday 12:00 UTC = 13:00 CET
+
+[vars]
+APP_URL = "https://food-app-2gp.pages.dev"
+# CRON_SECRET set via `wrangler secret put CRON_SECRET`

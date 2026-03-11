@@ -1,0 +1,8 @@
+{
+  "name": "food-app-cron",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "wrangler": "^4.14.4"
+  }
+}
