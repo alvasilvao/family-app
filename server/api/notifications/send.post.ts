@@ -11,14 +11,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Invalid key' })
   }
 
-  const publicKey = String(config.public.vapidPublicKey)
-  const privateKey = String(config.vapidPrivateKey)
-  console.log('VAPID debug:', { publicKeyLen: publicKey.length, privateKeyLen: privateKey.length, publicKeyStart: publicKey.slice(0, 5), privateKeyStart: privateKey.slice(0, 5) })
-
   const vapid: VapidKeys = {
     subject: `mailto:${config.vapidEmail}`,
-    publicKey,
-    privateKey,
+    publicKey: String(config.public.vapidPublicKey),
+    privateKey: String(config.vapidPrivateKey),
   }
 
   // Use service role client to read all subscriptions (bypasses RLS)
@@ -64,8 +60,6 @@ export default defineEventHandler(async (event) => {
   )
 
   const sent = results.filter((r) => r.status === 'fulfilled').length
-  const errors = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map((r) => r.reason?.message || String(r.reason))
-  return { sent, failed: errors.length, errors }
+  const failed = results.filter((r) => r.status === 'rejected').length
+  return { sent, failed }
 })
