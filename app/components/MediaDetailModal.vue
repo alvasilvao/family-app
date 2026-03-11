@@ -104,9 +104,9 @@
             cursor: pointer;
             font-family: 'DM Sans', sans-serif;
           "
-          @click="$emit('delete', item.id)"
+          @click="confirmDelete"
         >
-          Remove
+          {{ deleteConfirming ? 'Tap again to confirm' : 'Remove' }}
         </button>
         <button
           style="
@@ -161,6 +161,22 @@ function setRating(rating: number | null) {
   localRating.value = rating
   emit('update', { id: props.item.id, rating })
 }
+
+const deleteConfirming = ref(false)
+let deleteTimer: ReturnType<typeof setTimeout> | null = null
+
+function confirmDelete() {
+  if (deleteConfirming.value) {
+    emit('delete', props.item.id)
+    return
+  }
+  deleteConfirming.value = true
+  deleteTimer = setTimeout(() => { deleteConfirming.value = false }, 3000)
+}
+
+onUnmounted(() => {
+  if (deleteTimer) clearTimeout(deleteTimer)
+})
 
 function saveNotes() {
   if (localNotes.value !== props.item.notes) {
