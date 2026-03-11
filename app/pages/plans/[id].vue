@@ -190,6 +190,7 @@
               :servings="sr.servings"
               :cooked="false"
               :plan-closed="true"
+              :show-cooked-toggle="true"
               @view="viewRecipe"
               @toggle-cooked="toggleCooked"
             />
@@ -207,6 +208,7 @@
               :servings="sr.servings"
               :cooked="true"
               :plan-closed="true"
+              :show-cooked-toggle="true"
               @view="viewRecipe"
               @toggle-cooked="toggleCooked"
             />
@@ -233,6 +235,7 @@
             :servings="sr.servings"
             :cooked="false"
             :plan-closed="false"
+            :show-cooked-toggle="true"
             @view="viewRecipe"
             @toggle-cooked="toggleCooked"
             @update-servings="planAdd"
@@ -252,6 +255,7 @@
             :servings="sr.servings"
             :cooked="true"
             :plan-closed="false"
+            :show-cooked-toggle="true"
             @view="viewRecipe"
             @toggle-cooked="toggleCooked"
             @update-servings="planAdd"
