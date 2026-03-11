@@ -1,6 +1,6 @@
-# Food Planner
+# Family App
 
-A collaborative meal planning app built with Nuxt 3 and Supabase. Manage recipes, plan meals, generate shopping lists, and share notes and to-dos with your household.
+A collaborative household app built with Nuxt 3 and Supabase. Manage recipes, plan meals, generate shopping lists, track media, and share notes and to-dos with your household.
 
 ## Features
 

@@ -40,6 +40,61 @@
         </div>
       </div>
 
+      <!-- Notifications -->
+      <div
+        v-if="notificationsSupported"
+        style="
+          background: #fff;
+          border-radius: 16px;
+          padding: 20px;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+          margin-bottom: 24px;
+        "
+      >
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div>
+            <p style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; line-height: 1.3">
+              Notifications
+            </p>
+            <p style="font-size: 13px; color: #9b9590; margin-top: 2px">
+              Weekly meal plan reminder
+            </p>
+          </div>
+          <button
+            :disabled="notificationsLoading"
+            :style="{
+              width: '52px',
+              height: '30px',
+              borderRadius: '15px',
+              border: 'none',
+              background: notificationsSubscribed ? '#2d6a4f' : '#d1ccc5',
+              position: 'relative',
+              cursor: notificationsLoading ? 'wait' : 'pointer',
+              transition: 'background .2s',
+              flexShrink: 0,
+            }"
+            @click="toggleNotifications"
+          >
+            <div
+              :style="{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: '#fff',
+                position: 'absolute',
+                top: '3px',
+                left: notificationsSubscribed ? '25px' : '3px',
+                transition: 'left .2s',
+                boxShadow: '0 1px 3px rgba(0,0,0,.2)',
+              }"
+            />
+          </button>
+        </div>
+        <p v-if="notificationsDenied" style="font-size: 12px; color: #c0392b; margin-top: 8px">
+          Notifications are blocked. Enable them in your browser settings.
+        </p>
+      </div>
+
       <!-- Sign out -->
       <button
         style="
@@ -67,4 +122,15 @@
 definePageMeta({ layout: false })
 
 const { user, signOut } = useAuth()
+
+const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, subscribe, unsubscribe } = useNotifications()
+const notificationsDenied = computed(() => permission.value === 'denied')
+
+function toggleNotifications() {
+  if (notificationsSubscribed.value) {
+    unsubscribe()
+  } else {
+    subscribe()
+  }
+}
 </script>

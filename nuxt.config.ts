@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/supabase', '@vite-pwa/nuxt', '@nuxt/eslint'],
 
   pwa: {
+    strategies: 'injectManifest',
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
     registerType: 'autoUpdate',
     manifest: {
       name: 'Family App',
@@ -33,29 +36,8 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
+    injectManifest: {
       globPatterns: ['**/*.{js,css,png,svg,ico,woff2}'],
-      navigateFallback: null,
-      runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'google-fonts-cache',
-            expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'gstatic-fonts-cache',
-            expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            cacheableResponse: { statuses: [0, 200] },
-          },
-        },
-      ],
     },
     client: {
       installPrompt: true,
@@ -79,6 +61,13 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     tmdbApiKey: process.env.TMDB_API_KEY || '',
+    vapidPrivateKey: '',
+    vapidEmail: '',
+    cronSecret: '',
+    supabaseServiceRoleKey: '',
+    public: {
+      vapidPublicKey: '',
+    },
   },
 
   nitro: {

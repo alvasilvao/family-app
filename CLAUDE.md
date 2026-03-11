@@ -1,4 +1,4 @@
-# Food App
+# Family App
 
 ## Database Migrations
 

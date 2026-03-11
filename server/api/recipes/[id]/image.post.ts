@@ -39,20 +39,27 @@ export default defineEventHandler(async (event) => {
   }
 
   // Update recipe row
-  const { error: updateErr } = await client
+  const { error: updateErr, count } = await client
     .from('recipes')
     .update({ image_path: storagePath })
     .eq('id', id)
+    .select('id', { count: 'exact', head: true })
   if (updateErr) {
     throw createError({ statusCode: 500, statusMessage: updateErr.message })
   }
+  if (count === 0) {
+    throw createError({ statusCode: 403, statusMessage: 'Cannot update this recipe (built-in or not owned by you)' })
+  }
 
   // Return full recipe
-  const { data: full } = await client
+  const { data: full, error: selectErr } = await client
     .from('recipes')
     .select('*, ingredients(*)')
     .eq('id', id)
     .single()
+  if (selectErr || !full) {
+    throw createError({ statusCode: 500, statusMessage: selectErr?.message ?? 'Failed to fetch updated recipe' })
+  }
 
   return full
 })
