@@ -10,14 +10,17 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Invalid key' })
   }
 
-  webpush.setVapidDetails(
-    `mailto:${config.vapidEmail}`,
-    config.public.vapidPublicKey as string,
-    config.vapidPrivateKey as string,
-  )
+  const vapidEmail = String(config.vapidEmail)
+  const vapidPublicKey = String(config.public.vapidPublicKey)
+  const vapidPrivateKey = String(config.vapidPrivateKey)
+
+  webpush.setVapidDetails(`mailto:${vapidEmail}`, vapidPublicKey, vapidPrivateKey)
 
   // Use service role client to read all subscriptions (bypasses RLS)
-  const supabase = createClient(config.public.supabase.url, config.supabaseServiceRoleKey as string)
+  const supabase = createClient(
+    String(config.public.supabase.url),
+    String(config.supabaseServiceRoleKey),
+  )
 
   const { data: subscriptions, error } = await supabase.from('push_subscriptions').select('*')
 
@@ -31,17 +34,17 @@ export default defineEventHandler(async (event) => {
   })
 
   const results = await Promise.allSettled(
-    subscriptions.map((sub) =>
-      webpush
-        .sendNotification({ endpoint: sub.endpoint, keys: { ...sub.keys } }, payload)
+    subscriptions.map((sub) => {
+      const subscription = JSON.parse(JSON.stringify(sub))
+      return webpush
+        .sendNotification({ endpoint: subscription.endpoint, keys: subscription.keys }, payload)
         .catch(async (err) => {
-          // Remove invalid subscriptions (gone or expired)
           if (err.statusCode === 404 || err.statusCode === 410) {
             await supabase.from('push_subscriptions').delete().eq('id', sub.id)
           }
           throw err
-        }),
-    ),
+        })
+    }),
   )
 
   const sent = results.filter((r) => r.status === 'fulfilled').length
