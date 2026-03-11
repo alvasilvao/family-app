@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
+  <!-- Icon: plate with leaf -->
+  <g transform="translate(8, 8)">
+    <!-- Plate (circle) -->
+    <circle cx="32" cy="32" r="28" stroke="#2d6a4f" stroke-width="3" fill="none"/>
+    <circle cx="32" cy="32" r="22" stroke="#2d6a4f" stroke-width="1.5" fill="none" opacity="0.3"/>
+
+    <!-- Fork and knife crossing -->
+    <!-- Fork -->
+    <g stroke="#2d6a4f" stroke-width="2" stroke-linecap="round">
+      <line x1="22" y1="20" x2="22" y2="44"/>
+      <line x1="18" y1="20" x2="18" y2="28"/>
+      <line x1="22" y1="20" x2="22" y2="28"/>
+      <line x1="26" y1="20" x2="26" y2="28"/>
+      <path d="M18 28 Q22 32 26 28" fill="none"/>
+    </g>
+
+    <!-- Knife -->
+    <g stroke="#2d6a4f" stroke-width="2" stroke-linecap="round">
+      <line x1="38" y1="20" x2="38" y2="44"/>
+      <path d="M38 20 Q43 24 43 30 Q43 33 38 34" fill="#2d6a4f" stroke="none" opacity="0.15"/>
+      <path d="M38 20 Q43 24 43 30 Q43 33 38 34" fill="none"/>
+    </g>
+
+    <!-- Small leaf accent -->
+    <g transform="translate(36, 14)">
+      <path d="M0 8 Q4 0 10 0 Q10 6 4 10 Z" fill="#4f6f52" opacity="0.7"/>
+      <line x1="0" y1="8" x2="8" y2="2" stroke="#2d6a4f" stroke-width="0.8" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- Text: "family" -->
+  <text x="80" y="42" font-family="'Fraunces', Georgia, serif" font-weight="600" font-size="32" fill="#2d6a4f" letter-spacing="-0.5">
+    family
+  </text>
+
+  <!-- Text: "app" lighter -->
+  <text x="80" y="62" font-family="'DM Sans', Helvetica, sans-serif" font-weight="400" font-size="16" fill="#4f6f52" letter-spacing="3">
+    APP
+  </text>
+</svg>
