@@ -121,7 +121,7 @@
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
-            animationDelay: '.30s',
+            animationDelay: '.36s',
           }"
         >
           <div
@@ -185,12 +185,20 @@ const foodSections = [
 
 const otherSections = [
   {
+    to: '/media',
+    icon: '\uD83C\uDFAC',
+    title: 'Watchlist',
+    description: 'Track movies and TV shows',
+    bg: '#fce7f3',
+    delay: '.18s',
+  },
+  {
     to: '/notes',
     icon: '\uD83D\uDCDD',
     title: 'Notes',
     description: 'Shared notes for everyone',
     bg: '#fef9c3',
-    delay: '.18s',
+    delay: '.24s',
   },
   {
     to: '/todos',
@@ -198,7 +206,7 @@ const otherSections = [
     title: 'To-dos',
     description: 'Shared tasks and to-do list',
     bg: '#ede9fe',
-    delay: '.24s',
+    delay: '.30s',
   },
 ]
 </script>
