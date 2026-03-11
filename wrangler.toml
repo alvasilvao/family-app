@@ -4,4 +4,4 @@ compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
 
 [vars]
-NUXT_PUBLIC_VAPID_PUBLIC_KEY = "BOR01zUBqHVoaH6qvfW1W-ABjFJguJ9cL9zJ0yglIdjkK27tVRHSX7jtXFDz254FcDkjqpwurfkZB90jPgyUxhU"
+NUXT_PUBLIC_VAPID_PUBLIC_KEY = "BMurhLl5RIhNqnh1klwkCEo28u9rVvhaG96ig_PBp3Kun3pLZTLKfV4sC2YYXQ9on-si7zA5JaO0MGzDGZVXr-8"
