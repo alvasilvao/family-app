@@ -11,6 +11,11 @@
       position: 'relative',
     }"
   >
+    <!-- Image header -->
+    <div style="cursor: pointer" @click="$emit('view', recipe.id)">
+      <FoodVisual :recipe="recipe" :size="130" />
+    </div>
+
     <div style="padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 7px">
       <div style="display: flex; flex-wrap: wrap; gap: 4px">
         <TagBadge v-for="t in recipe.tags" :key="t" :label="t" />
@@ -19,7 +24,7 @@
         style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; line-height: 1.3; cursor: pointer; display: flex; align-items: center; gap: 6px"
         @click="$emit('view', recipe.id)"
       >
-        <span style="font-size: 20px">{{ recipe.emoji }}</span>
+        <span v-if="!recipe.imagePath" style="font-size: 20px">{{ recipe.emoji }}</span>
         {{ recipe.name }}
       </h3>
       <p
