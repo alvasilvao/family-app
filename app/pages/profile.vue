@@ -93,6 +93,9 @@
         <p v-if="notificationsDenied" style="font-size: 12px; color: #c0392b; margin-top: 8px">
           Notifications are blocked. Enable them in your browser settings.
         </p>
+        <p v-if="notificationsError" style="font-size: 12px; color: #c0392b; margin-top: 8px">
+          {{ notificationsError }}
+        </p>
       </div>
 
       <!-- Sign out -->
@@ -123,7 +126,7 @@ definePageMeta({ layout: false })
 
 const { user, signOut } = useAuth()
 
-const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, subscribe, unsubscribe } = useNotifications()
+const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, error: notificationsError, subscribe, unsubscribe } = useNotifications()
 const notificationsDenied = computed(() => permission.value === 'denied')
 
 function toggleNotifications() {

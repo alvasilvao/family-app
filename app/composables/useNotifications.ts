@@ -8,6 +8,7 @@ export function useNotifications() {
   const isSubscribed = ref(false)
   const isSupported = ref(false)
   const loading = ref(false)
+  const error = ref<string | null>(null)
 
   onMounted(async () => {
     isSupported.value = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window
@@ -21,6 +22,7 @@ export function useNotifications() {
   async function subscribe() {
     if (!isSupported.value) return
     loading.value = true
+    error.value = null
     try {
       const perm = await Notification.requestPermission()
       permission.value = perm
@@ -38,6 +40,9 @@ export function useNotifications() {
       })
 
       isSubscribed.value = true
+    } catch (err: unknown) {
+      console.error('Failed to subscribe to notifications:', err)
+      error.value = err instanceof Error ? err.message : 'Failed to enable notifications'
     } finally {
       loading.value = false
     }
@@ -45,6 +50,7 @@ export function useNotifications() {
 
   async function unsubscribe() {
     loading.value = true
+    error.value = null
     try {
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.getSubscription()
@@ -56,10 +62,13 @@ export function useNotifications() {
         await sub.unsubscribe()
       }
       isSubscribed.value = false
+    } catch (err: unknown) {
+      console.error('Failed to unsubscribe from notifications:', err)
+      error.value = err instanceof Error ? err.message : 'Failed to disable notifications'
     } finally {
       loading.value = false
     }
   }
 
-  return { permission, isSubscribed, isSupported, loading, subscribe, unsubscribe }
+  return { permission, isSubscribed, isSupported, loading, error, subscribe, unsubscribe }
 }
