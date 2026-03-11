@@ -20,12 +20,12 @@
         text-align: center;
       "
     >
-      <div style="font-size: 48px; margin-bottom: 16px">&#x1f96b;</div>
+      <div style="font-size: 48px; margin-bottom: 16px">&#x1F3E0;</div>
       <h1 style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; margin-bottom: 8px">
-        Food Planner
+        Family App
       </h1>
       <p style="color: #9b9590; font-size: 14px; margin-bottom: 28px">
-        Plan your weekly meals and generate grocery lists
+        Organize meals, tasks, and more for the family
       </p>
 
       <form @submit.prevent="handleSubmit" style="display: flex; flex-direction: column; gap: 12px">

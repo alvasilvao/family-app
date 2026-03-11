@@ -3,9 +3,9 @@
     <!-- Header -->
     <div style="background: #2d6a4f; padding: calc(40px + env(safe-area-inset-top, 0px)) 24px 36px; text-align: center">
       <h1 style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 4px">
-        Food Planner
+        Family App
       </h1>
-      <p style="font-size: 13px; color: rgba(255,255,255,.65)">Plan meals, shop smarter</p>
+      <p style="font-size: 13px; color: rgba(255,255,255,.65)">Organize everything together</p>
     </div>
 
     <!-- Nav cards -->

@@ -8,9 +8,9 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Food Planner',
-      short_name: 'Food Planner',
-      description: 'Weekly meal planning for the family',
+      name: 'Family App',
+      short_name: 'Family App',
+      description: 'Organize meals, tasks, and more for the family',
       theme_color: '#4f6f52',
       background_color: '#faf6f1',
       display: 'standalone',
@@ -87,7 +87,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Food Planner',
+      title: 'Family App',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
