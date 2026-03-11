@@ -11,10 +11,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Invalid key' })
   }
 
+  const publicKey = String(config.public.vapidPublicKey)
+  const privateKey = String(config.vapidPrivateKey)
+  console.log('VAPID debug:', { publicKeyLen: publicKey.length, privateKeyLen: privateKey.length, publicKeyStart: publicKey.slice(0, 5), privateKeyStart: privateKey.slice(0, 5) })
+
   const vapid: VapidKeys = {
     subject: `mailto:${config.vapidEmail}`,
-    publicKey: String(config.public.vapidPublicKey),
-    privateKey: String(config.vapidPrivateKey),
+    publicKey,
+    privateKey,
   }
 
   // Use service role client to read all subscriptions (bypasses RLS)
