@@ -39,31 +39,39 @@
       >
         Added {{ formatDate(recipe.createdAt) }}
       </p>
-      <div v-if="recipe.stats" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
+      <div v-if="recipe.stats || totalCalories > 0" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
+        <span
+          v-if="totalCalories > 0"
+          style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+        >
+          ~{{ Math.round(totalCalories) }} kcal
+        </span>
         <span
           v-if="recipe.cookTime"
           style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
         >
           {{ recipe.cookTime }}
         </span>
-        <span style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px">
-          {{ recipe.stats.totalCount }}x cooked
-        </span>
-        <span
-          v-if="recipe.stats.lastUsedDate"
-          style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
-        >
-          {{ recipe.stats.weeksSinceLast === 0 ? 'this week' : recipe.stats.weeksSinceLast === 1 ? '1 week ago' : `${recipe.stats.weeksSinceLast}w ago` }}
-        </span>
-        <span
-          v-else
-          style="font-size: 10px; color: #b0a89e; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
-        >
-          never cooked
-        </span>
-        <span style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px; font-weight: 600">
-          {{ recipe.stats.score }}
-        </span>
+        <template v-if="recipe.stats">
+          <span style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px">
+            {{ recipe.stats.totalCount }}x cooked
+          </span>
+          <span
+            v-if="recipe.stats.lastUsedDate"
+            style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+          >
+            {{ recipe.stats.weeksSinceLast === 0 ? 'this week' : recipe.stats.weeksSinceLast === 1 ? '1 week ago' : `${recipe.stats.weeksSinceLast}w ago` }}
+          </span>
+          <span
+            v-else
+            style="font-size: 10px; color: #b0a89e; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+          >
+            never cooked
+          </span>
+          <span style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px; font-weight: 600">
+            {{ recipe.stats.score }}
+          </span>
+        </template>
         <span
           v-if="recipe.rating?.userRating"
           style="font-size: 10px; color: #2d6a4f; background: #e8f5ee; border-radius: 999px; padding: 2px 8px"
@@ -121,7 +129,7 @@
 <script setup lang="ts">
 import type { RecipeData } from '~/composables/useRecipes'
 
-defineProps<{
+const props = defineProps<{
   recipe: RecipeData
   servings?: number
 }>()
@@ -131,6 +139,10 @@ defineEmits<{
   remove: [id: string]
   view: [id: string]
 }>()
+
+const totalCalories = computed(() =>
+  props.recipe.ingredients?.reduce((sum, ing) => sum + (ing.calories ?? 0), 0) ?? 0,
+)
 
 function formatDate(iso: string) {
   const d = new Date(iso)
