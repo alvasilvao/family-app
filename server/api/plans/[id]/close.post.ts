@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (planError || !plan) throw createError({ statusCode: 404, statusMessage: 'Plan not found' })
-  if (plan.status !== 'open') throw createError({ statusCode: 400, statusMessage: 'Plan is already closed' })
+  if (plan.status !== 'open') throw createError({ statusCode: 400, statusMessage: plan.status === 'cooked' ? 'Plan is already cooked' : 'Plan is already closed' })
 
   // Mark plan as closed
   const status = addToShopping ? 'closed' : 'closed_no_shop'

@@ -39,11 +39,31 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Fetch current plan to check status transitions
+  const { data: current, error: fetchError } = await client
+    .from('meal_plans')
+    .select('status')
+    .eq('id', id)
+    .single()
+
+  if (fetchError || !current) throw createError({ statusCode: 400, statusMessage: 'Plan not found' })
+
+  // Determine if all recipes are cooked
+  const activeRecipeIds = Object.entries(basket).filter(([, v]) => (v as number) > 0).map(([k]) => k)
+  const allCooked = activeRecipeIds.length > 0 && activeRecipeIds.every((rid) => cooked[rid])
+
+  // Auto-transition status
+  let status = current.status
+  if (allCooked && (status === 'closed' || status === 'closed_no_shop')) {
+    status = 'cooked'
+  } else if (!allCooked && status === 'cooked') {
+    status = 'closed'
+  }
+
   const { data, error } = await client
     .from('meal_plans')
-    .update({ basket, cooked, updated_at: new Date().toISOString() })
+    .update({ basket, cooked, status, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .in('status', ['open', 'closed', 'closed_no_shop'])
     .select()
     .single()
 

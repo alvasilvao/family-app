@@ -301,7 +301,7 @@ const showCloseConfirm = ref(false)
 const showDeleteConfirm = ref(false)
 const addToShopping = ref(true)
 
-const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop')
+const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop' || plan.value?.status === 'cooked')
 
 function viewRecipe(id: string) {
   detailRecipeId.value = id

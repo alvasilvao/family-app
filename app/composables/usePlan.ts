@@ -35,10 +35,13 @@ export function usePlan() {
     const planId = activePlanId
     saveTimeout = setTimeout(async () => {
       try {
-        await authFetch(`/api/plans/${planId}`, {
+        const data = await authFetch<MealPlan>(`/api/plans/${planId}`, {
           method: 'PUT',
           body: { basket: basket.value, cooked: cooked.value },
         })
+        if (plan.value && data.status !== plan.value.status) {
+          plan.value = { ...plan.value, status: data.status }
+        }
       } catch (err: unknown) {
         console.error('Failed to save plan:', err)
         toast.error('Failed to save plan changes')

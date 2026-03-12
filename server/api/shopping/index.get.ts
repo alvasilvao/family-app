@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     client
       .from('meal_plans')
       .select('id, name, basket, bought_ingredients')
-      .eq('status', 'closed')
+      .in('status', ['closed', 'cooked'])
       .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
   ])
 

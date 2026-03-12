@@ -156,11 +156,11 @@
                 padding: '3px 10px',
                 borderRadius: '999px',
                 flexShrink: 0,
-                background: p.status === 'open' ? '#d1fae5' : '#f3f0ed',
-                color: p.status === 'open' ? '#2d6a4f' : '#9b9590',
+                background: p.status === 'open' ? '#d1fae5' : p.status === 'cooked' ? '#fef3c7' : '#f3f0ed',
+                color: p.status === 'open' ? '#2d6a4f' : p.status === 'cooked' ? '#92400e' : '#9b9590',
               }"
             >
-              {{ p.status === 'open' ? 'Open' : 'Closed' }}
+              {{ p.status === 'open' ? 'Open' : p.status === 'cooked' ? 'Cooked' : 'Closed' }}
             </span>
           </NuxtLink>
         </div>
@@ -202,17 +202,17 @@
               </p>
             </div>
             <span
-              style="
-                font-size: 11px;
-                font-weight: 700;
-                padding: 3px 10px;
-                border-radius: 999px;
-                flex-shrink: 0;
-                background: #f3f0ed;
-                color: #9b9590;
-              "
+              :style="{
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '3px 10px',
+                borderRadius: '999px',
+                flexShrink: 0,
+                background: p.status === 'cooked' ? '#fef3c7' : '#f3f0ed',
+                color: p.status === 'cooked' ? '#92400e' : '#9b9590',
+              }"
             >
-              Closed
+              {{ p.status === 'cooked' ? 'Cooked' : 'Closed' }}
             </span>
           </NuxtLink>
         </div>
