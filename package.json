@@ -17,6 +17,7 @@
     "@block65/webcrypto-web-push": "^1.0.2",
     "@nuxtjs/supabase": "^2.0.4",
     "nuxt": "^4.3.1",
+    "openai": "^6.27.0",
     "vue": "^3.5.29",
     "web-push": "^3.6.7"
   },
