@@ -14,8 +14,8 @@ export default defineEventHandler(async (event) => {
   const cookedRecipeIds = new Set<string>()
   for (const plan of plans || []) {
     if (!plan.cooked) continue
-    for (const [recipeId, wasCoked] of Object.entries(plan.cooked)) {
-      if (wasCoked) cookedRecipeIds.add(recipeId)
+    for (const [recipeId, cookedVal] of Object.entries(plan.cooked)) {
+      if (cookedVal) cookedRecipeIds.add(recipeId)
     }
   }
 
@@ -35,10 +35,12 @@ export default defineEventHandler(async (event) => {
   const history = []
   for (const plan of plans || []) {
     if (!plan.cooked) continue
-    for (const [recipeId, wasCooked] of Object.entries(plan.cooked)) {
-      if (!wasCooked) continue
+    for (const [recipeId, cookedVal] of Object.entries(plan.cooked)) {
+      if (!cookedVal) continue
       const recipe = recipeMap.get(recipeId)
       if (!recipe) continue
+      // Use cooked timestamp if available (string), otherwise fall back to plan start_date
+      const cookedDate = typeof cookedVal === 'string' ? cookedVal.slice(0, 10) : plan.start_date
       history.push({
         recipe_id: recipeId,
         recipe_name: recipe.name,
@@ -48,7 +50,7 @@ export default defineEventHandler(async (event) => {
         recipe_tags: recipe.tags,
         plan_id: plan.id,
         plan_name: plan.name,
-        date: plan.start_date,
+        date: cookedDate,
         servings: plan.basket?.[recipeId] || null,
       })
     }

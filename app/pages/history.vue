@@ -1,5 +1,13 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100dvh; background: #f7f3ee">
+    <RecipeDetailModal
+      v-if="detailRecipe"
+      :recipe="detailRecipe"
+      :deletable="false"
+      :editable="false"
+      @close="detailRecipeId = null"
+    />
+
     <PageHeader title="Cooking History" />
 
     <!-- Loading -->
@@ -66,6 +74,7 @@
               :key="`${entry.planId}-${entry.recipeId}`"
               :recipe="mapEntryToRecipe(entry)"
               :subtitle="formatEntrySubtitle(entry)"
+              @view="viewRecipe"
             />
           </div>
         </div>
@@ -76,10 +85,21 @@
 
 <script setup lang="ts">
 import type { HistoryEntry } from '~/composables/useHistory'
+import type { RecipeData } from '~/composables/useRecipes'
 
 definePageMeta({ layout: false })
 
 const { entries, loading, fetchHistory } = useHistory()
+const { recipes, fetchRecipes } = useRecipes()
+
+const detailRecipeId = ref<string | null>(null)
+const detailRecipe = computed<RecipeData | null>(() =>
+  detailRecipeId.value ? recipes.value.find((r) => r.id === detailRecipeId.value) ?? null : null,
+)
+
+function viewRecipe(id: string) {
+  detailRecipeId.value = id
+}
 
 const uniqueRecipes = computed(() => {
   const ids = new Set(entries.value.map((e) => e.recipeId))
@@ -145,5 +165,6 @@ function formatDate(dateStr: string): string {
 
 onMounted(() => {
   fetchHistory()
+  fetchRecipes()
 })
 </script>

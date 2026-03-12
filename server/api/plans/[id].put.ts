@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Validate cooked: must be Record<string, boolean>
+  // Validate cooked: must be Record<string, boolean | string (ISO timestamp)>
   if (typeof cooked !== 'object' || Array.isArray(cooked)) {
     throw createError({ statusCode: 400, statusMessage: 'cooked must be an object' })
   }
@@ -34,8 +34,8 @@ export default defineEventHandler(async (event) => {
     if (key.length > 100) {
       throw createError({ statusCode: 400, statusMessage: 'cooked key too long' })
     }
-    if (typeof val !== 'boolean') {
-      throw createError({ statusCode: 400, statusMessage: 'cooked values must be booleans' })
+    if (typeof val !== 'boolean' && typeof val !== 'string') {
+      throw createError({ statusCode: 400, statusMessage: 'cooked values must be booleans or ISO timestamps' })
     }
   }
 

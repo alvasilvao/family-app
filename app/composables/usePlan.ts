@@ -2,7 +2,7 @@ import type { MealPlan } from './usePlans'
 
 const plan = ref<MealPlan | null>(null)
 const basket = ref<Record<string, number>>({})
-const cooked = ref<Record<string, boolean>>({})
+const cooked = ref<Record<string, boolean | string>>({})
 
 export function usePlan() {
   const { authFetch } = useAuth()
@@ -20,7 +20,7 @@ export function usePlan() {
       const data = await authFetch<MealPlan>(`/api/plans/${id}`)
       plan.value = data
       basket.value = (data.basket as Record<string, number>) || {}
-      cooked.value = (data.cooked as Record<string, boolean>) || {}
+      cooked.value = (data.cooked as Record<string, boolean | string>) || {}
     } catch (err: unknown) {
       console.error('Failed to fetch plan:', err)
       toast.error('Failed to load meal plan')
@@ -72,7 +72,7 @@ export function usePlan() {
       delete newCooked[id]
       cooked.value = newCooked
     } else {
-      cooked.value = { ...cooked.value, [id]: true }
+      cooked.value = { ...cooked.value, [id]: new Date().toISOString() }
     }
     debouncedSave()
   }
