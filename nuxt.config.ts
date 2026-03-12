@@ -17,6 +17,8 @@ export default defineNuxtConfig({
       theme_color: '#4f6f52',
       background_color: '#faf6f1',
       display: 'standalone',
+      scope: '/',
+      start_url: '/',
       icons: [
         {
           src: 'icon-192x192.png',
