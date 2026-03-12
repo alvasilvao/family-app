@@ -97,6 +97,7 @@
       @click="handleView"
     >
       <p
+        class="plan-recipe-name"
         :style="{
           fontFamily: '\'Fraunces\', serif',
           fontSize: '15px',
@@ -105,8 +106,9 @@
           textDecoration: cooked ? 'line-through' : 'none',
           color: cooked ? '#9b9590' : undefined,
           overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
         }"
       >
         {{ recipe.name }}
@@ -122,7 +124,7 @@
     </div>
 
     <!-- Tags -->
-    <div v-if="tags.length > 0" style="display: flex; gap: 4px; flex-shrink: 0">
+    <div v-if="tags.length > 0" class="plan-recipe-tags" style="display: flex; gap: 4px; flex-shrink: 0">
       <span
         v-for="tag in tags.slice(0, 2)"
         :key="tag"
@@ -220,3 +222,11 @@ function handleView() {
   emit('view', props.recipe.id)
 }
 </script>
+
+<style scoped>
+@media (max-width: 480px) {
+  .plan-recipe-tags {
+    display: none !important;
+  }
+}
+</style>
