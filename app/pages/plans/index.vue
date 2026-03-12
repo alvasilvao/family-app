@@ -103,64 +103,120 @@
         message="Create a plan to start organizing your meals."
       />
 
-      <!-- Plans list -->
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <NuxtLink
-          v-for="p in plans"
-          :key="p.id"
-          :to="`/plans/${p.id}`"
-          style="
-            background: #fff;
-            border-radius: 13px;
-            padding: 16px 18px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-          "
-        >
-          <div
-            :style="{
-              width: '44px',
-              height: '44px',
-              borderRadius: '12px',
-              background: p.status === 'open' ? '#d1fae5' : '#f3f0ed',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              flexShrink: 0,
-            }"
+      <!-- Active plans (have uncooked recipes) -->
+      <template v-if="activePlans.length">
+        <p style="font-size: 12px; font-weight: 700; color: #9b9590; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px">
+          Active
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px">
+          <NuxtLink
+            v-for="p in activePlans"
+            :key="p.id"
+            :to="`/plans/${p.id}`"
+            style="
+              background: #fff;
+              border-radius: 13px;
+              padding: 16px 18px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+              text-decoration: none;
+              color: inherit;
+              display: flex;
+              align-items: center;
+              gap: 14px;
+            "
           >
-            {{ p.status === 'open' ? '&#x1F4DD;' : '&#x2705;' }}
-          </div>
-          <div style="flex: 1; min-width: 0">
-            <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
-              {{ p.name }}
-            </p>
-            <p style="font-size: 11.5px; color: #9b9590; margin-top: 2px">
-              {{ formatDateRange(p.start_date, p.end_date) }}
-              &middot;
-              {{ recipeCount(p) }} recipe{{ recipeCount(p) === 1 ? '' : 's' }}
-            </p>
-          </div>
-          <span
-            :style="{
-              fontSize: '11px',
-              fontWeight: 700,
-              padding: '3px 10px',
-              borderRadius: '999px',
-              flexShrink: 0,
-              background: p.status === 'open' ? '#d1fae5' : '#f3f0ed',
-              color: p.status === 'open' ? '#2d6a4f' : '#9b9590',
-            }"
+            <div style="flex: 1; min-width: 0">
+              <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
+                {{ p.name }}
+              </p>
+              <p style="font-size: 11.5px; color: #9b9590; margin-top: 3px">
+                {{ formatDateRange(p.start_date, p.end_date) }}
+                &middot;
+                {{ recipeCount(p) }} recipe{{ recipeCount(p) === 1 ? '' : 's' }}
+                &middot;
+                {{ cookedCount(p) }}/{{ recipeCount(p) }} cooked
+              </p>
+              <!-- Progress bar -->
+              <div style="margin-top: 8px; height: 4px; background: #f3f0ed; border-radius: 2px; overflow: hidden">
+                <div
+                  :style="{
+                    height: '100%',
+                    width: recipeCount(p) > 0 ? (cookedCount(p) / recipeCount(p) * 100) + '%' : '0%',
+                    background: '#2d6a4f',
+                    borderRadius: '2px',
+                    transition: 'width 0.3s ease',
+                  }"
+                />
+              </div>
+            </div>
+            <span
+              :style="{
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '3px 10px',
+                borderRadius: '999px',
+                flexShrink: 0,
+                background: p.status === 'open' ? '#d1fae5' : '#f3f0ed',
+                color: p.status === 'open' ? '#2d6a4f' : '#9b9590',
+              }"
+            >
+              {{ p.status === 'open' ? 'Open' : 'Closed' }}
+            </span>
+          </NuxtLink>
+        </div>
+      </template>
+
+      <!-- Past plans (all recipes cooked) -->
+      <template v-if="pastPlans.length">
+        <p style="font-size: 12px; font-weight: 700; color: #9b9590; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px">
+          Past
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <NuxtLink
+            v-for="p in pastPlans"
+            :key="p.id"
+            :to="`/plans/${p.id}`"
+            style="
+              background: #fff;
+              border-radius: 13px;
+              padding: 14px 18px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+              text-decoration: none;
+              color: inherit;
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              opacity: 0.7;
+            "
           >
-            {{ p.status === 'open' ? 'Open' : 'Closed' }}
-          </span>
-        </NuxtLink>
-      </div>
+            <div style="flex: 1; min-width: 0">
+              <p style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; line-height: 1.3">
+                {{ p.name }}
+              </p>
+              <p style="font-size: 11.5px; color: #9b9590; margin-top: 3px">
+                {{ formatDateRange(p.start_date, p.end_date) }}
+                &middot;
+                {{ recipeCount(p) }} recipe{{ recipeCount(p) === 1 ? '' : 's' }}
+                &middot;
+                All cooked
+              </p>
+            </div>
+            <span
+              style="
+                font-size: 11px;
+                font-weight: 700;
+                padding: 3px 10px;
+                border-radius: 999px;
+                flex-shrink: 0;
+                background: #f3f0ed;
+                color: #9b9590;
+              "
+            >
+              Closed
+            </span>
+          </NuxtLink>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -204,6 +260,19 @@ watch(showForm, (v) => { if (v) initForm() })
 function recipeCount(p: MealPlan): number {
   return Object.values(p.basket || {}).filter((v) => v > 0).length
 }
+
+function cookedCount(p: MealPlan): number {
+  const activeRecipeIds = Object.entries(p.basket || {}).filter(([, v]) => v > 0).map(([k]) => k)
+  return activeRecipeIds.filter((id) => p.cooked?.[id]).length
+}
+
+function isAllCooked(p: MealPlan): boolean {
+  const total = recipeCount(p)
+  return total > 0 && cookedCount(p) === total
+}
+
+const activePlans = computed(() => plans.value.filter((p) => !isAllCooked(p)))
+const pastPlans = computed(() => plans.value.filter((p) => isAllCooked(p)))
 
 async function handleCreate() {
   if (!canCreate.value) return

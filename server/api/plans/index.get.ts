@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   let q = client
     .from('meal_plans')
-    .select('id, name, start_date, end_date, basket, status, created_at, updated_at', limit ? { count: 'exact' } : {})
+    .select('id, name, start_date, end_date, basket, cooked, status, created_at, updated_at', limit ? { count: 'exact' } : {})
     .order('start_date', { ascending: false })
 
   if (limit) {
