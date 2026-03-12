@@ -192,6 +192,18 @@ export function useRecipes() {
     return mapped
   }
 
+  async function importRecipe(params: { url?: string; text?: string }) {
+    const result = await authFetch<{
+      recipe?: Omit<RecipeData, 'id' | 'isBuiltIn'>
+      error?: string
+      message?: string
+    }>('/api/recipes/import', {
+      method: 'POST',
+      body: params,
+    })
+    return result
+  }
+
   async function deleteRecipe(id: string) {
     await authFetch(`/api/recipes/${id}`, {
       method: 'DELETE',
@@ -210,6 +222,7 @@ export function useRecipes() {
     addRecipe,
     updateRecipe,
     deleteRecipe,
+    importRecipe,
     uploadRecipeImage,
     removeRecipeImage,
   }

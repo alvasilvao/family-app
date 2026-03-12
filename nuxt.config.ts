@@ -67,6 +67,7 @@ export default defineNuxtConfig({
     vapidEmail: '',
     cronSecret: '',
     supabaseServiceRoleKey: '',
+    openaiApiKey: '',
     public: {
       vapidPublicKey: '',
     },
