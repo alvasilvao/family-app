@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  const userId = await requireAuth(event)
+  checkRateLimit(userId)
   const body = await readBody(event)
 
   const { url, text } = body as { url?: string; text?: string }
@@ -10,11 +11,11 @@ export default defineEventHandler(async (event) => {
 
   // URL-based import
   if (url) {
-    // Basic URL validation
+    // Validate URL (SSRF protection: HTTPS only, no IPs, no internal hosts)
     try {
-      new URL(url)
-    } catch {
-      throw createError({ statusCode: 400, statusMessage: 'Invalid URL' })
+      validateFetchUrl(url)
+    } catch (e: any) {
+      throw createError({ statusCode: e.statusCode || 400, statusMessage: e.statusMessage || 'Invalid URL' })
     }
 
     const html = await fetchRecipePage(url)
