@@ -23,14 +23,6 @@ export default defineEventHandler(async (event) => {
       return { error: 'fetch_failed', message: 'Could not access that page. Try pasting the recipe text instead.' }
     }
 
-    // Fast path: try JSON-LD structured data first
-    const jsonLdRecipe = extractJsonLdRecipe(html)
-    if (jsonLdRecipe) {
-      jsonLdRecipe.sourceUrl = url
-      return { recipe: jsonLdRecipe }
-    }
-
-    // Slow path: use LLM to extract from raw text
     const pageText = htmlToText(html)
     if (pageText.length < 50) {
       return { error: 'fetch_failed', message: 'Page content was too short to extract a recipe. Try pasting the recipe text instead.' }

@@ -16,6 +16,7 @@ interface IngredientRow {
   name: string
   unit: string
   per_serving: number
+  calories: number | null
 }
 
 interface RecipeRow {
@@ -45,7 +46,7 @@ export interface RecipeData {
   isBuiltIn: boolean
   sourceUrl: string
   instructions: string
-  ingredients: Array<{ name: string; unit: string; perServing: number }>
+  ingredients: Array<{ name: string; unit: string; perServing: number; calories: number | null }>
   imagePath: string | null
   createdAt?: string | null
   stats?: RecipeStats
@@ -69,6 +70,7 @@ function mapRecipe(row: RecipeRow): RecipeData {
       name: ing.name,
       unit: ing.unit,
       perServing: ing.per_serving,
+      calories: ing.calories ?? null,
     })),
     imagePath: row.image_path || null,
     createdAt: row.created_at || null,

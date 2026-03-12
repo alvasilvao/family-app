@@ -123,6 +123,15 @@
             class="form-input"
             style="width: 60px; font-size: 13px; padding: 6px 8px"
           />
+          <input
+            v-model.number="ing.calories"
+            type="number"
+            step="1"
+            min="0"
+            placeholder="kcal"
+            class="form-input"
+            style="width: 55px; font-size: 13px; padding: 6px 8px; text-align: center"
+          />
           <button
             style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #e8e2db; background: #fff; color: #c0392b; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0"
             @click="editForm.ingredients.splice(i, 1)"
@@ -134,7 +143,7 @@
       <button
         class="btn-sm-green"
         style="margin-top: 8px"
-        @click="editForm.ingredients.push({ name: '', perServing: 1, unit: '' })"
+        @click="editForm.ingredients.push({ name: '', perServing: 1, unit: '', calories: null })"
       >
         + Add ingredient
       </button>

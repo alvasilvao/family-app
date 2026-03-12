@@ -47,6 +47,10 @@ export function validateRecipeBody(body: any) {
     if (typeof ing.perServing !== 'number' || !isFinite(ing.perServing) || ing.perServing <= 0) {
       throw createError({ statusCode: 400, statusMessage: `Invalid perServing for "${ing.name}": must be a positive number` })
     }
+
+    if (ing.calories != null && (typeof ing.calories !== 'number' || !isFinite(ing.calories) || ing.calories < 0)) {
+      throw createError({ statusCode: 400, statusMessage: `Invalid calories for "${ing.name}": must be a non-negative number` })
+    }
   }
 
   return { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients }
@@ -65,11 +69,12 @@ export function buildRecipeRow(body: ReturnType<typeof validateRecipeBody>) {
   }
 }
 
-export function buildIngredientRows(ingredients: Array<{ name: string; unit: string; perServing: number }>, recipeId: string) {
+export function buildIngredientRows(ingredients: Array<{ name: string; unit: string; perServing: number; calories?: number | null }>, recipeId: string) {
   return ingredients.map((ing) => ({
     name: ing.name,
     unit: ing.unit,
     per_serving: ing.perServing,
+    calories: ing.calories ?? null,
     recipe_id: recipeId,
   }))
 }

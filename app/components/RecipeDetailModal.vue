@@ -114,8 +114,12 @@
                 <span style="font-size: 13.5px; color: #2a2520">{{ ing.name }}</span>
                 <span style="font-size: 12.5px; color: #9b9590; flex-shrink: 0; margin-left: 12px">
                   {{ formatQuantity(ing.perServing * displayServings) }} {{ ing.unit }}
+                  <template v-if="ing.calories != null">&middot; {{ formatQuantity(ing.calories * displayServings) }} kcal</template>
                 </span>
               </div>
+            </div>
+            <div v-if="totalCalories > 0" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e8e2db; font-size: 13px; font-weight: 600; color: #2a2520; text-align: right">
+              ~{{ formatQuantity(totalCalories * displayServings) }} kcal {{ displayServings > 1 ? 'total' : 'per serving' }}
             </div>
           </div>
 
@@ -211,6 +215,10 @@ const displayRecipe = computed(() => {
 })
 
 const displayServings = computed(() => props.servings && props.servings > 1 ? props.servings : 1)
+
+const totalCalories = computed(() =>
+  props.recipe.ingredients?.reduce((sum, ing) => sum + (ing.calories ?? 0), 0) ?? 0,
+)
 
 const instructionSteps = computed(() =>
   props.recipe.instructions
