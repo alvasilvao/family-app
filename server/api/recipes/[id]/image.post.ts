@@ -21,8 +21,12 @@ export default defineEventHandler(async (event) => {
   const isJPEG = header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF
   const isPNG = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47
   const isWebP = header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50
-  if (!isJPEG && !isPNG && !isWebP) {
-    throw createError({ statusCode: 400, statusMessage: 'File must be a JPEG, PNG, or WebP image' })
+  // HEIC/HEIF: ftyp box at offset 4, followed by brand (heic, heix, mif1, etc.)
+  const ftyp = header[4] === 0x66 && header[5] === 0x74 && header[6] === 0x79 && header[7] === 0x70
+  const brand = String.fromCharCode(header[8], header[9], header[10], header[11])
+  const isHEIC = ftyp && ['heic', 'heix', 'mif1', 'heis', 'hevx', 'heim'].includes(brand)
+  if (!isJPEG && !isPNG && !isWebP && !isHEIC) {
+    throw createError({ statusCode: 400, statusMessage: 'File must be a JPEG, PNG, WebP, or HEIC image' })
   }
 
   const storagePath = `${userId}/${id}.jpg`
