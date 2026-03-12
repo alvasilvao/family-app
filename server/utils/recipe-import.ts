@@ -290,12 +290,13 @@ export async function extractWithLlm(content: string, sourceUrl: string): Promis
 
   const response = await openai.chat.completions.create({
     model: 'gpt-5-nano',
-    temperature: 0.1,
-    max_tokens: 2000,
+    reasoning_effort: 'low' as any,
     messages: [
       { role: 'system', content: EXTRACTION_PROMPT },
       { role: 'user', content: `<recipe-content>\n${content}\n</recipe-content>` },
     ],
+  }, {
+    timeout: 30_000,
   })
 
   const text = response.choices[0]?.message?.content?.trim()
