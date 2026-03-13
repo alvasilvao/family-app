@@ -90,6 +90,27 @@
             />
           </button>
         </div>
+        <button
+          v-if="notificationsSubscribed"
+          :disabled="testLoading"
+          style="
+            margin-top: 14px;
+            width: 100%;
+            padding: 10px 16px;
+            background: #f0ebe5;
+            border: 1.5px solid #e8e2db;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5c524a;
+            cursor: pointer;
+            transition: background 0.2s;
+          "
+          @click="sendTest"
+        >
+          {{ testLoading ? 'Sending...' : testSent ? 'Sent! Check your notifications' : 'Send test notification' }}
+        </button>
         <p v-if="notificationsDenied" style="font-size: 12px; color: #c0392b; margin-top: 8px">
           Notifications are blocked. Enable them in your browser settings.
         </p>
@@ -126,7 +147,7 @@ definePageMeta({ layout: false })
 
 const { user, signOut } = useAuth()
 
-const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, error: notificationsError, subscribe, unsubscribe } = useNotifications()
+const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, error: notificationsError, subscribe, unsubscribe, testLoading, testSent, sendTest } = useNotifications()
 const notificationsDenied = computed(() => permission.value === 'denied')
 
 function toggleNotifications() {

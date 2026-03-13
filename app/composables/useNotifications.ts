@@ -70,5 +70,23 @@ export function useNotifications() {
     }
   }
 
-  return { permission, isSubscribed, isSupported, loading, error, subscribe, unsubscribe }
+  const testLoading = ref(false)
+  const testSent = ref(false)
+
+  async function sendTest() {
+    testLoading.value = true
+    testSent.value = false
+    error.value = null
+    try {
+      await authFetch('/api/notifications/test', { method: 'POST' })
+      testSent.value = true
+    } catch (err: unknown) {
+      console.error('Failed to send test notification:', err)
+      error.value = err instanceof Error ? err.message : 'Failed to send test notification'
+    } finally {
+      testLoading.value = false
+    }
+  }
+
+  return { permission, isSubscribed, isSupported, loading, error, subscribe, unsubscribe, testLoading, testSent, sendTest }
 }
