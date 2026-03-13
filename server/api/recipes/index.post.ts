@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
   sendPushNotification(
     { title: 'New Recipe', body: `${validated.name} was just added!`, url: `/recipes/${recipe.id}` },
     userId,
-  ).catch(() => {})
+  ).catch((err) => console.error('Push notification failed:', err))
 
   return full
 })
