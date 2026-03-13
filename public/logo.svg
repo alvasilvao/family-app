@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
+  <!-- Icon: house with heart -->
+  <g transform="translate(8, 6)">
+    <!-- House body -->
+    <rect x="12" y="34" width="40" height="30" rx="2" stroke="#2d6a4f" stroke-width="2.5" fill="none"/>
+
+    <!-- Roof -->
+    <path d="M6 36 L32 10 L58 36" stroke="#2d6a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+    <!-- Heart in roof area -->
+    <path d="M32 28 C32 28 26 18 22 20 C18 22 20 27 32 34 C44 27 46 22 42 20 C38 18 32 28 32 28Z" fill="#2d6a4f" opacity="0.85"/>
+
+    <!-- Door -->
+    <rect x="27" y="48" width="10" height="16" rx="1.5" stroke="#2d6a4f" stroke-width="2" fill="none"/>
+    <circle cx="35" cy="56" r="1.2" fill="#2d6a4f"/>
+
+    <!-- Window left -->
+    <rect x="16" y="40" width="8" height="8" rx="1" stroke="#2d6a4f" stroke-width="1.5" fill="none"/>
+    <line x1="20" y1="40" x2="20" y2="48" stroke="#2d6a4f" stroke-width="1" opacity="0.5"/>
+    <line x1="16" y1="44" x2="24" y2="44" stroke="#2d6a4f" stroke-width="1" opacity="0.5"/>
+
+    <!-- Window right -->
+    <rect x="40" y="40" width="8" height="8" rx="1" stroke="#2d6a4f" stroke-width="1.5" fill="none"/>
+    <line x1="44" y1="40" x2="44" y2="48" stroke="#2d6a4f" stroke-width="1" opacity="0.5"/>
+    <line x1="40" y1="44" x2="48" y2="44" stroke="#2d6a4f" stroke-width="1" opacity="0.5"/>
+
+    <!-- Chimney -->
+    <rect x="44" y="14" width="6" height="16" rx="1" stroke="#2d6a4f" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Text: "family" -->
+  <text x="80" y="42" font-family="'Fraunces', Georgia, serif" font-weight="600" font-size="32" fill="#2d6a4f" letter-spacing="-0.5">
+    family
+  </text>
+
+  <!-- Text: "APP" -->
+  <text x="80" y="62" font-family="'DM Sans', Helvetica, sans-serif" font-weight="400" font-size="16" fill="#4f6f52" letter-spacing="3">
+    APP
+  </text>
+</svg>

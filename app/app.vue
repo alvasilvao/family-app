@@ -1,0 +1,4 @@
+<template>
+  <NuxtPage />
+  <ToastContainer />
+</template>
