@@ -267,7 +267,8 @@
       <!-- All recipes to browse and add -->
       <div>
         <SectionHeader label="Add recipes" style="margin-bottom: 12px" />
-        <RecipeGrid
+
+        <RecipeBrowser
           :recipes="recipes"
           :basket="basket"
           @add="planAdd"
@@ -280,8 +281,6 @@
 </template>
 
 <script setup lang="ts">
-import type { RecipeData } from '~/composables/useRecipes'
-
 const route = useRoute()
 const planId = route.params.id as string
 
