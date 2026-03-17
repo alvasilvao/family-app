@@ -74,6 +74,7 @@
               :key="`${entry.planId}-${entry.recipeId}`"
               :recipe="mapEntryToRecipe(entry)"
               :subtitle="formatEntrySubtitle(entry)"
+              :unrated="unratedRecipeIds.has(entry.recipeId)"
               @view="viewRecipe"
             />
           </div>
@@ -88,7 +89,7 @@ import type { HistoryEntry } from '~/composables/useHistory'
 import type { RecipeData } from '~/composables/useRecipes'
 
 const { entries, loading, fetchHistory } = useHistory()
-const { recipes, fetchRecipes } = useRecipes()
+const { recipes, fetchRecipes, fetchRatings } = useRecipes()
 
 const detailRecipeId = ref<string | null>(null)
 const detailRecipe = computed<RecipeData | null>(() =>
@@ -161,8 +162,17 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
-onMounted(() => {
+const unratedRecipeIds = computed(() => {
+  const ids = new Set<string>()
+  for (const r of recipes.value) {
+    if (!r.rating?.userRating) ids.add(r.id)
+  }
+  return ids
+})
+
+onMounted(async () => {
   fetchHistory()
-  fetchRecipes()
+  await fetchRecipes()
+  fetchRatings()
 })
 </script>
