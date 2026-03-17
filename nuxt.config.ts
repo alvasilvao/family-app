@@ -14,9 +14,10 @@ export default defineNuxtConfig({
       name: 'Family App',
       short_name: 'Family App',
       description: 'Organize meals, tasks, and more for the family',
-      theme_color: '#4f6f52',
+      theme_color: '#2d6a4f',
       background_color: '#faf6f1',
       display: 'standalone',
+      display_override: ['standalone'],
       scope: '/',
       start_url: '/',
       icons: [
@@ -84,7 +85,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-        { name: 'theme-color', content: '#4f6f52' },
+        { name: 'theme-color', content: '#2d6a4f' },
       ],
       link: [
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
