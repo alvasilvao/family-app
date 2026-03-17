@@ -98,7 +98,7 @@ async function handleSubmit() {
   error.value = ''
   try {
     await signIn(email.value, password.value)
-    navigateTo('/')
+    navigateTo('/', { replace: true })
   } catch (err: any) {
     error.value = err.message || 'Authentication failed'
   } finally {
