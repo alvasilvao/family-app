@@ -123,6 +123,18 @@
       </div>
     </div>
 
+    <!-- Unrated indicator -->
+    <span
+      v-if="unrated"
+      title="Not yet rated"
+      :style="{
+        fontSize: '16px',
+        color: '#d4cfc8',
+        flexShrink: 0,
+        lineHeight: 1,
+      }"
+    >&#9734;</span>
+
     <!-- Tags -->
     <div v-if="tags.length > 0" class="plan-recipe-tags" style="display: flex; gap: 4px; flex-shrink: 0">
       <span
@@ -186,6 +198,7 @@ const props = withDefaults(
     planClosed?: boolean
     subtitle?: string
     showCookedToggle?: boolean
+    unrated?: boolean
   }>(),
   {
     servings: undefined,
@@ -193,6 +206,7 @@ const props = withDefaults(
     planClosed: false,
     subtitle: undefined,
     showCookedToggle: false,
+    unrated: false,
   },
 )
 
