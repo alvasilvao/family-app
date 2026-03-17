@@ -9,7 +9,7 @@ export function useAuth() {
 
   async function signOut() {
     await supabase.auth.signOut()
-    navigateTo('/login')
+    navigateTo('/login', { replace: true })
   }
 
   function getAccessToken() {
