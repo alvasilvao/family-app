@@ -40,7 +40,7 @@ export default defineNuxtConfig({
       ],
     },
     injectManifest: {
-      globPatterns: ['**/*.{js,css,png,svg,ico,woff2}'],
+      globPatterns: ['**/*.{js,css,png,svg,ico,woff2,webmanifest}'],
     },
     client: {
       installPrompt: true,
