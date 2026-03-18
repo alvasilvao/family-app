@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
-import { precacheAndRoute } from 'workbox-precaching'
-import { registerRoute } from 'workbox-routing'
+import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
+import { registerRoute, NavigationRoute } from 'workbox-routing'
 import { CacheFirst } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { CacheableResponsePlugin } from 'workbox-cacheable-response'
@@ -9,6 +9,14 @@ declare const self: ServiceWorkerGlobalScope
 
 // Precache static assets (injected by workbox at build time)
 precacheAndRoute(self.__WB_MANIFEST)
+
+// Serve the SPA shell for all navigation requests.
+// This prevents iPad Safari from showing the in-app browser bar
+// by keeping all navigations within the service worker.
+const navigationHandler = createHandlerBoundToURL('/index.html')
+registerRoute(new NavigationRoute(navigationHandler, {
+  denylist: [/^\/api\//],
+}))
 
 // Cache Google Fonts stylesheets
 registerRoute(

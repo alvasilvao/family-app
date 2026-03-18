@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-11',
   devtools: { enabled: true },
+  ssr: false,
 
   modules: ['@nuxtjs/supabase', '@vite-pwa/nuxt', '@nuxt/eslint'],
 
@@ -40,7 +41,7 @@ export default defineNuxtConfig({
       ],
     },
     injectManifest: {
-      globPatterns: ['**/*.{js,css,png,svg,ico,woff2,webmanifest}'],
+      globPatterns: ['**/*.{html,js,css,png,svg,ico,woff2,webmanifest}'],
     },
     client: {
       installPrompt: true,
