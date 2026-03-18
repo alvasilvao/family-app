@@ -74,6 +74,7 @@
               :key="`${entry.planId}-${entry.recipeId}`"
               :recipe="mapEntryToRecipe(entry)"
               :subtitle="formatEntrySubtitle(entry)"
+              :rating="getRecipeRating(entry.recipeId)"
               :unrated="unratedRecipeIds.has(entry.recipeId)"
               @view="viewRecipe"
             />
@@ -160,6 +161,11 @@ function formatMonth(yyyymm: string): string {
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00')
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+}
+
+function getRecipeRating(recipeId: string) {
+  const recipe = recipes.value.find((r) => r.id === recipeId)
+  return recipe?.rating ?? null
 }
 
 const unratedRecipeIds = computed(() => {
