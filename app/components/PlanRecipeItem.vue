@@ -123,9 +123,18 @@
       </div>
     </div>
 
-    <!-- Unrated indicator -->
+    <!-- Rating display -->
+    <RecipeRating
+      v-if="rating"
+      :user-rating="rating.userRating"
+      :avg-rating="rating.avgRating"
+      :rating-count="rating.ratingCount"
+      :readonly="true"
+      size="sm"
+      @rate="() => {}"
+    />
     <span
-      v-if="unrated"
+      v-else-if="unrated"
       title="Not yet rated"
       :style="{
         fontSize: '16px',
@@ -199,6 +208,7 @@ const props = withDefaults(
     subtitle?: string
     showCookedToggle?: boolean
     unrated?: boolean
+    rating?: { userRating: number | null; avgRating: number; ratingCount: number } | null
   }>(),
   {
     servings: undefined,
@@ -207,6 +217,7 @@ const props = withDefaults(
     subtitle: undefined,
     showCookedToggle: false,
     unrated: false,
+    rating: undefined,
   },
 )
 
