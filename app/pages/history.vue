@@ -4,7 +4,7 @@
       v-if="detailRecipe"
       :recipe="detailRecipe"
       :deletable="false"
-      :editable="false"
+      :editable="true"
       @close="detailRecipeId = null"
     />
 
