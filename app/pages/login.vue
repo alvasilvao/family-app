@@ -76,6 +76,13 @@
 
 <script setup lang="ts">
 const { signIn } = useAuth()
+const user = useSupabaseUser()
+
+// If the user already has a valid session (e.g. landed here from a stale
+// redirect or PWA reload), skip the login form.
+watch(user, (u) => {
+  if (u) navigateTo('/', { replace: true })
+}, { immediate: true })
 
 const email = ref('')
 const password = ref('')
