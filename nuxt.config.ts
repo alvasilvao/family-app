@@ -55,6 +55,12 @@ export default defineNuxtConfig({
   supabase: {
     types: false,
     redirect: false,
+    // Use localStorage instead of cookies for session persistence.
+    // iOS PWAs in standalone mode aggressively clear cookies on app
+    // close/memory reclaim, causing constant re-login prompts.
+    // This is safe because SSR is disabled and server routes already
+    // authenticate via the Authorization header, not cookies.
+    useSsrCookies: false,
   },
 
   css: ['~/assets/css/main.css'],
