@@ -12,13 +12,30 @@ export function useAuth() {
     navigateTo('/login', { replace: true })
   }
 
-  function getAccessToken() {
-    return supabase.auth.getSession().then((res) => res.data.session?.access_token || '')
+  async function getAccessToken() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.access_token) return session.access_token
+    // Token may be expired — try refreshing
+    const { data: { session: refreshed } } = await supabase.auth.refreshSession()
+    return refreshed?.access_token || ''
   }
 
   async function authFetch<T>(url: string, opts?: Parameters<typeof $fetch>[1]): Promise<T> {
     const token = await getAccessToken()
-    return $fetch<T>(url, { ...opts, headers: { ...opts?.headers, Authorization: `Bearer ${token}` } })
+    try {
+      return await $fetch<T>(url, { ...opts, headers: { ...opts?.headers, Authorization: `Bearer ${token}` } })
+    } catch (err: unknown) {
+      // On 401, try one refresh before giving up
+      if (err && typeof err === 'object' && 'status' in err && (err as { status: number }).status === 401) {
+        const { data: { session } } = await supabase.auth.refreshSession()
+        if (!session?.access_token) {
+          navigateTo('/login', { replace: true })
+          throw err
+        }
+        return $fetch<T>(url, { ...opts, headers: { ...opts?.headers, Authorization: `Bearer ${session.access_token}` } })
+      }
+      throw err
+    }
   }
 
   return { user, signIn, signOut, authFetch }

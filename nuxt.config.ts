@@ -79,6 +79,14 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare-pages',
+    cloudflare: {
+      pages: {
+        routes: {
+          include: ['/api/*'],
+          exclude: [],
+        },
+      },
+    },
   },
 
   app: {
