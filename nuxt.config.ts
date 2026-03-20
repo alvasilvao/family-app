@@ -18,7 +18,6 @@ export default defineNuxtConfig({
       theme_color: '#2d6a4f',
       background_color: '#faf6f1',
       display: 'standalone',
-      display_override: ['standalone'],
       scope: '/',
       start_url: '/',
       icons: [
