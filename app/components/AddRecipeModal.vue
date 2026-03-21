@@ -21,23 +21,27 @@
         <!-- URL Input (step: input) -->
         <template v-if="step === 'input'">
           <div style="display: flex; flex-direction: column; gap: 8px">
-            <input
-              v-model="url"
-              type="url"
-              placeholder="https://example.com/recipe..."
-              class="import-focus"
-              :style="{
-                width: '100%',
-                border: '1.5px solid #e8e2db',
-                borderRadius: '10px',
-                padding: '11px 14px',
-                fontSize: '16px',
-                color: '#1a1a1a',
-                background: '#faf8f5',
-                transition: 'border-color .2s',
-              }"
-              @keydown.enter="importFromUrl"
-            />
+            <div class="input-wrap">
+              <input
+                v-model="url"
+                type="url"
+                placeholder="https://example.com/recipe..."
+                class="import-focus"
+                :style="{
+                  width: '100%',
+                  border: '1.5px solid #e8e2db',
+                  borderRadius: '10px',
+                  padding: '11px 14px',
+                  paddingRight: '32px',
+                  fontSize: '16px',
+                  color: '#1a1a1a',
+                  background: '#faf8f5',
+                  transition: 'border-color .2s',
+                }"
+                @keydown.enter="importFromUrl"
+              />
+              <button v-if="url" type="button" class="input-clear-btn" aria-label="Clear URL" @click="url = ''">&times;</button>
+            </div>
             <button
               style="align-self: flex-start; font-size: 12px; color: #6b6560; background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0"
               @click="step = 'text'"
@@ -54,24 +58,28 @@
               {{ fetchErrorMsg || 'Paste the recipe content below — ingredients, instructions, and all.' }}
             </p>
           </div>
-          <textarea
-            v-model="text"
-            placeholder="Paste the full recipe here (ingredients, instructions, etc.)..."
-            class="import-focus"
-            rows="8"
-            :style="{
-              width: '100%',
-              border: '1.5px solid #e8e2db',
-              borderRadius: '10px',
-              padding: '11px 14px',
-              fontSize: '16px',
-              color: '#1a1a1a',
-              resize: 'vertical',
-              lineHeight: '1.65',
-              background: '#faf8f5',
-              transition: 'border-color .2s',
-            }"
-          />
+          <div class="input-wrap input-wrap--textarea">
+            <textarea
+              v-model="text"
+              placeholder="Paste the full recipe here (ingredients, instructions, etc.)..."
+              class="import-focus"
+              rows="8"
+              :style="{
+                width: '100%',
+                border: '1.5px solid #e8e2db',
+                borderRadius: '10px',
+                padding: '11px 14px',
+                paddingRight: '32px',
+                fontSize: '16px',
+                color: '#1a1a1a',
+                resize: 'vertical',
+                lineHeight: '1.65',
+                background: '#faf8f5',
+                transition: 'border-color .2s',
+              }"
+            />
+            <button v-if="text" type="button" class="input-clear-btn" aria-label="Clear text" @click="text = ''">&times;</button>
+          </div>
           <button
             style="align-self: flex-start; font-size: 12px; color: #6b6560; background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0"
             @click="step = 'input'; fetchErrorMsg = ''"

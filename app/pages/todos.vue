@@ -10,13 +10,16 @@
     <div v-else class="page-content" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Add form -->
       <form style="padding: 16px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
-        <input
-          v-model="newTitle"
-          type="text"
-          placeholder="Add a to-do..."
-          class="form-input"
-          style="flex: 1; padding: 10px 14px; font-size: 16px; border-radius: 10px"
-        />
+        <div class="input-wrap" style="flex: 1">
+          <input
+            v-model="newTitle"
+            type="text"
+            placeholder="Add a to-do..."
+            class="form-input"
+            style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px"
+          />
+          <button v-if="newTitle" type="button" class="input-clear-btn" aria-label="Clear" @click="newTitle = ''">&times;</button>
+        </div>
         <input
           v-model="newDueDate"
           type="date"

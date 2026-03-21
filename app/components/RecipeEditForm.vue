@@ -11,11 +11,14 @@
 
     <!-- Name -->
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px">
-      <input
-        v-model="editForm.name"
-        class="form-input"
-        style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700; line-height: 1.3; flex: 1; padding: 4px 8px"
-      />
+      <div class="input-wrap" style="flex: 1">
+        <input
+          v-model="editForm.name"
+          class="form-input"
+          style="font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700; line-height: 1.3; padding: 4px 8px; padding-right: 32px"
+        />
+        <button v-if="editForm.name" type="button" class="input-clear-btn" aria-label="Clear name" @click="editForm.name = ''">&times;</button>
+      </div>
       <div style="display: flex; gap: 6px; margin-left: 12px; flex-shrink: 0">
         <button
           class="modal-close-btn"
@@ -61,34 +64,43 @@
     <!-- Cook time -->
     <div style="margin-bottom: 12px">
       <label class="edit-label">Cook time</label>
-      <input
-        v-model="editForm.cookTime"
-        class="form-input"
-        style="width: 100%; font-size: 16px; padding: 6px 8px"
-      />
+      <div class="input-wrap">
+        <input
+          v-model="editForm.cookTime"
+          class="form-input"
+          style="font-size: 16px; padding: 6px 8px; padding-right: 32px"
+        />
+        <button v-if="editForm.cookTime" type="button" class="input-clear-btn" aria-label="Clear cook time" @click="editForm.cookTime = ''">&times;</button>
+      </div>
     </div>
 
     <!-- Description -->
     <div style="margin-bottom: 16px">
       <label class="edit-label">Description</label>
-      <textarea
-        v-model="editForm.description"
-        rows="3"
-        class="form-input"
-        style="width: 100%; font-size: 16px; padding: 8px; line-height: 1.55; resize: vertical"
-      />
+      <div class="input-wrap input-wrap--textarea">
+        <textarea
+          v-model="editForm.description"
+          rows="3"
+          class="form-input"
+          style="font-size: 16px; padding: 8px; padding-right: 32px; line-height: 1.55; resize: vertical"
+        />
+        <button v-if="editForm.description" type="button" class="input-clear-btn" aria-label="Clear description" @click="editForm.description = ''">&times;</button>
+      </div>
     </div>
 
     <!-- Source URL -->
     <div style="margin-bottom: 16px">
       <label class="edit-label">Source URL</label>
-      <input
-        v-model="editForm.sourceUrl"
-        type="url"
-        placeholder="https://..."
-        class="form-input"
-        style="width: 100%; font-size: 16px; padding: 6px 8px"
-      />
+      <div class="input-wrap">
+        <input
+          v-model="editForm.sourceUrl"
+          type="url"
+          placeholder="https://..."
+          class="form-input"
+          style="font-size: 16px; padding: 6px 8px; padding-right: 32px"
+        />
+        <button v-if="editForm.sourceUrl" type="button" class="input-clear-btn" aria-label="Clear URL" @click="editForm.sourceUrl = ''">&times;</button>
+      </div>
     </div>
 
     <!-- Ingredients -->
@@ -154,13 +166,16 @@
       <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 10px">
         Instructions
       </h3>
-      <textarea
-        v-model="editForm.instructions"
-        rows="6"
-        placeholder="One step per line..."
-        class="form-input"
-        style="width: 100%; font-size: 16px; padding: 8px; line-height: 1.55; resize: vertical"
-      />
+      <div class="input-wrap input-wrap--textarea">
+        <textarea
+          v-model="editForm.instructions"
+          rows="6"
+          placeholder="One step per line..."
+          class="form-input"
+          style="font-size: 16px; padding: 8px; padding-right: 32px; line-height: 1.55; resize: vertical"
+        />
+        <button v-if="editForm.instructions" type="button" class="input-clear-btn" aria-label="Clear instructions" @click="editForm.instructions = ''">&times;</button>
+      </div>
     </div>
 
     <!-- Save / Cancel buttons -->

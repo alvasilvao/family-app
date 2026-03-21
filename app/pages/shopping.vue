@@ -35,13 +35,16 @@
 
       <!-- Add favorite form -->
       <form style="padding: 12px 20px; display: flex; gap: 10px" @submit.prevent="handleAddFavorite">
-        <input
-          v-model="newFavName"
-          type="text"
-          placeholder="Add a favorite..."
-          class="form-input"
-          style="flex: 1; padding: 10px 14px; font-size: 16px; border-radius: 10px"
-        />
+        <div class="input-wrap" style="flex: 1">
+          <input
+            v-model="newFavName"
+            type="text"
+            placeholder="Add a favorite..."
+            class="form-input"
+            style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px"
+          />
+          <button v-if="newFavName" type="button" class="input-clear-btn" aria-label="Clear" @click="newFavName = ''">&times;</button>
+        </div>
         <button
           type="submit"
           :disabled="!newFavName.trim()"
@@ -99,14 +102,17 @@
             <!-- Editing mode -->
             <template v-if="editingFavId === fav.id">
               <form style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0" @submit.prevent="saveEditFavorite">
-                <input
-                  v-model="editingFavName"
-                  type="text"
-                  class="form-input"
-                  style="flex: 1; padding: 6px 10px; font-size: 16px; border-radius: 8px"
-                  @keydown.escape="cancelEditFavorite"
-                  @vue:mounted="($event: any) => $event.el.focus()"
-                />
+                <div class="input-wrap" style="flex: 1">
+                  <input
+                    v-model="editingFavName"
+                    type="text"
+                    class="form-input"
+                    style="padding: 6px 10px; padding-right: 30px; font-size: 16px; border-radius: 8px"
+                    @keydown.escape="cancelEditFavorite"
+                    @vue:mounted="($event: any) => $event.el.focus()"
+                  />
+                  <button v-if="editingFavName" type="button" class="input-clear-btn" aria-label="Clear" @click="editingFavName = ''" style="width: 18px; height: 18px; font-size: 12px">&times;</button>
+                </div>
                 <button
                   type="submit"
                   :disabled="!editingFavName.trim()"
@@ -168,13 +174,16 @@
 
       <!-- Add item form -->
       <form style="padding: 12px 20px; display: flex; gap: 10px" @submit.prevent="handleAdd">
-        <input
-          v-model="newItemName"
-          type="text"
-          placeholder="Add an item..."
-          class="form-input"
-          style="flex: 1; padding: 10px 14px; font-size: 16px; border-radius: 10px"
-        />
+        <div class="input-wrap" style="flex: 1">
+          <input
+            v-model="newItemName"
+            type="text"
+            placeholder="Add an item..."
+            class="form-input"
+            style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px"
+          />
+          <button v-if="newItemName" type="button" class="input-clear-btn" aria-label="Clear" @click="newItemName = ''">&times;</button>
+        </div>
         <button
           type="submit"
           :disabled="!newItemName.trim()"

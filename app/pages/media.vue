@@ -50,15 +50,18 @@
       </div>
 
       <div style="padding: 16px 20px 0">
-        <input
-          ref="searchInputRef"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search movies & TV shows..."
-          class="form-input"
-          style="width: 100%; padding: 12px 14px; font-size: 16px; border-radius: 10px"
-          @input="debouncedSearch"
-        />
+        <div class="input-wrap">
+          <input
+            ref="searchInputRef"
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search movies & TV shows..."
+            class="form-input"
+            style="padding: 12px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px"
+            @input="debouncedSearch"
+          />
+          <button v-if="searchQuery" type="button" class="input-clear-btn" aria-label="Clear search" @click="searchQuery = ''; searchResults = []">&times;</button>
+        </div>
       </div>
 
       <div style="flex: 1; overflow: auto; padding: 12px 20px">

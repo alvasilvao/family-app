@@ -35,23 +35,25 @@
       <!-- Content -->
       <div style="flex: 1; min-width: 0">
         <!-- Title: display or edit -->
-        <input
-          v-if="editingTitle"
-          ref="titleInput"
-          v-model="editTitleValue"
-          type="text"
-          class="form-input"
-          style="
-            width: 100%;
-            padding: 2px 6px;
-            font-size: 16px;
-            border-radius: 6px;
-            margin: -3px 0 0 -6px;
-          "
-          @blur="saveTitle"
-          @keydown.enter="($event.target as HTMLInputElement).blur()"
-          @keydown.escape="cancelTitleEdit"
-        />
+        <div v-if="editingTitle" class="input-wrap" style="margin: -3px 0 0 -6px">
+          <input
+            ref="titleInput"
+            v-model="editTitleValue"
+            type="text"
+            class="form-input"
+            style="
+              width: 100%;
+              padding: 2px 6px;
+              padding-right: 28px;
+              font-size: 16px;
+              border-radius: 6px;
+            "
+            @blur="saveTitle"
+            @keydown.enter="($event.target as HTMLInputElement).blur()"
+            @keydown.escape="cancelTitleEdit"
+          />
+          <button v-if="editTitleValue" type="button" class="input-clear-btn" aria-label="Clear" @click="editTitleValue = ''" style="width: 18px; height: 18px; font-size: 12px; right: 5px">&times;</button>
+        </div>
         <p
           v-else
           :style="{
