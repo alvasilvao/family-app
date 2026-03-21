@@ -103,7 +103,7 @@
                   v-model="editingFavName"
                   type="text"
                   class="form-input"
-                  style="flex: 1; padding: 6px 10px; font-size: 13.5px; border-radius: 8px"
+                  style="flex: 1; padding: 6px 10px; font-size: 16px; border-radius: 8px"
                   @keydown.escape="cancelEditFavorite"
                   @vue:mounted="($event: any) => $event.el.focus()"
                 />

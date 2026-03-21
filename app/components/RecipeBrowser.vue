@@ -5,7 +5,7 @@
     type="text"
     placeholder="Search recipes..."
     class="form-input"
-    style="width: 100%; padding: 10px 14px; font-size: 15px; border-radius: 10px; margin-bottom: 12px"
+    style="width: 100%; padding: 10px 14px; font-size: 16px; border-radius: 10px; margin-bottom: 12px"
   />
 
   <!-- Sort pills -->

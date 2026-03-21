@@ -64,7 +64,7 @@
       <input
         v-model="editForm.cookTime"
         class="form-input"
-        style="width: 100%; font-size: 13px; padding: 6px 8px"
+        style="width: 100%; font-size: 16px; padding: 6px 8px"
       />
     </div>
 
@@ -75,7 +75,7 @@
         v-model="editForm.description"
         rows="3"
         class="form-input"
-        style="width: 100%; font-size: 13.5px; padding: 8px; line-height: 1.55; resize: vertical"
+        style="width: 100%; font-size: 16px; padding: 8px; line-height: 1.55; resize: vertical"
       />
     </div>
 
@@ -87,7 +87,7 @@
         type="url"
         placeholder="https://..."
         class="form-input"
-        style="width: 100%; font-size: 13px; padding: 6px 8px"
+        style="width: 100%; font-size: 16px; padding: 6px 8px"
       />
     </div>
 
@@ -106,7 +106,7 @@
             v-model="ing.name"
             placeholder="Name"
             class="form-input"
-            style="flex: 2; font-size: 13px; padding: 6px 8px"
+            style="flex: 2; font-size: 16px; padding: 6px 8px"
           />
           <input
             v-model.number="ing.perServing"
@@ -115,13 +115,13 @@
             min="0"
             placeholder="Qty"
             class="form-input"
-            style="width: 60px; font-size: 13px; padding: 6px 8px; text-align: center"
+            style="width: 60px; font-size: 16px; padding: 6px 8px; text-align: center"
           />
           <input
             v-model="ing.unit"
             placeholder="Unit"
             class="form-input"
-            style="width: 60px; font-size: 13px; padding: 6px 8px"
+            style="width: 60px; font-size: 16px; padding: 6px 8px"
           />
           <input
             v-model.number="ing.calories"
@@ -130,7 +130,7 @@
             min="0"
             placeholder="kcal"
             class="form-input"
-            style="width: 55px; font-size: 13px; padding: 6px 8px; text-align: center"
+            style="width: 55px; font-size: 16px; padding: 6px 8px; text-align: center"
           />
           <button
             style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #e8e2db; background: #fff; color: #c0392b; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0"
@@ -159,7 +159,7 @@
         rows="6"
         placeholder="One step per line..."
         class="form-input"
-        style="width: 100%; font-size: 13.5px; padding: 8px; line-height: 1.55; resize: vertical"
+        style="width: 100%; font-size: 16px; padding: 8px; line-height: 1.55; resize: vertical"
       />
     </div>
 
