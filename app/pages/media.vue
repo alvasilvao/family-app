@@ -56,7 +56,7 @@
           type="text"
           placeholder="Search movies & TV shows..."
           class="form-input"
-          style="width: 100%; padding: 12px 14px; font-size: 15px; border-radius: 10px"
+          style="width: 100%; padding: 12px 14px; font-size: 16px; border-radius: 10px"
           @input="debouncedSearch"
         />
       </div>

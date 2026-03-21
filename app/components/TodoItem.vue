@@ -44,7 +44,7 @@
           style="
             width: 100%;
             padding: 2px 6px;
-            font-size: 14px;
+            font-size: 16px;
             border-radius: 6px;
             margin: -3px 0 0 -6px;
           "
@@ -78,7 +78,7 @@
             class="form-input"
             style="
               padding: 2px 6px;
-              font-size: 11px;
+              font-size: 16px;
               border-radius: 6px;
               color: #6b6560;
               width: 130px;
