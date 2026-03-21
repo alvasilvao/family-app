@@ -1,12 +1,15 @@
 <template>
   <!-- Search -->
-  <input
-    v-model="searchQuery"
-    type="text"
-    placeholder="Search recipes..."
-    class="form-input"
-    style="width: 100%; padding: 10px 14px; font-size: 16px; border-radius: 10px; margin-bottom: 12px"
-  />
+  <div class="input-wrap" style="margin-bottom: 12px">
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search recipes..."
+      class="form-input"
+      style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px"
+    />
+    <button v-if="searchQuery" type="button" class="input-clear-btn" aria-label="Clear search" @click="searchQuery = ''">&times;</button>
+  </div>
 
   <!-- Sort pills -->
   <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap">

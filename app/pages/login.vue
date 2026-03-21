@@ -30,26 +30,32 @@
 
       <form @submit.prevent="handleSubmit" style="display: flex; flex-direction: column; gap: 12px">
         <label for="login-email" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0)">Email</label>
-        <input
-          id="login-email"
-          v-model="email"
-          type="email"
-          placeholder="your@email.com"
-          required
-          class="import-focus"
-          :style="inputStyle"
-        />
+        <div class="input-wrap">
+          <input
+            id="login-email"
+            v-model="email"
+            type="email"
+            placeholder="your@email.com"
+            required
+            class="import-focus"
+            :style="{ ...inputStyle, paddingRight: '32px' }"
+          />
+          <button v-if="email" type="button" class="input-clear-btn" aria-label="Clear email" @click="email = ''">&times;</button>
+        </div>
         <label for="login-password" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0)">Password</label>
-        <input
-          id="login-password"
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          required
-          minlength="6"
-          class="import-focus"
-          :style="inputStyle"
-        />
+        <div class="input-wrap">
+          <input
+            id="login-password"
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            required
+            minlength="6"
+            class="import-focus"
+            :style="{ ...inputStyle, paddingRight: '32px' }"
+          />
+          <button v-if="password" type="button" class="input-clear-btn" aria-label="Clear password" @click="password = ''">&times;</button>
+        </div>
         <button
           type="submit"
           :disabled="loading"

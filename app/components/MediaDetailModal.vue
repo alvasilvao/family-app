@@ -80,13 +80,16 @@
         <p style="font-size: 11px; font-weight: 600; color: #9b9590; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px">
           Notes
         </p>
-        <textarea
-          v-model="localNotes"
-          placeholder="Add your thoughts..."
-          class="form-input"
-          style="width: 100%; min-height: 80px; padding: 10px 12px; font-size: 14px; border-radius: 10px; resize: vertical"
-          @blur="saveNotes"
-        />
+        <div class="input-wrap input-wrap--textarea">
+          <textarea
+            v-model="localNotes"
+            placeholder="Add your thoughts..."
+            class="form-input"
+            style="min-height: 80px; padding: 10px 12px; padding-right: 32px; font-size: 14px; border-radius: 10px; resize: vertical"
+            @blur="saveNotes"
+          />
+          <button v-if="localNotes" type="button" class="input-clear-btn" aria-label="Clear notes" @click="localNotes = ''">&times;</button>
+        </div>
       </div>
 
       <!-- Actions -->

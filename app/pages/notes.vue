@@ -30,20 +30,26 @@
     <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 0 0 calc(48px + env(safe-area-inset-bottom, 0px))">
       <!-- Editor -->
       <div v-if="editing" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px">
-        <input
-          v-model="editTitle"
-          type="text"
-          placeholder="Title (optional)"
-          class="form-input"
-          style="padding: 10px 14px; font-size: 16px; border-radius: 10px; font-family: 'Fraunces', serif; font-weight: 600"
-        />
-        <textarea
-          ref="bodyInput"
-          v-model="editBody"
-          placeholder="Write your note..."
-          class="form-input"
-          style="padding: 10px 14px; font-size: 16px; border-radius: 10px; min-height: 200px; resize: vertical; line-height: 1.6"
-        />
+        <div class="input-wrap">
+          <input
+            v-model="editTitle"
+            type="text"
+            placeholder="Title (optional)"
+            class="form-input"
+            style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px; font-family: 'Fraunces', serif; font-weight: 600"
+          />
+          <button v-if="editTitle" type="button" class="input-clear-btn" aria-label="Clear title" @click="editTitle = ''">&times;</button>
+        </div>
+        <div class="input-wrap input-wrap--textarea">
+          <textarea
+            ref="bodyInput"
+            v-model="editBody"
+            placeholder="Write your note..."
+            class="form-input"
+            style="padding: 10px 14px; padding-right: 32px; font-size: 16px; border-radius: 10px; min-height: 200px; resize: vertical; line-height: 1.6"
+          />
+          <button v-if="editBody" type="button" class="input-clear-btn" aria-label="Clear body" @click="editBody = ''">&times;</button>
+        </div>
         <div style="display: flex; gap: 10px">
           <button
             style="
