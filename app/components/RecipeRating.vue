@@ -42,7 +42,7 @@
           }"
           :aria-label="`Rate ${star - 0.5} out of 5 stars`"
           role="button"
-          @click="$emit('rate', star - 0.5)"
+          @click="$emit('rate', Math.max(1, star - 0.5))"
         />
 
         <!-- Right-half click zone (gives n) -->
