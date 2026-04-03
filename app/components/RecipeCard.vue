@@ -39,12 +39,18 @@
       >
         Added {{ formatDate(recipe.createdAt) }}
       </p>
-      <div v-if="recipe.stats || totalCalories > 0" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
+      <div v-if="recipe.stats || totalCalories > 0 || totalProtein > 0" style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 2px">
         <span
           v-if="totalCalories > 0"
           style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
         >
           ~{{ Math.round(totalCalories) }} kcal
+        </span>
+        <span
+          v-if="totalProtein > 0"
+          style="font-size: 10px; color: #9b9590; background: #f5f0eb; border-radius: 999px; padding: 2px 8px"
+        >
+          ~{{ Math.round(totalProtein) }}g protein
         </span>
         <span
           v-if="recipe.cookTime"
@@ -142,6 +148,10 @@ defineEmits<{
 
 const totalCalories = computed(() =>
   props.recipe.ingredients?.reduce((sum, ing) => sum + (ing.calories ?? 0), 0) ?? 0,
+)
+
+const totalProtein = computed(() =>
+  props.recipe.ingredients?.reduce((sum, ing) => sum + (ing.protein ?? 0), 0) ?? 0,
 )
 
 function formatDate(iso: string) {

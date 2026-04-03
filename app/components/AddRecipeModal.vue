@@ -137,7 +137,7 @@
                   :key="ing.name"
                   style="font-size: 11px; background: #fff; border: 1px solid #e8e2db; border-radius: 6px; padding: 2px 8px; color: #4a4540"
                 >
-                  {{ ing.perServing }} {{ ing.unit }} {{ ing.name }}<template v-if="ing.calories != null"> ({{ ing.calories }} kcal)</template>
+                  {{ ing.perServing }} {{ ing.unit }} {{ ing.name }}<template v-if="ing.calories != null"> ({{ ing.calories }} kcal)</template><template v-if="ing.protein != null"> ({{ ing.protein }}g protein)</template>
                 </span>
               </div>
             </div>
