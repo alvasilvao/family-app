@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const rating = body?.rating
 
-  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-    throw createError({ statusCode: 400, statusMessage: 'Rating must be an integer from 1 to 5' })
+  if (typeof rating !== 'number' || rating < 1 || rating > 5 || rating % 0.5 !== 0) {
+    throw createError({ statusCode: 400, statusMessage: 'Rating must be from 1 to 5 in 0.5 steps' })
   }
 
   const { error } = await client

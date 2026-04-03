@@ -1,25 +1,66 @@
 <template>
   <div style="display: flex; align-items: center; gap: 8px">
     <div style="display: flex; gap: 2px">
-      <button
+      <span
         v-for="star in 5"
         :key="star"
-        :aria-label="`Rate ${star} out of 5 stars`"
-        :disabled="readonly"
         :style="{
+          position: 'relative',
           fontSize: size === 'sm' ? '14px' : '20px',
-          color: star <= (userRating ?? 0) ? '#2d6a4f' : '#d5d0cb',
-          cursor: readonly ? 'default' : 'pointer',
-          transition: 'color .15s',
-          background: 'none',
-          border: 'none',
-          padding: 0,
           lineHeight: 1,
+          cursor: readonly ? 'default' : 'pointer',
+          userSelect: 'none',
         }"
-        @click="!readonly && $emit('rate', star)"
       >
-        &#x2605;
-      </button>
+        <!-- Empty star (background) -->
+        <span :style="{ color: '#d5d0cb' }">&#x2605;</span>
+
+        <!-- Filled overlay, clipped to the fill fraction -->
+        <span
+          v-if="fillFor(star) > 0"
+          :style="{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            overflow: 'hidden',
+            width: fillFor(star) * 100 + '%',
+            color: '#2d6a4f',
+            pointerEvents: 'none',
+          }"
+        >&#x2605;</span>
+
+        <!-- Left-half click zone (gives n - 0.5) -->
+        <span
+          v-if="!readonly"
+          :style="{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            cursor: 'pointer',
+          }"
+          :aria-label="`Rate ${star - 0.5} out of 5 stars`"
+          role="button"
+          @click="$emit('rate', star - 0.5)"
+        />
+
+        <!-- Right-half click zone (gives n) -->
+        <span
+          v-if="!readonly"
+          :style="{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            cursor: 'pointer',
+          }"
+          :aria-label="`Rate ${star} out of 5 stars`"
+          role="button"
+          @click="$emit('rate', star)"
+        />
+      </span>
     </div>
     <span
       v-if="ratingCount > 0"
@@ -34,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   userRating: number | null
   avgRating: number | null
   ratingCount: number
@@ -45,4 +86,11 @@ defineProps<{
 defineEmits<{
   rate: [value: number]
 }>()
+
+function fillFor(star: number): number {
+  const rating = props.userRating ?? 0
+  if (rating >= star) return 1
+  if (rating >= star - 0.5) return 0.5
+  return 0
+}
 </script>
