@@ -15,6 +15,26 @@
     <!-- Header -->
     <PageHeader title="Recipes">
       <template #right>
+        <NuxtLink
+          to="/recipe-links"
+          style="
+            background: rgba(255,255,255,.15);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+          "
+          aria-label="Inspiration links"
+        >
+          &#x1F517;
+        </NuxtLink>
         <button
           style="
             background: rgba(255,255,255,.15);
