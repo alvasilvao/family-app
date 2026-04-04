@@ -87,11 +87,12 @@ defineEmits<{
 
 const searchQuery = ref('')
 
-type SortMode = 'default' | 'alphabetical' | 'tag' | 'rating'
+type SortMode = 'default' | 'recent' | 'alphabetical' | 'tag' | 'rating'
 const sortMode = ref<SortMode>('default')
 
 const sortOptions: Array<{ label: string; value: SortMode }> = [
   { label: 'Default', value: 'default' },
+  { label: 'Recently added', value: 'recent' },
   { label: 'A-Z', value: 'alphabetical' },
   { label: 'By tag', value: 'tag' },
   { label: 'My rating', value: 'rating' },
@@ -114,6 +115,15 @@ interface RecipeGroup {
 
 const recipeGroups = computed<RecipeGroup[]>(() => {
   const list = filteredRecipes.value
+
+  if (sortMode.value === 'recent') {
+    const sorted = [...list].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+      return dateB - dateA
+    })
+    return [{ label: 'All', items: sorted }]
+  }
 
   if (sortMode.value === 'alphabetical') {
     const sorted = [...list].sort((a, b) => a.name.localeCompare(b.name))
