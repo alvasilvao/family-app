@@ -5,9 +5,10 @@
       v-if="detailRecipe"
       :recipe="detailRecipe"
       :deletable="false"
-      :editable="false"
+      :editable="userRecipeIds.has(detailRecipe.id)"
       :servings="detailServings"
       @close="detailRecipeId = null"
+      @update="handleUpdate($event)"
     />
 
     <!-- Confirm close modal -->
@@ -284,7 +285,7 @@
 const route = useRoute()
 const planId = route.params.id as string
 
-const { recipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings, updateRecipe } = useRecipes()
 const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan, deletePlan, cleanup: cleanupPlan } = usePlan()
 
 onBeforeUnmount(() => {
@@ -304,8 +305,15 @@ const addToShopping = ref(true)
 
 const isClosed = computed(() => plan.value?.status === 'closed' || plan.value?.status === 'closed_no_shop' || plan.value?.status === 'cooked')
 
+const userRecipeIds = computed(() => new Set(userRecipes.value.map((r) => r.id)))
+
 function viewRecipe(id: string) {
   detailRecipeId.value = id
+}
+
+async function handleUpdate(recipe: RecipeData) {
+  const updated = await updateRecipe(recipe.id, recipe)
+  detailRecipeId.value = updated.id
 }
 
 const selectedRecipes = computed(() =>
