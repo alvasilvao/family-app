@@ -145,6 +145,14 @@
             </div>
           </div>
 
+          <!-- Notes -->
+          <div v-if="recipe.notes" style="margin-top: 20px">
+            <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 10px">
+              Notes
+            </h3>
+            <p style="font-size: 13.5px; color: #4a4540; line-height: 1.65; white-space: pre-wrap">{{ recipe.notes }}</p>
+          </div>
+
           <!-- Delete button (compact) -->
           <div v-if="deletable && !confirmingDelete" style="display: flex; justify-content: flex-end; margin-top: 28px">
             <button

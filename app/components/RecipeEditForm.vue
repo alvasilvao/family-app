@@ -187,6 +187,23 @@
       </div>
     </div>
 
+    <!-- Notes -->
+    <div style="margin-top: 16px">
+      <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 10px">
+        Notes
+      </h3>
+      <div class="input-wrap input-wrap--textarea">
+        <textarea
+          v-model="editForm.notes"
+          rows="4"
+          placeholder="Personal notes, tips, variations..."
+          class="form-input"
+          style="font-size: 16px; padding: 8px; padding-right: 32px; line-height: 1.55; resize: vertical"
+        />
+        <button v-if="editForm.notes" type="button" class="input-clear-btn" aria-label="Clear notes" @click="editForm.notes = ''">&times;</button>
+      </div>
+    </div>
+
     <!-- Save / Cancel buttons -->
     <div style="display: flex; gap: 8px; margin-top: 24px">
       <button
@@ -237,6 +254,7 @@ const editForm = ref<Omit<RecipeData, 'id' | 'isBuiltIn'>>({
   color: '',
   sourceUrl: '',
   instructions: '',
+  notes: '',
   ingredients: [],
   imagePath: null,
 })
@@ -258,6 +276,7 @@ function initForm() {
     color: props.recipe.color,
     sourceUrl: props.recipe.sourceUrl,
     instructions: props.recipe.instructions,
+    notes: props.recipe.notes,
     ingredients: (props.recipe.ingredients || []).map(ing => ({ ...ing })),
     imagePath: props.recipe.imagePath,
   }

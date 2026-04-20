@@ -20,7 +20,7 @@ export function handleDuplicateError(error: { code?: string }, message: string) 
 }
 
 export function validateRecipeBody(body: any) {
-  const { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients } = body
+  const { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, notes, ingredients } = body
 
   if (!name || typeof name !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'Recipe name is required' })
@@ -33,6 +33,7 @@ export function validateRecipeBody(body: any) {
   validateString(color, 'color', 20)
   validateString(sourceUrl, 'sourceUrl', 2000)
   validateString(instructions, 'instructions', 10000)
+  validateString(notes, 'notes', 5000)
 
   if (tags != null) {
     if (!Array.isArray(tags) || tags.length > MAX_TAGS) {
@@ -70,7 +71,7 @@ export function validateRecipeBody(body: any) {
     }
   }
 
-  return { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, ingredients }
+  return { name, cookTime, description, tags, emoji, color, sourceUrl, instructions, notes, ingredients }
 }
 
 export function buildRecipeRow(body: ReturnType<typeof validateRecipeBody>) {
@@ -83,6 +84,7 @@ export function buildRecipeRow(body: ReturnType<typeof validateRecipeBody>) {
     color: body.color || '#7ba7a7',
     source_url: body.sourceUrl || '',
     instructions: body.instructions || '',
+    notes: body.notes || '',
   }
 }
 
