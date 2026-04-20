@@ -62,6 +62,17 @@
       <LoadingDots />
     </div>
 
+    <!-- Error state -->
+    <div v-else-if="recipesError" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px">
+      <p style="font-size: 14px; color: #9b9590">Failed to load recipes</p>
+      <button
+        style="background: #2d6a4f; color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif"
+        @click="retry"
+      >
+        Try again
+      </button>
+    </div>
+
     <!-- Content -->
     <div v-else class="page-content-wide" style="flex: 1; overflow: auto; padding: 16px 20px calc(48px + env(safe-area-inset-bottom, 0px))">
       <RecipeBrowser :recipes="recipes" @view="viewRecipe" />
@@ -70,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchStats, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, error: recipesError, fetchRecipes, fetchStats, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 
 const showAddRecipe = ref(false)
 const detailRecipeId = ref<string | null>(null)
@@ -83,8 +94,18 @@ function viewRecipe(id: string) {
   detailRecipeId.value = id
 }
 
-onMounted(() => {
+function retry() {
   fetchRecipes().then(() => fetchStats())
+}
+
+onMounted(() => {
+  retry()
+
+  function onFocus() {
+    if (document.visibilityState === 'visible') retry()
+  }
+  document.addEventListener('visibilitychange', onFocus)
+  onUnmounted(() => document.removeEventListener('visibilitychange', onFocus))
 })
 
 async function handleUpdate(recipe: RecipeData) {

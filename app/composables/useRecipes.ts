@@ -32,6 +32,7 @@ interface RecipeRow {
   tags: string[]
   is_built_in: boolean
   instructions: string
+  notes: string
   ingredients?: IngredientRow[]
   created_at: string
 }
@@ -47,6 +48,7 @@ export interface RecipeData {
   isBuiltIn: boolean
   sourceUrl: string
   instructions: string
+  notes: string
   ingredients?: Array<{ name: string; unit: string; perServing: number; calories: number | null; protein: number | null }>
   imagePath: string | null
   createdAt?: string | null
@@ -67,6 +69,7 @@ function mapRecipe(row: RecipeRow): RecipeData {
     isBuiltIn: row.is_built_in,
     sourceUrl: row.source_url || '',
     instructions: row.instructions || '',
+    notes: row.notes || '',
     ingredients: row.ingredients !== undefined
       ? row.ingredients.map((ing: IngredientRow) => ({
           name: ing.name,
@@ -85,6 +88,7 @@ const DEFAULT_STATS: RecipeStats = { totalCount: 0, lastUsedDate: null, weeksSin
 
 const recipes = ref<RecipeData[]>([])
 const loading = ref(true)
+const error = ref(false)
 
 export function useRecipes() {
   const { authFetch } = useAuth()
@@ -94,10 +98,12 @@ export function useRecipes() {
 
   async function fetchRecipes() {
     loading.value = true
+    error.value = false
     try {
       const data = await authFetch<RecipeRow[]>('/api/recipes')
       recipes.value = data.map(mapRecipe)
     } catch (err: unknown) {
+      error.value = true
       console.error('Failed to fetch recipes:', err)
       toast.error('Failed to load recipes')
     } finally {
@@ -234,6 +240,7 @@ export function useRecipes() {
     recipes,
     userRecipes,
     loading,
+    error,
     fetchRecipes,
     fetchStats,
     fetchRecipeIngredients,

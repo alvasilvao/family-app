@@ -35,6 +35,7 @@
       v-if="recipe.imagePath"
       :src="imageUrl"
       alt="Recipe photo"
+      loading="lazy"
       :style="{
         width: '100%',
         height: '100%',
