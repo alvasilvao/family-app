@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchStats, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 
 const showAddRecipe = ref(false)
 const detailRecipeId = ref<string | null>(null)
@@ -84,10 +84,7 @@ function viewRecipe(id: string) {
 }
 
 onMounted(() => {
-  fetchRecipes().then(() => {
-    fetchScores()
-    fetchRatings()
-  })
+  fetchRecipes().then(() => fetchStats())
 })
 
 async function handleUpdate(recipe: RecipeData) {

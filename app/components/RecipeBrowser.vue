@@ -34,13 +34,21 @@
     </button>
   </div>
 
+  <!-- Search states -->
+  <div v-if="searchLoading" style="text-align: center; padding: 40px 20px">
+    <LoadingDots />
+  </div>
+  <div v-else-if="searchError" style="text-align: center; padding: 40px 20px">
+    <p style="font-size: 13px; color: #9b9590">Search failed. Try again.</p>
+  </div>
+
   <!-- No results -->
-  <div v-if="filteredRecipes.length === 0" style="text-align: center; padding: 40px 20px">
+  <div v-else-if="filteredRecipes.length === 0" style="text-align: center; padding: 40px 20px">
     <p style="font-size: 13px; color: #9b9590">No recipes found</p>
   </div>
 
   <!-- Flat grid (default / A-Z / search active) -->
-  <template v-else-if="recipeGroups.length <= 1">
+  <template v-else-if="!searchLoading && !searchError && recipeGroups.length <= 1">
     <RecipeGrid
       :recipes="recipeGroups[0]?.items ?? []"
       :basket="basket"
@@ -51,7 +59,7 @@
   </template>
 
   <!-- Grouped grid (by tag) -->
-  <template v-else>
+  <template v-else-if="!searchLoading && !searchError">
     <div v-for="group in recipeGroups" :key="group.label" style="margin-bottom: 20px">
       <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 10px">
         <span style="font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #9b9590">
@@ -85,7 +93,34 @@ defineEmits<{
   view: [id: string]
 }>()
 
+const { searchRecipes } = useRecipes()
+
 const searchQuery = ref('')
+const searchResults = ref<RecipeData[]>([])
+const searchLoading = ref(false)
+const searchError = ref(false)
+
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(searchQuery, (q) => {
+  if (searchTimer) clearTimeout(searchTimer)
+  if (!q.trim()) {
+    searchResults.value = []
+    searchError.value = false
+    return
+  }
+  searchTimer = setTimeout(async () => {
+    searchLoading.value = true
+    searchError.value = false
+    try {
+      searchResults.value = await searchRecipes(q.trim())
+    } catch {
+      searchError.value = true
+    } finally {
+      searchLoading.value = false
+    }
+  }, 300)
+})
 
 type SortMode = 'default' | 'recent' | 'alphabetical' | 'tag' | 'rating'
 const sortMode = ref<SortMode>('default')
@@ -99,13 +134,8 @@ const sortOptions: Array<{ label: string; value: SortMode }> = [
 ]
 
 const filteredRecipes = computed(() => {
-  const q = searchQuery.value.trim().toLowerCase()
-  if (!q) return props.recipes
-  return props.recipes.filter((r) =>
-    r.name.toLowerCase().includes(q)
-    || r.description?.toLowerCase().includes(q)
-    || r.tags?.some((t) => t.toLowerCase().includes(q)),
-  )
+  if (searchQuery.value.trim()) return searchResults.value
+  return props.recipes
 })
 
 interface RecipeGroup {

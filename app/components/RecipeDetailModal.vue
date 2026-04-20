@@ -101,7 +101,8 @@
           </a>
 
           <!-- Ingredients -->
-          <div v-if="recipe.ingredients?.length">
+          <div v-if="loadingIngredients" style="font-size: 13px; color: #9b9590; margin-bottom: 16px">Loading ingredients…</div>
+          <div v-else-if="recipe.ingredients?.length">
             <h3 style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 10px">
               Ingredients <span style="font-weight: 400; color: #9b9590; font-family: 'DM Sans', sans-serif; font-size: 12px">{{ displayServings > 1 ? `(for ${displayServings} servings)` : '(per serving)' }}</span>
             </h3>
@@ -195,8 +196,20 @@ const emit = defineEmits<{
   update: [recipe: RecipeData]
 }>()
 
-const { uploadRecipeImage, setRating } = useRecipes()
+const { uploadRecipeImage, setRating, fetchRecipeIngredients } = useRecipes()
 const toast = useToast()
+
+const loadingIngredients = ref(false)
+onMounted(async () => {
+  if (props.recipe.ingredients === undefined) {
+    loadingIngredients.value = true
+    try {
+      await fetchRecipeIngredients(props.recipe.id)
+    } finally {
+      loadingIngredients.value = false
+    }
+  }
+})
 
 async function handleRate(value: number) {
   await setRating(props.recipe.id, value)

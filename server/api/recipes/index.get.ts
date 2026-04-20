@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   // RLS handles filtering: built-in + own recipes
   let q = client
     .from('recipes')
-    .select('*, ingredients(*)', limit ? { count: 'exact' } : {})
+    .select('*', limit ? { count: 'exact' } : {})
     .order('created_at', { ascending: true })
 
   if (limit) {

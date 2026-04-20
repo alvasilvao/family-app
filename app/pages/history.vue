@@ -90,7 +90,7 @@ import type { HistoryEntry } from '~/composables/useHistory'
 import type { RecipeData } from '~/composables/useRecipes'
 
 const { entries, loading, fetchHistory } = useHistory()
-const { recipes, fetchRecipes, fetchRatings } = useRecipes()
+const { recipes, fetchRecipes, fetchStats } = useRecipes()
 
 const detailRecipeId = ref<string | null>(null)
 const detailRecipe = computed<RecipeData | null>(() =>
@@ -179,6 +179,6 @@ const unratedRecipeIds = computed(() => {
 onMounted(async () => {
   fetchHistory()
   await fetchRecipes()
-  fetchRatings()
+  fetchStats()
 })
 </script>

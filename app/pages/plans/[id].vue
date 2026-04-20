@@ -285,7 +285,7 @@
 const route = useRoute()
 const planId = route.params.id as string
 
-const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchScores, fetchRatings, updateRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, fetchRecipes, fetchStats, updateRecipe } = useRecipes()
 const { plan, basket, cooked, totalServings, fetchPlan, add: planAdd, remove: planRemove, toggleCooked, closePlan, reopenPlan, deletePlan, cleanup: cleanupPlan } = usePlan()
 
 onBeforeUnmount(() => {
@@ -364,7 +364,6 @@ async function handleDelete() {
 onMounted(async () => {
   await fetchRecipes()
   await fetchPlan(planId)
-  fetchScores(plan.value?.start_date)
-  fetchRatings()
+  fetchStats(plan.value?.start_date)
 })
 </script>

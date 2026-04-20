@@ -32,7 +32,7 @@ interface RecipeRow {
   tags: string[]
   is_built_in: boolean
   instructions: string
-  ingredients: IngredientRow[]
+  ingredients?: IngredientRow[]
   created_at: string
 }
 
@@ -47,7 +47,7 @@ export interface RecipeData {
   isBuiltIn: boolean
   sourceUrl: string
   instructions: string
-  ingredients: Array<{ name: string; unit: string; perServing: number; calories: number | null; protein: number | null }>
+  ingredients?: Array<{ name: string; unit: string; perServing: number; calories: number | null; protein: number | null }>
   imagePath: string | null
   createdAt?: string | null
   stats?: RecipeStats
@@ -67,13 +67,15 @@ function mapRecipe(row: RecipeRow): RecipeData {
     isBuiltIn: row.is_built_in,
     sourceUrl: row.source_url || '',
     instructions: row.instructions || '',
-    ingredients: (row.ingredients || []).map((ing: IngredientRow) => ({
-      name: ing.name,
-      unit: ing.unit,
-      perServing: ing.per_serving,
-      calories: ing.calories ?? null,
-      protein: ing.protein ?? null,
-    })),
+    ingredients: row.ingredients !== undefined
+      ? row.ingredients.map((ing: IngredientRow) => ({
+          name: ing.name,
+          unit: ing.unit,
+          perServing: ing.per_serving,
+          calories: ing.calories ?? null,
+          protein: ing.protein ?? null,
+        }))
+      : undefined,
     imagePath: row.image_path || null,
     createdAt: row.created_at || null,
   }
@@ -103,31 +105,44 @@ export function useRecipes() {
     }
   }
 
-  async function fetchScores(refDate?: string) {
+  async function fetchStats(refDate?: string) {
     try {
       const param = refDate ? `?ref_date=${refDate}` : ''
-      const scores = await authFetch<Record<string, RecipeStats>>(`/api/recipes/scores${param}`)
-      // Merge scores into existing recipes and sort by score
+      const stats = await authFetch<Record<string, {
+        totalCount: number; lastUsedDate: string | null; weeksSinceLast: number | null; score: number
+        avgRating: number | null; ratingCount: number; userRating: number | null
+      }>>(`/api/recipes/stats${param}`)
+
       recipes.value = [...recipes.value]
-        .map((r) => ({ ...r, stats: scores[r.id] || DEFAULT_STATS }))
+        .map((r) => {
+          const s = stats[r.id]
+          if (!s) return r
+          return {
+            ...r,
+            stats: { totalCount: s.totalCount, lastUsedDate: s.lastUsedDate, weeksSinceLast: s.weeksSinceLast, score: s.score },
+            rating: { userRating: s.userRating, avgRating: s.avgRating ?? 0, ratingCount: s.ratingCount },
+          }
+        })
         .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
     } catch (err: unknown) {
-      console.error('Failed to fetch scores:', err)
-      toast.error('Failed to load recipe scores')
+      console.error('Failed to fetch stats:', err)
+      toast.error('Failed to load recipe stats')
     }
   }
 
-  async function fetchRatings() {
-    try {
-      const ratings = await authFetch<Record<string, RecipeRating>>('/api/recipes/ratings')
-      recipes.value = recipes.value.map((r) => ({
-        ...r,
-        rating: ratings[r.id] || r.rating,
-      }))
-    } catch (err: unknown) {
-      console.error('Failed to fetch ratings:', err)
-      toast.error('Failed to load ratings')
-    }
+  async function fetchRecipeIngredients(id: string) {
+    const data = await authFetch<RecipeRow>(`/api/recipes/${id}`)
+    const mapped = mapRecipe(data)
+    recipes.value = recipes.value.map((r) => r.id === id ? { ...r, ingredients: mapped.ingredients } : r)
+  }
+
+  async function searchRecipes(query: string): Promise<RecipeData[]> {
+    const data = await authFetch<RecipeRow[]>(`/api/recipes/search?q=${encodeURIComponent(query)}`)
+    return data.map((row) => {
+      const mapped = mapRecipe(row)
+      const stored = recipes.value.find((r) => r.id === row.id)
+      return stored ? { ...mapped, stats: stored.stats, rating: stored.rating } : mapped
+    })
   }
 
   async function setRating(recipeId: string, rating: number) {
@@ -151,7 +166,7 @@ export function useRecipes() {
     } catch (err: unknown) {
       console.error('Failed to set rating:', err)
       toast.error('Failed to save rating')
-      await fetchRatings()
+      await fetchStats()
     }
   }
 
@@ -220,8 +235,9 @@ export function useRecipes() {
     userRecipes,
     loading,
     fetchRecipes,
-    fetchScores,
-    fetchRatings,
+    fetchStats,
+    fetchRecipeIngredients,
+    searchRecipes,
     setRating,
     addRecipe,
     updateRecipe,
