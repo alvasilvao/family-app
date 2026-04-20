@@ -80,6 +80,12 @@ export default defineNuxtConfig({
     preset: 'cloudflare-pages',
   },
 
+  router: {
+    options: {
+      hashMode: true,
+    },
+  },
+
   app: {
     head: {
       title: 'Family App',
