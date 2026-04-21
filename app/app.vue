@@ -9,6 +9,7 @@
   </div>
 
   <NuxtPage />
+  <MobileBottomNav />
   <ToastContainer />
 </template>
 
