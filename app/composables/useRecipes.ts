@@ -96,6 +96,25 @@ export function useRecipes() {
 
   const userRecipes = computed(() => recipes.value.filter((r) => !r.isBuiltIn))
 
+  type StatsResponse = Record<string, {
+    totalCount: number; lastUsedDate: string | null; weeksSinceLast: number | null; score: number
+    avgRating: number | null; ratingCount: number; userRating: number | null
+  }>
+
+  function applyStats(list: RecipeData[], stats: StatsResponse): RecipeData[] {
+    return list
+      .map((r) => {
+        const s = stats[r.id]
+        if (!s) return r
+        return {
+          ...r,
+          stats: { totalCount: s.totalCount, lastUsedDate: s.lastUsedDate, weeksSinceLast: s.weeksSinceLast, score: s.score },
+          rating: { userRating: s.userRating, avgRating: s.avgRating ?? 0, ratingCount: s.ratingCount },
+        }
+      })
+      .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
+  }
+
   async function fetchRecipes() {
     loading.value = true
     error.value = false
@@ -114,25 +133,33 @@ export function useRecipes() {
   async function fetchStats(refDate?: string) {
     try {
       const param = refDate ? `?ref_date=${refDate}` : ''
-      const stats = await authFetch<Record<string, {
-        totalCount: number; lastUsedDate: string | null; weeksSinceLast: number | null; score: number
-        avgRating: number | null; ratingCount: number; userRating: number | null
-      }>>(`/api/recipes/stats${param}`)
-
-      recipes.value = [...recipes.value]
-        .map((r) => {
-          const s = stats[r.id]
-          if (!s) return r
-          return {
-            ...r,
-            stats: { totalCount: s.totalCount, lastUsedDate: s.lastUsedDate, weeksSinceLast: s.weeksSinceLast, score: s.score },
-            rating: { userRating: s.userRating, avgRating: s.avgRating ?? 0, ratingCount: s.ratingCount },
-          }
-        })
-        .sort((a, b) => (b.stats?.score ?? 0) - (a.stats?.score ?? 0))
+      const stats = await authFetch<StatsResponse>(`/api/recipes/stats${param}`)
+      recipes.value = applyStats([...recipes.value], stats)
     } catch (err: unknown) {
       console.error('Failed to fetch stats:', err)
       toast.error('Failed to load recipe stats')
+    }
+  }
+
+  async function fetchRecipesWithStats(refDate?: string) {
+    loading.value = true
+    error.value = false
+    const param = refDate ? `?ref_date=${refDate}` : ''
+    const recipesReq = authFetch<RecipeRow[]>('/api/recipes')
+    const statsReq = authFetch<StatsResponse>(`/api/recipes/stats${param}`).catch((err) => {
+      console.error('Failed to fetch stats:', err)
+      return null
+    })
+    try {
+      const [data, stats] = await Promise.all([recipesReq, statsReq])
+      const mapped = data.map(mapRecipe)
+      recipes.value = stats ? applyStats(mapped, stats) : mapped
+    } catch (err: unknown) {
+      error.value = true
+      console.error('Failed to fetch recipes:', err)
+      toast.error('Failed to load recipes')
+    } finally {
+      loading.value = false
     }
   }
 
@@ -243,6 +270,7 @@ export function useRecipes() {
     error,
     fetchRecipes,
     fetchStats,
+    fetchRecipesWithStats,
     fetchRecipeIngredients,
     searchRecipes,
     setRating,

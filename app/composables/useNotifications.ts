@@ -10,13 +10,22 @@ export function useNotifications() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  onMounted(async () => {
+  onMounted(() => {
     isSupported.value = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window
-    if (isSupported.value) {
+    if (!isSupported.value) return
+
+    // Defer off the mount path — awaiting serviceWorker.ready can block for
+    // hundreds of ms on iOS cold starts while the SW activates.
+    const idle = (cb: () => void) => {
+      const ric = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
+      if (ric) ric(cb)
+      else setTimeout(cb, 0)
+    }
+    idle(async () => {
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.getSubscription()
       isSubscribed.value = !!sub
-    }
+    })
   })
 
   async function subscribe() {
