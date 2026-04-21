@@ -362,8 +362,7 @@ async function handleDelete() {
 }
 
 onMounted(async () => {
-  await fetchRecipes()
-  await fetchPlan(planId)
+  await Promise.all([fetchRecipes(), fetchPlan(planId)])
   fetchStats(plan.value?.start_date)
 })
 </script>

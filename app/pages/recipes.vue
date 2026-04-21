@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-const { recipes, userRecipes, loading: recipesLoading, error: recipesError, fetchRecipes, fetchStats, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
+const { recipes, userRecipes, loading: recipesLoading, error: recipesError, fetchRecipesWithStats, addRecipe, updateRecipe, deleteRecipe } = useRecipes()
 
 const showAddRecipe = ref(false)
 const detailRecipeId = ref<string | null>(null)
@@ -95,7 +95,7 @@ function viewRecipe(id: string) {
 }
 
 function retry() {
-  fetchRecipes().then(() => fetchStats())
+  fetchRecipesWithStats()
 }
 
 onMounted(() => {
