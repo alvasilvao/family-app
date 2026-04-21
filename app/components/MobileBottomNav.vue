@@ -5,7 +5,7 @@
       :key="item.to"
       :to="item.to"
       class="mobile-bottom-nav__item"
-      :class="{ 'mobile-bottom-nav__item--active': route.path === item.to }"
+      :class="{ 'mobile-bottom-nav__item--active': isActive(item) }"
     >
       <span class="mobile-bottom-nav__icon" aria-hidden="true">{{ item.icon }}</span>
       <span class="mobile-bottom-nav__label">{{ item.label }}</span>
@@ -16,16 +16,26 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const items = [
+type NavItem = { to: string; icon: string; label: string; match?: string[] }
+
+const items: readonly NavItem[] = [
   { to: '/recipes', icon: '🍳', label: 'Recipes' },
-  { to: '/plans', icon: '📅', label: 'Plans' },
+  { to: '/plans', icon: '📅', label: 'Plans', match: ['/plans'] },
   { to: '/shopping', icon: '🛒', label: 'Shopping' },
   { to: '/history', icon: '📊', label: 'History' },
-  { to: '/profile', icon: '👤', label: 'Profile' },
+  { to: '/profile', icon: '👤', label: 'Profile', match: ['/profile', '/media', '/notes', '/todos'] },
 ] as const
 
-const targetPaths = items.map((i) => i.to)
-const visible = computed(() => targetPaths.includes(route.path as (typeof targetPaths)[number]))
+function isActive(item: NavItem) {
+  const path = route.path
+  if (item.match) {
+    return item.match.some((p) => path === p || path.startsWith(`${p}/`))
+  }
+  return path === item.to
+}
+
+const hiddenPaths = ['/login', '/confirm']
+const visible = computed(() => !hiddenPaths.includes(route.path))
 </script>
 
 <style scoped>

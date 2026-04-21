@@ -40,6 +40,52 @@
         </div>
       </div>
 
+      <!-- More sections -->
+      <div class="profile-more">
+        <NuxtLink
+          v-for="section in moreSections"
+          :key="section.to"
+          :to="section.to"
+          class="card"
+          :style="{
+            background: '#fff',
+            borderRadius: '16px',
+            padding: '18px 20px',
+            boxShadow: '0 2px 12px rgba(0,0,0,.06)',
+            textDecoration: 'none',
+            color: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginBottom: '12px',
+          }"
+        >
+          <div
+            :style="{
+              width: '44px',
+              height: '44px',
+              borderRadius: '12px',
+              background: section.bg,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '22px',
+              flexShrink: 0,
+            }"
+          >
+            {{ section.icon }}
+          </div>
+          <div>
+            <p style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; line-height: 1.3">
+              {{ section.title }}
+            </p>
+            <p style="font-size: 13px; color: #9b9590; margin-top: 2px; line-height: 1.4">
+              {{ section.description }}
+            </p>
+          </div>
+        </NuxtLink>
+      </div>
+
       <!-- Notifications -->
       <div
         v-if="notificationsSupported"
@@ -145,6 +191,30 @@
 <script setup lang="ts">
 const { user, signOut } = useAuth()
 
+const moreSections = [
+  {
+    to: '/media',
+    icon: '🎬',
+    title: 'Watchlist',
+    description: 'Track movies and TV shows',
+    bg: '#fce7f3',
+  },
+  {
+    to: '/notes',
+    icon: '📝',
+    title: 'Notes',
+    description: 'Shared notes for everyone',
+    bg: '#fef9c3',
+  },
+  {
+    to: '/todos',
+    icon: '✅',
+    title: 'To-dos',
+    description: 'Shared tasks and to-do list',
+    bg: '#ede9fe',
+  },
+]
+
 const { isSupported: notificationsSupported, isSubscribed: notificationsSubscribed, permission, loading: notificationsLoading, error: notificationsError, subscribe, unsubscribe, testLoading, testSent, sendTest } = useNotifications()
 const notificationsDenied = computed(() => permission.value === 'denied')
 
@@ -156,3 +226,15 @@ function toggleNotifications() {
   }
 }
 </script>
+
+<style scoped>
+.profile-more {
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .profile-more {
+    display: none;
+  }
+}
+</style>
