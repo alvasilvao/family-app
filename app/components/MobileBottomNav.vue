@@ -47,14 +47,15 @@ const visible = computed(() => !hiddenPaths.includes(route.path))
   right: 0;
   bottom: 0;
   z-index: 200;
-  background: #fff;
-  border-top: 1px solid #e8e2db;
+  background: #f7f3ee;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .mobile-bottom-nav__inner {
   display: flex;
+  background: #fff;
+  border-top: 1px solid #e8e2db;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .mobile-bottom-nav__item {
