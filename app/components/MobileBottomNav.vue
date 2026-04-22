@@ -45,10 +45,8 @@ const visible = computed(() => !hiddenPaths.includes(route.path))
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
   z-index: 200;
-  background: #f7f3ee;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .mobile-bottom-nav__inner {
