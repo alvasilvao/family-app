@@ -155,7 +155,7 @@
 
 <script setup lang="ts">
 if (import.meta.client && window.matchMedia('(max-width: 767px)').matches) {
-  await navigateTo('/recipes', { replace: true })
+  navigateTo('/recipes', { replace: true })
 }
 
 const foodSections = [
